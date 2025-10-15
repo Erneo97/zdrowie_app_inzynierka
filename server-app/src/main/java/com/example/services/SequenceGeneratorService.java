@@ -1,4 +1,4 @@
-package com.example.MongoDB;
+package com.example.services;
 
 import com.example.kolekcje.Counter;
 import org.springframework.data.mongodb.core.MongoOperations;
