@@ -1,12 +1,11 @@
 package com.example.repositories;
 
-import com.example.kolekcje.uzytkownik.PomiarWagiiProjection;
-import com.example.kolekcje.uzytkownik.PommiarWagii;
-import com.example.kolekcje.uzytkownik.Uzytkownik;
+import com.example.kolekcje.uzytkownik.*;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 
+import java.util.List;
 import java.util.Optional;
 
 //@Repository
@@ -20,5 +19,7 @@ public interface UzytkownikRepository extends MongoRepository<Uzytkownik, Intege
     Optional<Uzytkownik> findByEmailAndHaslo(String email, String password);
 
     Optional<PomiarWagiiProjection> findProjectedById(int id);
+
+    Optional<PrzyjacieleProjection> findPrzyjacieById(int idUser);
 
 }

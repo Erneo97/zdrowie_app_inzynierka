@@ -5,7 +5,8 @@ public enum LicznikiDB {
     PLANY_TRENINGOWE("trening plans"),
     PRODUKTY("products"),
     POSILKI("meals"),
-    Treningi("trenings");
+    TRENINGI("trenings"),
+    TOKENS("tokens");
 
     private String nazwa;
     private LicznikiDB(String nazwa) {

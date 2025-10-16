@@ -2,14 +2,15 @@ package com.example.kolekcje.uzytkownik;
 
 public class Przyjaciele {
     int id;
-    String token;
     boolean czyDozwolony;
+    boolean czyPrzyjaciel;
 
-    boolean getCzyDozwolony() {return czyDozwolony;}
+    boolean isCzyDozwolony() {return czyDozwolony;}
     void setCzyDozwolony(boolean czyDozwolony) {this.czyDozwolony = czyDozwolony;}
 
-    int getId() {return id;}
+    public int getId() {return id;}
 
-    String getToken() {return token;}
-    void setToken(String token) {this.token = token;}
+
+    boolean isCzyPrzyjaciel() {return czyPrzyjaciel;}
+    void setPrzyjaciel(boolean przyjaciel) {this.czyPrzyjaciel = przyjaciel;}
 }
