@@ -17,12 +17,10 @@ public class UzytkownikService {
 
     private final UzytkownikRepository repository;
     private final SequenceGeneratorService sequenceGenerator;
-    private final TokensService tokensService;
 
-    public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator, TokensService tokensService) {
+    public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator) {
         this.repository = repository;
         this.sequenceGenerator = sequenceGenerator;
-        this.tokensService = tokensService;
     }
 
     /**
@@ -37,20 +35,22 @@ public class UzytkownikService {
      */
     public Uzytkownik createUser(String imie, String nazwisko, String email, String haslo, int wzrost, Plec plec) {
         Uzytkownik user = new Uzytkownik();
-        // TODO: hash hasła + token
+
         List<Dania> dania = new ArrayList<>();
         List<Przyjaciele> przyjaciele = new ArrayList<>();
+        List<PommiarWagii> wagi = new ArrayList<>();
 
         int id = sequenceGenerator.getNextSequence(LicznikiDB.UZYTKOWNICY.getNazwa());
         user.setImie(imie);
         user.setNazwisko(nazwisko);
-        user.setEmail(email + id);
+        user.setEmail(email);
         user.setHaslo(haslo);
         user.setWzrost(wzrost);
         user.setId(id);
         user.setPlec(plec);
         user.setDania(dania);
         user.setUpowaznieniiDoTablicyPosilkow(przyjaciele);
+        user.setWaga(wagi);
         return repository.save(user);
     }
 
@@ -58,9 +58,8 @@ public class UzytkownikService {
         return repository.findById(id);
     }
 
-    public Optional<Uzytkownik> loginUser(String emian, String password) {
-        // TODO: hash hasła
-        return repository.findByEmailAndHaslo(emian, password);
+    public Optional<Uzytkownik> loginUser(String email) {
+        return repository.findByEmail(email);
     }
 
     public Optional<Uzytkownik> updateUser(int id, Uzytkownik updatedUser) {
@@ -147,8 +146,5 @@ public class UzytkownikService {
 
     }
 
-    public void addFriendAuthorizationToChangeMeals(int idUser, int idFriend, String tokenUser) {
-        tokensService.createToken(idUser, idFriend, "TODO: token generowany");
-    }
 
 }

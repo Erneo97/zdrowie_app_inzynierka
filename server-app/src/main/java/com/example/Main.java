@@ -15,15 +15,6 @@ public class Main {
         SpringApplication.run(Main.class, args);
     }
 
-    @Bean
-    CommandLineRunner init(UzytkownikService creator) {
-        return args -> {
-            Uzytkownik nowyUser = creator.createUser(
-                    "Ewa", "Kowalski", "ewa.kowalski@example.com", "tajnehaslo", 180, Plec.MEZCZYZNA
-            );
-            System.out.println("Utworzono użytkownika: " + nowyUser.getId());
-        };
-    }
 
     @Bean
     CommandLineRunner showAllUsers(UzytkownikRepository repository) {

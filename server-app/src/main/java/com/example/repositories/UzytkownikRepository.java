@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 
-import java.util.List;
 import java.util.Optional;
 
 //@Repository
@@ -16,7 +15,6 @@ public interface UzytkownikRepository extends MongoRepository<Uzytkownik, Intege
     Optional<Uzytkownik> findByEmail(String email);
     Optional<Uzytkownik> findById(int id);
 
-    Optional<Uzytkownik> findByEmailAndHaslo(String email, String password);
 
     Optional<PomiarWagiiProjection> findProjectedById(int id);
 
