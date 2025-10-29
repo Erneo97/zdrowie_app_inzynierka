@@ -145,8 +145,5 @@ public class UzytkownikController {
         uzytkownikService.updateUserTreningPlan(id, treningPlanID);
     }
 
-    @PostMapping("/token/{id}/{friendId}")
-    public Tokens createToken(@PathVariable int id, @PathVariable int friendId) {
-        return  uzytkownikService.addFriendAuthorizationToChangeMeals(id, friendId);
-    }
+
 }
