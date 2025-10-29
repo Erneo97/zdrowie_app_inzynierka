@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name" translatable="false">BalansApp</string>
+    <string name="slogan">Zachowaj Balans</string>
+    <string name="log_in">Zaloguj się</string>
+    <string name="regster">Zarejestruj się</string>
+    <string name="anuluj">Anuluj</string>
+    <string name="state_log_in">Nie wylogowuj mnie</string>
+    <string name="yours_trenings_plan">Twoje plany treningowe</string>
+    <string name="name">Imię</string>
+    <string name="surname">Nazwisko</string>
+    <string name="email">Email</string>
+    <string name="password">Hasło</string>
+    <string name="gender">Płeć</string>
+    <string name="confirm_password">Potwierdź hasło</string>
+    <string name="login_text">Zaloguj się do swojego konta</string>
+    <string name="remind_pasd">Przypomnij hasło</string>
+    <string name="menu_meal">Posiłki</string>
+    <string name="menu_trenings">Treningi</string>
+    <string name="menu_profil">Profil</string>
+    <string name="menu_plans">Plany treningowe</string>
+    <string name="bad_login_form">Uzupełnij email i hasło</string>
+    <string name="login_socialmedia">Zaloguj się za pomocą</string>
+    <string name="register_formEmail">\'Email musi być w formie example@example.pl\'</string>
+    <string name="register_password">\'Hasła muszą być takie same\'</string>
+    <string name="register_emptyInput">\'Nie wszystkie pola zostały wypełnione\'</string>
+    <string name="register_text">Rejestacja</string>
+</resources>
