@@ -1,10 +1,12 @@
 package com.example.services;
 
+import com.example.kolekcje.Zaproszenie;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.Plec;
 import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.*;
 import com.example.repositories.UzytkownikRepository;
+import com.example.repositories.ZaproszeniaRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,10 +20,12 @@ public class UzytkownikService {
 
     private final UzytkownikRepository repository;
     private final SequenceGeneratorService sequenceGenerator;
+    private final ZaproszeniaRepository zaproszeniaRepository;
 
-    public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator) {
+    public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator, ZaproszeniaRepository zaproszeniaRepository) {
         this.repository = repository;
         this.sequenceGenerator = sequenceGenerator;
+        this.zaproszeniaRepository = zaproszeniaRepository;
     }
 
     /**
@@ -145,6 +149,12 @@ public class UzytkownikService {
         PrzyjacieleProjection projection = projectionOpt.get();
         return projection.getPrzyjaciele().stream().anyMatch(friend -> friend.getId() == idFriend); // TODO token
 
+    }
+
+
+    public boolean isInvitationToFriend(int idUser) {
+        List<Zaproszenie> zaproszenies = zaproszeniaRepository.findById_zapraszanego(idUser);
+        return !zaproszenies.isEmpty();
     }
 
 

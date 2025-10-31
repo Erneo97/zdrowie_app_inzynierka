@@ -1,0 +1,15 @@
+package com.example.repositories;
+
+
+import com.example.kolekcje.Zaproszenie;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+import java.util.List;
+import java.util.Optional;
+
+@RepositoryRestResource(collectionResourceRel = "zaproszenie", path = "zaproszenie")
+public interface ZaproszeniaRepository extends MongoRepository<Zaproszenie, String> {
+    List<Zaproszenie> findById_zapraszanego(int id_zapraszanego);
+    void deleteById(int id);
+}

@@ -4,7 +4,6 @@ package com.example.repositories;
 import com.example.controllers.ProduktNazwa;
 import com.example.kolekcje.posilki.Produkt;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
