@@ -1,6 +1,7 @@
 package com.example.repositories;
 
 
+import com.example.controllers.ProduktNazwa;
 import com.example.kolekcje.posilki.Produkt;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -13,11 +14,10 @@ import java.util.Optional;
 public interface ProduktRepository extends MongoRepository<Produkt, String> {
 
     Optional<Produkt> findById(long id);
-    Optional<Produkt> findByNazwa(String name);
+    List<Produkt> findByNazwa(String name);
     Optional<Produkt> findByKodKreskowy(String kodKreskowy);
 
-    @Query("SELECT p.nazwa FROM Produkt p")
-    List<String> findAllNames();
+    List<ProduktNazwa> findAllBy();
 
     List<Produkt> findByProducent(String producent);
 

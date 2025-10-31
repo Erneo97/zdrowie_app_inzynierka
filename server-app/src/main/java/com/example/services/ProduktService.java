@@ -1,5 +1,6 @@
 package com.example.services;
 
+import com.example.controllers.ProduktNazwa;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.posilki.Dawka;
 import com.example.kolekcje.posilki.Produkt;
@@ -43,7 +44,7 @@ public class ProduktService {
     }
 
 
-    public Optional<Produkt> findByNazwa(String nazwa) {return produktyRepository.findByNazwa(nazwa);}
+    public List<Produkt> findByNazwa(String nazwa) {return produktyRepository.findByNazwa(nazwa);}
 
     /**
      *
@@ -58,7 +59,10 @@ public class ProduktService {
         return produktyRepository.findByProducent(producent);
     }
 
-    public List<String> findAllNames() {return produktyRepository.findAllNames();}
+    public List<String> findAllNames() {
+        List<ProduktNazwa> nazwy = produktyRepository.findAllBy();
+        return nazwy.stream().map(ProduktNazwa::getNazwa).toList();
+    }
 
 
 
