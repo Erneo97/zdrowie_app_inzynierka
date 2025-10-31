@@ -1,6 +1,7 @@
 package com.example.kolekcje.uzytkownik;
 
 import com.example.kolekcje.enumy.Plec;
+import com.example.kolekcje.posilki.Dania;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

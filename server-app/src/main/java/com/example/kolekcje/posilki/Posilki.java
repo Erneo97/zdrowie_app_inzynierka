@@ -1,0 +1,39 @@
+package com.example.kolekcje.posilki;
+
+import com.example.kolekcje.enumy.PoraDnia;
+import dev.morphia.annotations.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
+import java.util.List;
+
+@Document(collection = "Meals")
+public class Posilki {
+    @Id
+    private int id;
+    private int id_uzytkownika;
+    Date data;
+    private PoraDnia porodnik;
+    private List<SpozyteProdukty> produkty;
+
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {this.id = id;}
+
+    public int getId_uzytkownika() {return id_uzytkownika;}
+    public void setId_uzytkownika(int id_uzytkownika) {this.id_uzytkownika = id_uzytkownika;}
+
+    public Date getData() {return data;}
+    public void setData(Date data) {this.data = data;}
+
+    public PoraDnia getPorodnik() {return porodnik;}
+    public void setPorodnik(PoraDnia porodnik) {
+        this.porodnik = porodnik;
+    }
+
+    public List<SpozyteProdukty> getProdukty() {return produkty;}
+    public void setProdukty(List<SpozyteProdukty> produkty) {this.produkty = produkty;}
+
+}

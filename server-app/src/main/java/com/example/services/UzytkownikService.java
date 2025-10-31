@@ -2,6 +2,7 @@ package com.example.services;
 
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.Plec;
+import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.*;
 import com.example.repositories.UzytkownikRepository;
 import org.springframework.stereotype.Component;

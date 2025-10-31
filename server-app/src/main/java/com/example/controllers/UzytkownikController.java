@@ -1,8 +1,8 @@
 package com.example.controllers;
 
 import com.example.auth.JwtResponse;
+import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
-import com.example.kolekcje.uzytkownik.Tokens;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.requests.LoginRequest;
 import com.example.services.UzytkownikService;
@@ -134,8 +134,8 @@ public class UzytkownikController {
         uzytkownikService.updateUserPassword(id, password);
     }
 
-    @PostMapping("/{id}/meals")
-    public void addMealsUser(@PathVariable int id) {
+    @PostMapping("/meals")
+    public void addMealsUser( @RequestBody Dania danie) {
 
     }
 

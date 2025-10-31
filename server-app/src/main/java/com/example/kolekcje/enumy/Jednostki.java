@@ -1,13 +1,18 @@
 package com.example.kolekcje.enumy;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum Jednostki {
     LITR("l."),
     GRAM("g."),
     KILOGRAM("kg."),
-    SZTUKI("szt.");
+    SZTUKI("szt."),
+    MILILITR("ml.");
 
-    private String naziv;
+    final private String naziv;
     private Jednostki(String naziv) {
         this.naziv = naziv;
     }
+
+
 }
