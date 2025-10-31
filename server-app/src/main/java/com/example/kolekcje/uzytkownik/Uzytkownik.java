@@ -52,7 +52,8 @@ public class Uzytkownik {
     public int getWzrost() { return wzrost; }
     public void setWzrost(int wzrost) { this.wzrost = wzrost; }
 
-    public void setUpowaznieniiDoTablicyPosilkow(List<Przyjaciele> upowaznieniiDoTablicyPosilkow) { this.przyjaciele = upowaznieniiDoTablicyPosilkow; }
+    public void setPrzyjaciele(List<Przyjaciele> upowaznieniiDoTablicyPosilkow) { this.przyjaciele = upowaznieniiDoTablicyPosilkow; }
+    public List<Przyjaciele> getPrzyjaciele() {return przyjaciele;}
 
     public void setPlec(Plec plec) { this.plec = plec; }
     public Plec getPlec() { return plec; }

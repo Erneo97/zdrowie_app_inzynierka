@@ -1,8 +1,10 @@
 package com.example.controllers;
 
 import com.example.auth.JwtResponse;
+import com.example.kolekcje.Zaproszenie;
 import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
+import com.example.kolekcje.uzytkownik.Przyjaciele;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.requests.LoginRequest;
 import com.example.services.UzytkownikService;
@@ -143,6 +145,31 @@ public class UzytkownikController {
     @PostMapping("/{id}/treningPlan")
     public void changeTreningPlan(@PathVariable int id, @RequestBody int treningPlanID) {
         uzytkownikService.updateUserTreningPlan(id, treningPlanID);
+    }
+
+    @PostMapping("/invitation/new")
+    public ResponseEntity<?> sendInvitation(@RequestParam String email, @RequestParam int id) {
+        return uzytkownikService.sendInvitation(id, email) ? ResponseEntity.ok().build() :
+                ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/invitation/accept")
+    public void akceptInvitation(@RequestParam int id, @RequestParam int idInvitation) {
+//        TODO: dodanie porzyjaciela
+        Uzytkownik uzytkownik = uzytkownikService.getUserById(id).get();
+
+
+        Optional<Zaproszenie> zaproszenie = uzytkownikService.getZaproszenieById(idInvitation);
+        uzytkownikService.deleteInvitationById(idInvitation);
+
+        Przyjaciele nowyPrzyjaciele = new Przyjaciele();
+        nowyPrzyjaciele.setId(zaproszenie.get().getId_zapraszajacego());
+
+
+        List<Przyjaciele> przyjaciele = uzytkownik.getPrzyjaciele();
+        przyjaciele.add(nowyPrzyjaciele);
+
+        uzytkownik.setPrzyjaciele(przyjaciele);
     }
 
 

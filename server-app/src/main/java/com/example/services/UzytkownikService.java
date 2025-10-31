@@ -56,7 +56,7 @@ public class UzytkownikService {
         user.setId(id);
         user.setPlec(plec);
         user.setDania(dania);
-        user.setUpowaznieniiDoTablicyPosilkow(przyjaciele);
+        user.setPrzyjaciele(przyjaciele);
         user.setWaga(wagi);
         return repository.save(user);
     }
@@ -163,9 +163,13 @@ public class UzytkownikService {
         zaproszeniaRepository.deleteById(id);
     }
 
+    public Optional<Zaproszenie> getZaproszenieById(int id) {
+        return zaproszeniaRepository.findById(id);
+    }
+
     public boolean sendInvitation(int userId, String emailFriend) {
         Optional<Uzytkownik> firend = uzytkownikRepository.findByEmail(emailFriend);
-        if( !firend.isPresent()) {
+        if(firend.isEmpty()) {
             return false;
         }
 

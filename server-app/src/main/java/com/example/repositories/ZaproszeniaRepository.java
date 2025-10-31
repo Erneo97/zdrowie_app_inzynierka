@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface ZaproszeniaRepository extends MongoRepository<Zaproszenie, String> {
     List<Zaproszenie> findById_zapraszanego(int id_zapraszanego);
     void deleteById(int id);
+    Optional<Zaproszenie> findById(int id);
 }
