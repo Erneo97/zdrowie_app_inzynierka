@@ -49,6 +49,11 @@ public class ProduktController {
         return produktService.findById(id);
     }
 
+    @GetMapping("/produkty/{nazwa}")
+    public List<Produkt> findByNazwa(@PathVariable String nazwa) {
+        return produktService.findByNazwa(nazwa);
+    }
+
     @GetMapping("/produkt/kod/{kodKreskowy}")
     public Optional<Produkt> findByKodKreskowy(@PathVariable String kodKreskowy) {
         return produktService.findByKodKreskowy(kodKreskowy);
