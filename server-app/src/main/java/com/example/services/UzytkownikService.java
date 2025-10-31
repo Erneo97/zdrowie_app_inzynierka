@@ -21,11 +21,13 @@ public class UzytkownikService {
     private final UzytkownikRepository repository;
     private final SequenceGeneratorService sequenceGenerator;
     private final ZaproszeniaRepository zaproszeniaRepository;
+    private final UzytkownikRepository uzytkownikRepository;
 
-    public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator, ZaproszeniaRepository zaproszeniaRepository) {
+    public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator, ZaproszeniaRepository zaproszeniaRepository, UzytkownikRepository uzytkownikRepository) {
         this.repository = repository;
         this.sequenceGenerator = sequenceGenerator;
         this.zaproszeniaRepository = zaproszeniaRepository;
+        this.uzytkownikRepository = uzytkownikRepository;
     }
 
     /**
@@ -157,5 +159,25 @@ public class UzytkownikService {
         return !zaproszenies.isEmpty();
     }
 
+    public void deleteInvitationById(int id) {
+        zaproszeniaRepository.deleteById(id);
+    }
+
+    public boolean sendInvitation(int userId, String emailFriend) {
+        Optional<Uzytkownik> firend = uzytkownikRepository.findByEmail(emailFriend);
+        if( !firend.isPresent()) {
+            return false;
+        }
+
+        Zaproszenie zaproszenie = new Zaproszenie();
+
+        zaproszenie.setId(sequenceGenerator.getNextSequence(LicznikiDB.ZAPROSZENIA.getNazwa()));
+        zaproszenie.setId_zapraszajacego(userId);
+        zaproszenie.setId_zapraszanego(firend.get().getId());
+
+        zaproszeniaRepository.save(zaproszenie);
+
+        return true;
+    }
 
 }
