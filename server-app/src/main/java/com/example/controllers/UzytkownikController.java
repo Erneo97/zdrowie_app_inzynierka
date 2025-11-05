@@ -32,6 +32,10 @@ public class UzytkownikController {
         this.uzytkownikService = uzytkownikService;
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody Uzytkownik user) {
