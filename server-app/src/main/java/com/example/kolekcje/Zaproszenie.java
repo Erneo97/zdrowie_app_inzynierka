@@ -7,15 +7,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Zaproszenie {
     @Id
     int id;
-    int id_zapraszajacego, id_zapraszanego;
+    int idZapraszajacego, idZapraszanego;
 
     public void setId(int id) { this.id = id; }
-    public void setId_zapraszajacego(int id_zapraszajacego) {this.id_zapraszajacego = id_zapraszajacego;}
-    public void setId_zapraszanego(int id_zapraszanego) {this.id_zapraszanego = id_zapraszanego;}
+    public void setidZapraszajacego(int idZapraszajacego) {this.idZapraszajacego = idZapraszajacego;}
+    public void setidZapraszanego(int idZapraszanego) {this.idZapraszanego = idZapraszanego;}
 
     public int getId() {return id; }
-    public int getId_zapraszajacego() {return id_zapraszajacego;}
-    public int getId_zapraszanego() {return id_zapraszanego;}
+    public int getidZapraszanego() {return idZapraszanego;}
+    public int getidZapraszajacego() {return idZapraszajacego;}
 
 
 }

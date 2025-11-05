@@ -163,7 +163,7 @@ public class UzytkownikController {
         uzytkownikService.deleteInvitationById(idInvitation);
 
         Przyjaciele nowyPrzyjaciele = new Przyjaciele();
-        nowyPrzyjaciele.setId(zaproszenie.get().getId_zapraszajacego());
+        nowyPrzyjaciele.setId(zaproszenie.get().getidZapraszajacego());
 
 
         List<Przyjaciele> przyjaciele = uzytkownik.getPrzyjaciele();
