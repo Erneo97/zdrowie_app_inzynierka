@@ -9,9 +9,9 @@ import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.requests.LoginRequest;
 import com.example.services.UzytkownikService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +26,12 @@ public class UzytkownikController {
 //    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private final UzytkownikService uzytkownikService;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UzytkownikController(UzytkownikService uzytkownikService) {
+    public UzytkownikController(UzytkownikService uzytkownikService, PasswordEncoder passwordEncoder) {
         this.uzytkownikService = uzytkownikService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/test")
@@ -45,12 +47,12 @@ public class UzytkownikController {
         }
 
         log.info("Tworzenie użytkownika: {}", user.getEmail());
-//        String hashedPassword = passwordEncoder.encode(user.getHaslo());
+
         Uzytkownik created = uzytkownikService.createUser(
                 user.getImie(),
                 user.getNazwisko(),
                 user.getEmail(),
-                user.getHaslo(),
+                passwordEncoder.encode(user.getHaslo()),
                 user.getWzrost(),
                 user.getPlec()
         );
@@ -67,8 +69,7 @@ public class UzytkownikController {
         if (retUser.isPresent()) {
             Uzytkownik user = retUser.get();
 
-//            if (passwordEncoder.matches(request.getPassword(), user.getHaslo())) {
-            if (request.getPassword().equals( user.getHaslo())) {
+            if (passwordEncoder.matches(request.getPassword(), user.getHaslo())) {
                 return ResponseEntity.ok(new JwtResponse("token", user.getId()));
          }
         }
