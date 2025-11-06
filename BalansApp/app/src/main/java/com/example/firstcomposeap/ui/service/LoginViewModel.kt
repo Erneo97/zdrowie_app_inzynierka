@@ -8,9 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.data.LoginRequest
 import com.example.balansapp.ui.service.data.Uzytkownik
 import kotlinx.coroutines.launch
+import java.util.Base64
 
 class LoginViewModel : ViewModel() {
-    var userId by mutableStateOf<Int?>(null)
+    var userEmail by mutableStateOf<String?>(null)
     var user by mutableStateOf<Uzytkownik?>(null)
     var token by mutableStateOf<String?>(null)
     var errorMessage by mutableStateOf<String?>(null)
@@ -18,11 +19,17 @@ class LoginViewModel : ViewModel() {
     fun login(email: String, password: String) {
         viewModelScope.launch {
             try {
-                val response = ApiClient.api.login(LoginRequest(email, password))
+                val credentials = "$email:$password"
+                val basicAuth = "Basic " + Base64.getEncoder().encodeToString(credentials.toByteArray())
+                val response = ApiClient.api.login(
+                    LoginRequest(email, password),
+                    basicAuth
+                )
+
                 if (response.isSuccessful) {
                     val body = response.body()
                     token = body?.token
-                    userId = body?.id
+                    userEmail = body?.email
                     downloadUserData()
                 } else {
                     errorMessage = "Błąd logowania: ${response.code()}"
@@ -35,7 +42,8 @@ class LoginViewModel : ViewModel() {
     fun downloadUserData() {
         viewModelScope.launch {
             try {
-                val response = ApiClient.api.getUser(userId)
+
+                val response = ApiClient.api.getUser("Bearer $token")
                 if (response.isSuccessful) {
                     user = response.body()
                 } else {
