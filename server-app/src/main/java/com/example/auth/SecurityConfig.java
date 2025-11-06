@@ -3,6 +3,8 @@ package com.example.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,7 +24,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers("/api/uzytkownicy").permitAll()
+                .requestMatchers("/api/uzytkownicy", "/api/uzytkownicy/**").permitAll()
                 .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // wyłączenie ciasteczek
         http.httpBasic(withDefaults());
@@ -36,7 +38,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(); // NoOpPasswordEncoder.getInstance();
     }
 
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 //    @Bean
 //    public UserDetailsService userDetailsService() {
 //        UserDetails user1 = User.withUsername("user1")
