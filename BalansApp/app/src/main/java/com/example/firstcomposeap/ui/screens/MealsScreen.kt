@@ -35,13 +35,13 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
         onItemSelected = { selectedItem = it }
     ) { innerPadding ->
         Box(modifier = Modifier
-            .padding(innerPadding).fillMaxSize().verticalScroll(rememberScrollState()),
+            .padding(innerPadding),
             contentAlignment = Alignment.Center )
         {
             LogoBackGround()
 
             Column (
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
