@@ -1,6 +1,7 @@
 package com.example.firstcomposeap.ui.components.profile
 
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
@@ -11,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.HeadText
@@ -19,6 +21,7 @@ import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.firstcomposeap.ui.components.UniversalEditCard
 import com.example.firstcomposeap.ui.components.getFormOnlyDate
 import com.example.firstcomposeap.ui.components.profile.profileTab.AddWeightDialog
+import com.example.firstcomposeap.ui.components.profile.profileTab.ChangePasswordDialog
 import com.example.firstcomposeap.ui.components.profile.profileTab.EditUserDialog
 import kotlin.collections.emptyList
 
@@ -29,10 +32,10 @@ fun ProfilTab (loginViewModel: LoginViewModel) {
         fontSize = 48.sp,
         text = "To jest ekran profilu"
     )
-    val user = loginViewModel.user
 
-    UserInformationCard(loginViewModel = loginViewModel)
-    UserWeightCard(loginViewModel = loginViewModel)
+    UserInformationCard(loginViewModel)
+    UserWeightCard(loginViewModel)
+    UserPasswordCard(loginViewModel)
 }
 
 
@@ -54,11 +57,11 @@ fun UserInformationCard(loginViewModel: LoginViewModel
 
             Text("email: ${user?.email}", fontSize = 25.sp)
 
-            Spacer(modifier = Modifier.height(25.dp))
-            Text("id: ${user?.id}", fontSize = 30.sp)
-            Text("dania: ${user?.dania}", fontSize = 30.sp)
-            Text("aktualnyPlan: ${user?.aktualnyPlan}", fontSize = 30.sp)
-            Text("przyjaciele: ${user?.przyjaciele}", fontSize = 30.sp)
+//            Spacer(modifier = Modifier.height(25.dp))
+//            Text("id: ${user?.id}", fontSize = 30.sp)
+//            Text("dania: ${user?.dania}", fontSize = 30.sp)
+//            Text("aktualnyPlan: ${user?.aktualnyPlan}", fontSize = 30.sp)
+//            Text("przyjaciele: ${user?.przyjaciele}", fontSize = 30.sp)
         },
         onClick = { showDialog = true }
     )
@@ -69,7 +72,6 @@ fun UserInformationCard(loginViewModel: LoginViewModel
             onDismiss = { showDialog = false },
             onConfirm = { updatedUser ->
                 loginViewModel.updateUserBasicInfo(updatedUser)
-                showDialog = false
             }
         )
     }
@@ -117,6 +119,55 @@ fun UserWeightCard(loginViewModel: LoginViewModel
                 showDialog = false
             }
         )
+    }
+
+}
+
+@Composable
+fun UserPasswordCard(loginViewModel: LoginViewModel
+) {
+
+    var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val message = loginViewModel.message
+    val errorMessage = loginViewModel.errorMessage
+
+    LaunchedEffect(loginViewModel.passwordChangeSuccess) {
+        if( loginViewModel.passwordChangeSuccess) {
+            showDialog = false
+            loginViewModel.passwordChangeSuccess = false
+        }
+    }
+
+    UniversalEditCard(
+        data = {
+            Text("Zmień swoje hasło", fontSize = 30.sp)
+        },
+        onClick =  {  showDialog = true }
+    )
+
+    if (showDialog) {
+        ChangePasswordDialog(
+            onDismiss = { showDialog = false },
+            onConfirm = { oldPassword, newPassword  ->
+                loginViewModel.updatePassword(oldPassword, newPassword)
+            }
+        )
+    }
+
+
+    LaunchedEffect(message) {
+        if (message?.contains("Zmieniono", ignoreCase = true) == true) {
+            showDialog = false
+            Toast.makeText(context, "Zmieniono hasło pomyślnie", Toast.LENGTH_SHORT).show()
+            loginViewModel.message = null
+        }
+    }
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage != null) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 
 }
