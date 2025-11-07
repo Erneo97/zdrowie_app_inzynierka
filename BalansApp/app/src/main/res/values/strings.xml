@@ -21,6 +21,7 @@
     <string name="friends">Znajomi</string>
     <string name="menu_plans">Plany treningowe</string>
     <string name="bad_login_form">Uzupełnij email i hasło</string>
+    <string name="bad_add_weight_form">Nie podano wagii</string>
     <string name="login_socialmedia">Zaloguj się za pomocą</string>
     <string name="register_formEmail">\'Email musi być w formie example@example.pl\'</string>
     <string name="register_password">\'Hasła muszą być takie same\'</string>

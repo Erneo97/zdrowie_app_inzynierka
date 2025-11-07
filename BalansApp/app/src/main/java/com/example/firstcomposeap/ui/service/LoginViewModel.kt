@@ -61,16 +61,15 @@ class LoginViewModel : ViewModel() {
     }
 
     fun addWeightoUser(pommiarWagii: PommiarWagii) {
+        val nowaLista = (user?.waga ?: emptyList()) + pommiarWagii
+        user = user?.copy(waga = nowaLista)
+
         viewModelScope.launch {
             try {
 
                 val response = ApiClient.api.addUserWeigt(pommiarWagii,"Bearer $token")
                 if (response.isSuccessful) {
                     message = response.body()
-                    val wagii : List<PommiarWagii> = user?.waga ?: emptyList()
-                    val nowaLista = wagii + pommiarWagii
-                    user = user?.copy(waga = nowaLista)
-
                 } else {
                     errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
                 }

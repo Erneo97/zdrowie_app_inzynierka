@@ -1,41 +1,27 @@
 package com.example.firstcomposeap.ui.components.profile
 
-import android.R.attr.shadowColor
-import android.icu.util.UniversalTimeScale
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.service.LoginViewModel
+import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.firstcomposeap.ui.components.UniversalEditCard
-import java.nio.file.WatchEvent
+import com.example.firstcomposeap.ui.components.getFormOnlyDate
+import com.example.firstcomposeap.ui.components.profile.profileTab.AddWeightDialog
+import kotlin.collections.emptyList
+
 
 @Composable
 fun ProfilTab (loginViewModel: LoginViewModel) {
@@ -46,7 +32,7 @@ fun ProfilTab (loginViewModel: LoginViewModel) {
     val user = loginViewModel.user
 
     UserInformationCard(user = user, onClick = {})
-
+    UserWeightCard(loginViewModel = loginViewModel)
 }
 
 
@@ -68,15 +54,55 @@ fun UserInformationCard(user: Uzytkownik?,
 
             Spacer(modifier = Modifier.height(25.dp))
             Text("id: ${user?.id}", fontSize = 30.sp)
-            Text("waga: ${user?.waga}", fontSize = 30.sp)
             Text("dania: ${user?.dania}", fontSize = 30.sp)
             Text("aktualnyPlan: ${user?.aktualnyPlan}", fontSize = 30.sp)
             Text("przyjaciele: ${user?.przyjaciele}", fontSize = 30.sp)
         },
-        onClick = onClick
+        onClick = { onClick }
     )
-
-
 }
 
+@Composable
+fun UserWeightCard(loginViewModel: LoginViewModel
+) {
+    val wagii = loginViewModel. user?.waga ?: emptyList()
+    var lastData by remember { mutableStateOf<PommiarWagii?>(wagii.lastOrNull() ?: PommiarWagii(0.0, "", 0.0, 0.0, 0.0)) }
+    var showDialog by remember { mutableStateOf(false) }
 
+
+    LaunchedEffect(loginViewModel.user) {
+        lastData = wagii.lastOrNull() ?: PommiarWagii(0.0, "", 0.0, 0.0, 0.0)
+    }
+
+
+
+    UniversalEditCard(
+        data = {
+            if( lastData != null ) {
+                Text("waga: ${lastData?.wartosc ?: "-"} kg.", fontSize = 30.sp)
+                Text("Z dnia: ${getFormOnlyDate(lastData?.data ?: "1990-01-01")}")
+                Spacer(Modifier.height(15.dp))
+                Text("tk. tłuszczowa: ${lastData?.tluszcz ?: "-"} %.", fontSize = 25.sp)
+                Text("tk. mięśniowa: ${lastData?.miesnie ?: "-"} %.", fontSize = 25.sp)
+                Text("nawodnienie: ${lastData?.nawodnienie ?: "-"} %.", fontSize = 25.sp)
+
+            }
+            else {
+                Text("Brak danych o wadze", fontSize = 30.sp)
+            }
+
+        },
+        onClick =  {  showDialog = true }
+    )
+
+    if (showDialog) {
+        AddWeightDialog(
+            onDismiss = { showDialog = false },
+            onConfirm = { newPomiar ->
+                loginViewModel.addWeightoUser(newPomiar)
+                showDialog = false
+            }
+        )
+    }
+
+}
