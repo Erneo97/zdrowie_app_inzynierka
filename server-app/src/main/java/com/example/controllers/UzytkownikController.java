@@ -7,6 +7,7 @@ import com.example.kolekcje.uzytkownik.PommiarWagii;
 import com.example.kolekcje.uzytkownik.Przyjaciele;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.repositories.LoginResponse;
+import com.example.requests.ChangePassword;
 import com.example.requests.LoginRequest;
 import com.example.services.UzytkownikService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,9 +177,27 @@ public class UzytkownikController {
 
 
 
-    @PostMapping("/{id}/password")
-    public void changePassword(@PathVariable int id, @RequestBody String password) {
-        uzytkownikService.updateUserPassword(id, password);
+    @PutMapping("/password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePassword password, Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optionalUser = uzytkownikService.getUserByEmail(userEmail);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nie znaleziono użytkownika");
+        }
+        Uzytkownik user = optionalUser.get();
+
+        if( !passwordEncoder.matches(password.getOldPassword(), user.getHaslo())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Niepoprawne stare hasło");
+        }
+        log.info("zmiana hasła na: {}  {}", userEmail, password.getNewPassword());
+        String passwordNew = passwordEncoder.encode(password.getNewPassword());
+        uzytkownikService.updateUserPassword(userEmail, passwordNew);
+        return ResponseEntity.ok(Map.of("message", "Zmieniono hasło pomyślnie"));
     }
 
     @PostMapping("/meals")
@@ -201,7 +220,7 @@ public class UzytkownikController {
     @PostMapping("/invitation/accept")
     public void akceptInvitation(@RequestParam int id, @RequestParam int idInvitation) {
 //        TODO: dodanie porzyjaciela
-        Uzytkownik uzytkownik = uzytkownikService.getUserById(id).get();
+        Uzytkownik uzytkownik = uzytkownikService.getUserByEmail("").get();
 
 
         Optional<Zaproszenie> zaproszenie = uzytkownikService.getZaproszenieById(idInvitation);

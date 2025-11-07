@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.balansapp.ui.service.data.ChangePassword
 import com.example.balansapp.ui.service.data.LoginRequest
 import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.balansapp.ui.service.data.Uzytkownik
@@ -102,6 +103,30 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
+
+    var passwordChangeSuccess by mutableStateOf(false)
+    fun updatePassword(oldPassword: String, newPassword:String ) {
+        viewModelScope.launch {
+            try {
+                val passwordSend =
+                    ChangePassword(oldPassword = oldPassword, newPassword = newPassword)
+                val response = ApiClient.api.updatePasswordUser(passwordSend, "Bearer $token")
+                if (response.isSuccessful) {
+                    message = response.body()?.message
+                    passwordChangeSuccess = true
+                    errorMessage = null
+                } else {
+                    errorMessage = response.errorBody()?.string() ?: "Nieznany błąd (${response.code()})"
+                    passwordChangeSuccess = false
+                }
+            }
+            catch (e : Exception ) {
+                errorMessage = e.localizedMessage
+                passwordChangeSuccess = false
+            }
+        }
+    }
+
 
 }
 

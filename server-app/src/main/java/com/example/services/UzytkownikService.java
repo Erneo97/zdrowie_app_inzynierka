@@ -61,8 +61,8 @@ public class UzytkownikService {
         return repository.save(user);
     }
 
-    public Optional<Uzytkownik> getUserById(int id) {
-        return repository.findById(id);
+    public Optional<Uzytkownik> getUserByEmail(String email) {
+        return repository.findByEmail(email);
     }
 
     public Optional<Uzytkownik> loginUser(String email) {
@@ -107,14 +107,10 @@ public class UzytkownikService {
        return false;
     }
 
-    /**
-     * Aktualizacja hasla uzytkownika
-     * @param id
-     * @param password
-     */
-    public void updateUserPassword(int id, String password) {
+
+    public void updateUserPassword(String email, String password) {
         // TODO: hash hasła
-        repository.findById(id).ifPresent(u -> {
+        repository.findByEmail(email).ifPresent(u -> {
             u.setHaslo(password);
             repository.save(u);
         });

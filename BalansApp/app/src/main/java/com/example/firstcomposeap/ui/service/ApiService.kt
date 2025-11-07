@@ -1,10 +1,12 @@
 package com.example.balansapp.ui.service
 
+import com.example.balansapp.ui.service.data.ChangePassword
 import com.example.balansapp.ui.service.data.LoginRequest
 import com.example.balansapp.ui.service.data.LoginResponse
 import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.balansapp.ui.service.data.RegisterRequest
 import com.example.balansapp.ui.service.data.RegisterResponse
+import com.example.balansapp.ui.service.data.SimpleMessage
 import com.example.balansapp.ui.service.data.Uzytkownik
 import okhttp3.ResponseBody
 import retrofit2.http.Body
@@ -33,5 +35,9 @@ interface ApiService {
     @PUT("uzytkownicy/update")
     suspend fun updateBasicInformationUser( @Body body: Uzytkownik, @Header("Authorization") authorization: String)
     : Response<ResponseBody>
+
+    @PUT("uzytkownicy/password")
+    suspend fun updatePasswordUser( @Body body: ChangePassword, @Header("Authorization") authorization: String)
+            : Response<SimpleMessage>
 
 }
