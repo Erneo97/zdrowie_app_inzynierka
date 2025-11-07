@@ -87,27 +87,24 @@ public class UzytkownikService {
         return false;
     }
 
-    /**
-     * Pobieranie listy ze wszystkimi pomiarami użytkownika jakie ten wykonał w czasie używania aplikacji
-     * @param id
-     * @return
-     */
-    public List<PommiarWagii> getUsersWeights(int id) {
-        return repository.findProjectedById(id)
-                .map(PomiarWagiiProjection::getDane)
-                .orElse(Collections.emptyList());
-    }
 
-    /**
-     * Aktualizacja listy ze wszystkimi wagami użytkownika
-     * @param id
-     * @param noweDane
-     */
-    public void updateUserWeights(int id, List<PommiarWagii> noweDane) {
-       repository.findById(id).ifPresent(u -> {
-           u.setWaga(noweDane);
-           repository.save(u);
-       });
+    public boolean addUserWeights(String email, PommiarWagii noweDane) {
+       Optional<Uzytkownik> userOpt = repository.findByEmail(email);
+       if( userOpt.isPresent()) {
+           Uzytkownik user = userOpt.get();
+           List<PommiarWagii> wagii = user.getWaga();
+
+           if(wagii == null || wagii.isEmpty()) {
+               wagii = new ArrayList<>();
+           }
+
+           wagii.add(noweDane);
+           user.setWaga(wagii);
+
+           repository.save(user);
+           return true;
+       }
+       return false;
     }
 
     /**

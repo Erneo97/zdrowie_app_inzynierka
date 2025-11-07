@@ -116,6 +116,22 @@ public class UzytkownikController {
     }
 
 
+    @PostMapping("/waga")
+    public ResponseEntity<String> addWeitht(@RequestBody PommiarWagii request, Authentication authentication) {
+        log.info("addWeitht");
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String userEmail = authentication.getName();
+        log.info("${}  {}", userEmail, request);
+        boolean ret = uzytkownikService.addUserWeights(userEmail, request);
+
+        if( ret )
+            return ResponseEntity.ok("Dodano pomiar wagi");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Użytkownik nie znaleziony");
+    }
+
     // UPDATE - PUT /api/uzytkownicy/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Uzytkownik> updateUser(
@@ -143,22 +159,7 @@ public class UzytkownikController {
                 : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Wszystkie pomiary wag użytkownika o danym id
-     *
-     * @param id
-     * @return
-     */
-    @GetMapping("/{id}/weight")
-    public List<PommiarWagii> getUserWeight(@PathVariable int id) {
-        // TODO: token
-        return uzytkownikService.getUsersWeights(id);
-    }
 
-    @PostMapping("/{id}/weight")
-    public void setUserWeight(@PathVariable int id, @RequestBody List<PommiarWagii> weights) {
-        uzytkownikService.updateUserWeights(id, weights);
-    }
 
     @PostMapping("/{id}/password")
     public void changePassword(@PathVariable int id, @RequestBody String password) {
