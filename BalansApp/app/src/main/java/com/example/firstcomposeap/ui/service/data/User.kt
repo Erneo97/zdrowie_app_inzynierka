@@ -14,7 +14,8 @@ data class Uzytkownik(
     var wzrost: Int = 0,
     var plec: Plec,
     var przyjaciele: List<Przyjaciele> = emptyList(),
-    var dania: List<Dania> = emptyList()
+    var dania: List<Dania> = emptyList(),
+    var zapotrzebowanieKcal: Int
 )
 
 data class Dania(

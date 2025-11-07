@@ -16,7 +16,7 @@ public class Uzytkownik {
     int aktualnyPlan;
     String imie, nazwisko, email, haslo;
     List<PommiarWagii> waga;
-    int wzrost;
+    int wzrost, zapotrzebowanieKcal;
     Plec plec;
     List<Przyjaciele> przyjaciele;
     List<Dania> dania;
@@ -30,6 +30,14 @@ public class Uzytkownik {
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public int getZapotrzebowanieKcal() {
+        return zapotrzebowanieKcal;
+    }
+
+    public void setZapotrzebowanieKcal(int zapotrzebowanieKcal) {
+        this.zapotrzebowanieKcal = zapotrzebowanieKcal;
+    }
 
     public String getImie() { return imie; }
     public void setImie(String imie) { this.imie = imie; }

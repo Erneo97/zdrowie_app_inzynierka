@@ -73,6 +73,7 @@ public class UzytkownikService {
         return repository.findByEmail(email).map(existingUser -> {
             existingUser.setImie(updatedUser.getImie());
             existingUser.setNazwisko(updatedUser.getNazwisko());
+            existingUser.setZapotrzebowanieKcal(updatedUser.getZapotrzebowanieKcal());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setWzrost(updatedUser.getWzrost());
             return repository.save(existingUser);

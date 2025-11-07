@@ -23,6 +23,7 @@ import com.example.firstcomposeap.ui.components.getFormOnlyDate
 import com.example.firstcomposeap.ui.components.profile.profileTab.AddWeightDialog
 import com.example.firstcomposeap.ui.components.profile.profileTab.ChangePasswordDialog
 import com.example.firstcomposeap.ui.components.profile.profileTab.EditUserDialog
+import com.example.firstcomposeap.ui.components.profile.profileTab.UserKcalDialog
 import kotlin.collections.emptyList
 
 
@@ -36,6 +37,7 @@ fun ProfilTab (loginViewModel: LoginViewModel) {
     UserInformationCard(loginViewModel)
     UserWeightCard(loginViewModel)
     UserPasswordCard(loginViewModel)
+    UserKcalCard(loginViewModel)
 }
 
 
@@ -170,4 +172,31 @@ fun UserPasswordCard(loginViewModel: LoginViewModel
         }
     }
 
+}
+
+
+@Composable
+fun UserKcalCard(loginViewModel: LoginViewModel
+) {
+
+    var showDialog by remember { mutableStateOf(false) }
+
+
+    UniversalEditCard(
+        data = {
+            Text("Twoje zapotrzebowanie: \n${loginViewModel.user?.zapotrzebowanieKcal ?: "-"} kcal", fontSize = 30.sp)
+        },
+        onClick =  {  showDialog = true }
+    )
+
+    if (showDialog) {
+        UserKcalDialog(
+            onDismiss = { showDialog = false },
+            onConfirm = { zapotrzebowanie  ->
+                loginViewModel.user?.zapotrzebowanieKcal = zapotrzebowanie
+                loginViewModel.updateUserBasicInfo(loginViewModel.user!!)
+                showDialog = false
+            }
+        )
+    }
 }
