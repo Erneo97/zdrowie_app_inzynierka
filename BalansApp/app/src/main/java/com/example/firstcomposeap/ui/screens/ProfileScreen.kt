@@ -69,7 +69,7 @@ fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewMod
                         Tab(
                             selected = selectedTabIndex == index,
                             onClick = { selectedTabIndex = index },
-                            text = { Text(title, fontSize = 28.sp) }
+                            text = { Text(title, fontSize = 25.sp) }
                         )
                     }
                 }
