@@ -17,6 +17,8 @@
     <string name="menu_meal">Posiłki</string>
     <string name="menu_trenings">Treningi</string>
     <string name="menu_profil">Profil</string>
+    <string name="statistic">Statystyki</string>
+    <string name="friends">Znajomi</string>
     <string name="menu_plans">Plany treningowe</string>
     <string name="bad_login_form">Uzupełnij email i hasło</string>
     <string name="login_socialmedia">Zaloguj się za pomocą</string>

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
+import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayout
 import com.example.balansapp.ui.service.LoginViewModel
@@ -45,18 +46,11 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("To jest ekran posiłki", fontSize = 40.sp)
-                Text("email: ${user?.email}", fontSize = 30.sp)
-                Text("imie: ${user?.imie}", fontSize = 30.sp)
-                Text("nazwisko: ${user?.nazwisko}", fontSize = 30.sp)
-                Text("id: ${user?.id}", fontSize = 30.sp)
-                Text("plec: ${user?.plec}", fontSize = 30.sp)
-                Text("wzrost: ${user?.wzrost}", fontSize = 30.sp)
-                Text("waga: ${user?.waga}", fontSize = 30.sp)
-                Text("dania: ${user?.dania}", fontSize = 30.sp)
-                Text("aktualnyPlan: ${user?.aktualnyPlan}", fontSize = 30.sp)
-                Text("przyjaciele: ${user?.przyjaciele}", fontSize = 30.sp)
 
+                HeadText(
+                    fontSize = 48.sp,
+                    text = "To jest ekran posiłki"
+                )
             }
         }
 
