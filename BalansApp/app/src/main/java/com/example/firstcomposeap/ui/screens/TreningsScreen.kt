@@ -34,8 +34,8 @@ fun TreningsScreen(navController: NavHostController) {
 
         modifier = Modifier
             .padding(innerPadding),
-        contentAlignment = Alignment.Center
-    ) {
+        contentAlignment = Alignment.Center  )
+    {
         LogoBackGround()
 
 
