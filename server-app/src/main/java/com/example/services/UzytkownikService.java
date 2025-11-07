@@ -69,8 +69,8 @@ public class UzytkownikService {
         return repository.findByEmail(email);
     }
 
-    public Optional<Uzytkownik> updateUser(int id, Uzytkownik updatedUser) {
-        return repository.findById(id).map(existingUser -> {
+    public Optional<Uzytkownik> updateUser(String email, Uzytkownik updatedUser) {
+        return repository.findByEmail(email).map(existingUser -> {
             existingUser.setImie(updatedUser.getImie());
             existingUser.setNazwisko(updatedUser.getNazwisko());
             existingUser.setEmail(updatedUser.getEmail());

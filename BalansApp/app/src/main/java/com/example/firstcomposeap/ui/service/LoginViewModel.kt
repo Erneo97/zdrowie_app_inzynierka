@@ -3,12 +3,12 @@ package com.example.balansapp.ui.service
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.data.LoginRequest
 import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.balansapp.ui.service.data.Uzytkownik
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.util.Base64
 
@@ -70,6 +70,30 @@ class LoginViewModel : ViewModel() {
                 val response = ApiClient.api.addUserWeigt(pommiarWagii,"Bearer $token")
                 if (response.isSuccessful) {
                     message = response.body()
+                } else {
+                    errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+
+    fun updateUserBasicInfo(userUpdate: Uzytkownik) {
+
+
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.updateBasicInformationUser(userUpdate,"Bearer $token")
+                if (response.isSuccessful) {
+                    val json = response.body()?.string()
+                    try {
+                        val updatedUser = Gson().fromJson(json, Uzytkownik::class.java)
+                        user = updatedUser
+                    } catch (e: Exception) {
+                        message = json
+                    }
                 } else {
                     errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
                 }

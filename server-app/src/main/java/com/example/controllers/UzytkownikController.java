@@ -116,6 +116,12 @@ public class UzytkownikController {
     }
 
 
+    /**
+     * Dodanie do rekordu użtkownika
+     * @param request - zaiwera obiekt klasy PommiarWagi
+     * @param authentication - TOKEN potwierdzający tożsamość osoby wpisującej dane
+     * @return
+     */
     @PostMapping("/waga")
     public ResponseEntity<String> addWeitht(@RequestBody PommiarWagii request, Authentication authentication) {
         log.info("addWeitht");
@@ -124,7 +130,7 @@ public class UzytkownikController {
         }
 
         String userEmail = authentication.getName();
-        log.info("${}  {}", userEmail, request);
+        log.info("addWeitht: {}  {}", userEmail, request);
         boolean ret = uzytkownikService.addUserWeights(userEmail, request);
 
         if( ret )
@@ -132,15 +138,24 @@ public class UzytkownikController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Użytkownik nie znaleziony");
     }
 
-    // UPDATE - PUT /api/uzytkownicy/{id}
-    @PutMapping("/{id}")
-    public ResponseEntity<Uzytkownik> updateUser(
-            @PathVariable int id,
+    // UPDATE - PUT /api/uzytkownicy/update
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(
             @RequestBody Uzytkownik updatedUser
+            , Authentication authentication
     ) {
-        // TODO: token
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        log.info("updateUser: {}  {}", userEmail, updatedUser);
 
-        Optional<Uzytkownik> user = uzytkownikService.updateUser(id, updatedUser);
+        Optional<Uzytkownik> opt = uzytkownikService.loginUser(updatedUser.getEmail());
+        if( opt.isPresent() && !opt.get().getEmail().equals(userEmail) ) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Podany email już istnieje");
+        }
+
+        Optional<Uzytkownik> user = uzytkownikService.updateUser(userEmail, updatedUser);
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -16,10 +16,10 @@ import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.data.PommiarWagii
-import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.firstcomposeap.ui.components.UniversalEditCard
 import com.example.firstcomposeap.ui.components.getFormOnlyDate
 import com.example.firstcomposeap.ui.components.profile.profileTab.AddWeightDialog
+import com.example.firstcomposeap.ui.components.profile.profileTab.EditUserDialog
 import kotlin.collections.emptyList
 
 
@@ -31,15 +31,17 @@ fun ProfilTab (loginViewModel: LoginViewModel) {
     )
     val user = loginViewModel.user
 
-    UserInformationCard(user = user, onClick = {})
+    UserInformationCard(loginViewModel = loginViewModel)
     UserWeightCard(loginViewModel = loginViewModel)
 }
 
 
 @Composable
-fun UserInformationCard(user: Uzytkownik?,
-                        onClick: () -> Unit // kliknięcie wywoła edycję danych użytkownika
+fun UserInformationCard(loginViewModel: LoginViewModel
 ) {
+    val user = loginViewModel.user
+    var showDialog by remember { mutableStateOf(false) }
+
     UniversalEditCard(
         data = {
             Text("imie: ${user?.imie}", fontSize = 30.sp)
@@ -58,9 +60,21 @@ fun UserInformationCard(user: Uzytkownik?,
             Text("aktualnyPlan: ${user?.aktualnyPlan}", fontSize = 30.sp)
             Text("przyjaciele: ${user?.przyjaciele}", fontSize = 30.sp)
         },
-        onClick = { onClick }
+        onClick = { showDialog = true }
     )
+
+    if (showDialog) {
+        EditUserDialog(
+            user = user,
+            onDismiss = { showDialog = false },
+            onConfirm = { updatedUser ->
+                loginViewModel.updateUserBasicInfo(updatedUser)
+                showDialog = false
+            }
+        )
+    }
 }
+
 
 @Composable
 fun UserWeightCard(loginViewModel: LoginViewModel

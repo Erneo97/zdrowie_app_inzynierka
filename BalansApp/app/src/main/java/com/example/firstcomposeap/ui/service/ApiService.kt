@@ -6,11 +6,13 @@ import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.balansapp.ui.service.data.RegisterRequest
 import com.example.balansapp.ui.service.data.RegisterResponse
 import com.example.balansapp.ui.service.data.Uzytkownik
+import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PUT
 
 
 interface ApiService {
@@ -27,5 +29,9 @@ interface ApiService {
     @POST("uzytkownicy/waga")
     suspend fun addUserWeigt(@Body body: PommiarWagii, @Header("Authorization") authorization: String)
     : Response<String>
+
+    @PUT("uzytkownicy/update")
+    suspend fun updateBasicInformationUser( @Body body: Uzytkownik, @Header("Authorization") authorization: String)
+    : Response<ResponseBody>
 
 }
