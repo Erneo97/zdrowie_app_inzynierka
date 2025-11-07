@@ -155,7 +155,7 @@ public class UzytkownikService {
 
 
     public boolean isInvitationToFriend(int idUser) {
-        List<Zaproszenie> zaproszenies = zaproszeniaRepository.findById_zapraszanego(idUser);
+        List<Zaproszenie> zaproszenies = zaproszeniaRepository.findByIdZapraszanego(idUser);
         return !zaproszenies.isEmpty();
     }
 
@@ -176,8 +176,8 @@ public class UzytkownikService {
         Zaproszenie zaproszenie = new Zaproszenie();
 
         zaproszenie.setId(sequenceGenerator.getNextSequence(LicznikiDB.ZAPROSZENIA.getNazwa()));
-        zaproszenie.setId_zapraszajacego(userId);
-        zaproszenie.setId_zapraszanego(firend.get().getId());
+        zaproszenie.setidZapraszajacego(userId);
+        zaproszenie.setidZapraszajacego(firend.get().getId());
 
         zaproszeniaRepository.save(zaproszenie);
 

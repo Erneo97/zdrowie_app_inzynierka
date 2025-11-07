@@ -1,9 +1,13 @@
 package com.example.balansapp.ui.screens
 
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.remember
@@ -13,6 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
+import com.example.balansapp.ui.components.HeadText
+import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayout
 
 @Composable
@@ -24,16 +30,26 @@ fun TreningsPlanScreen(navController: NavHostController) {
         navController = navController,
         selectedItem = selectedItem,
         onItemSelected = { selectedItem = it }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("To jest ekran Plany treningowe ", fontSize = 40.sp)
+    ) {
+            innerPadding -> Box(
+
+        modifier = Modifier
+            .padding(innerPadding),
+        contentAlignment = Alignment.Center  )
+        {
+            LogoBackGround()
+            Column (
+                modifier = Modifier.fillMaxSize().fillMaxSize().verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                HeadText(
+                    fontSize = 48.sp,
+                    text = "To jest ekran Plany treningowe"
+                )
+
+
+            }
         }
     }
-
-
 }

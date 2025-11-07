@@ -1,19 +1,30 @@
 package com.example.controllers;
 
-import com.example.auth.JwtResponse;
+import com.example.auth.jwt.JwtUtils;
 import com.example.kolekcje.Zaproszenie;
 import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
 import com.example.kolekcje.uzytkownik.Przyjaciele;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
+import com.example.repositories.LoginResponse;
 import com.example.requests.LoginRequest;
 import com.example.services.UzytkownikService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -25,13 +36,26 @@ public class UzytkownikController {
     private static final Logger log = LoggerFactory.getLogger(UzytkownikController.class);
 //    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtUtils jwtUtils;
+
+
     private final UzytkownikService uzytkownikService;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UzytkownikController(UzytkownikService uzytkownikService) {
+
+    public UzytkownikController(UzytkownikService uzytkownikService, PasswordEncoder passwordEncoder) {
         this.uzytkownikService = uzytkownikService;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody Uzytkownik user) {
@@ -41,12 +65,12 @@ public class UzytkownikController {
         }
 
         log.info("Tworzenie użytkownika: {}", user.getEmail());
-//        String hashedPassword = passwordEncoder.encode(user.getHaslo());
+
         Uzytkownik created = uzytkownikService.createUser(
                 user.getImie(),
                 user.getNazwisko(),
                 user.getEmail(),
-                user.getHaslo(),
+                passwordEncoder.encode(user.getHaslo()),
                 user.getWzrost(),
                 user.getPlec()
         );
@@ -55,36 +79,42 @@ public class UzytkownikController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<Uzytkownik> retUser = uzytkownikService.loginUser(request.getEmail() );
-        log.info("Logowanie użytkownika : {}", request.getEmail());
-        log.info("retUser : {}", retUser.isPresent());
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest request) {
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        }
+        catch (AuthenticationException e) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", "bad credentials");
+            map.put("status", false);
+            return new ResponseEntity<Object>(map, HttpStatus.UNAUTHORIZED);
+        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        if (retUser.isPresent()) {
-            Uzytkownik user = retUser.get();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
 
-//            if (passwordEncoder.matches(request.getPassword(), user.getHaslo())) {
-            if (request.getPassword().equals( user.getHaslo())) {
-                return ResponseEntity.ok(new JwtResponse("token", user.getId()));
-         }
+
+        LoginResponse loginResponse = new LoginResponse(jwtToken, userDetails.getUsername());
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUser(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> userOpt = uzytkownikService.loginUser(userEmail);
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Użytkownik nie znaleziony");
         }
 
-        return ResponseEntity.status(401).body("Niepoprawny login lub hasło");
+        return ResponseEntity.ok(userOpt.get());
     }
 
-    // READ ONE - GET /api/uzytkownicy/{id}
-    @GetMapping("/{id}")
-    public ResponseEntity<Uzytkownik> getUserById(@PathVariable int id) { // @RequestHeader("Authorization") String token
-        Optional<Uzytkownik> user = uzytkownikService.getUserById(id);
-        log.info("Pobranie danych użytkownika o id : {}", id);
-
-//        if( user.isPresent() && user.get().isTokenCorrect(token)) {
-//            return ResponseEntity.status(401).build();
-//        }
-
-        return user.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
 
     // UPDATE - PUT /api/uzytkownicy/{id}
     @PutMapping("/{id}")
@@ -93,13 +123,12 @@ public class UzytkownikController {
             @RequestBody Uzytkownik updatedUser
     ) {
         // TODO: token
-//        String hashedPassword = passwordEncoder.encode(updatedUser.getHaslo());
-//        updatedUser.setHaslo(hashedPassword);
 
         Optional<Uzytkownik> user = uzytkownikService.updateUser(id, updatedUser);
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     /**
      * Możliwośc usunięcia użytkownika na podstawie wskazanego id
@@ -163,7 +192,7 @@ public class UzytkownikController {
         uzytkownikService.deleteInvitationById(idInvitation);
 
         Przyjaciele nowyPrzyjaciele = new Przyjaciele();
-        nowyPrzyjaciele.setId(zaproszenie.get().getId_zapraszajacego());
+        nowyPrzyjaciele.setId(zaproszenie.get().getidZapraszajacego());
 
 
         List<Przyjaciele> przyjaciele = uzytkownik.getPrzyjaciele();

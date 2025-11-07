@@ -4,9 +4,16 @@ spring:
       database: InzApp
       host: localhost
       port: 27017
+  security:
+    user:
+      password: test@1234
+      name: noname
+
+
 
 server:
   port: 8080
+
 #  ssl:
 #    key-store: classpath:balans.p12
 #    key-store-password: balans

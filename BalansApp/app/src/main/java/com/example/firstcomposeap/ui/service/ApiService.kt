@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 
 
@@ -17,11 +18,10 @@ interface ApiService {
     suspend fun register(@Body body: RegisterRequest): Response<RegisterResponse>
 
     @POST("uzytkownicy/login")
-    suspend fun login(@Body body: LoginRequest): Response<LoginResponse>
+    suspend fun login(@Body body: LoginRequest, @Header("Authorization") authorization: String): Response<LoginResponse>
 
-    @GET("uzytkownicy/{id}")
-    suspend fun getUser(
-        @Path("id") userId: Int?
+    @GET("uzytkownicy/user")
+    suspend fun getUser( @Header("Authorization") authHeader: String
     ): Response<Uzytkownik>
 
 

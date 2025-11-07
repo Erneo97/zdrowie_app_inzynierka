@@ -20,7 +20,7 @@ public class ProduktService {
         this.sequenceGenerator = sequenceGenerator;
     }
 
-    public Produkt createProducts(String producent, String nazwa, float kcal, float bialko, float weglowodany, float tluszczem, float blonnik, String kodkreskowy, Dawka objetosc) {
+    public Produkt createProducts(String producent, String nazwa, String kodkreskowy, Dawka objetosc) {
         Produkt product = new Produkt();
 
         int id = sequenceGenerator.getNextSequence(LicznikiDB.PRODUKTY.getNazwa());
@@ -28,11 +28,6 @@ public class ProduktService {
         product.setId(id);
         product.setProducent(producent);
         product.setNazwa(nazwa);
-        product.setKcal(kcal);
-        product.setBialko(bialko);
-        product.setWeglowodany(weglowodany);
-        product.setTluszcze(tluszczem);
-        product.setBlonnik(blonnik);
         product.setKodKreskowy(kodkreskowy);
         product.setObjetosc(objetosc);
 

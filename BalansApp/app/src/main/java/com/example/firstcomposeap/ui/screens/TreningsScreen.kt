@@ -33,14 +33,14 @@ fun TreningsScreen(navController: NavHostController) {
             innerPadding -> Box(
 
         modifier = Modifier
-            .padding(innerPadding).fillMaxSize().verticalScroll(rememberScrollState()),
-        contentAlignment = Alignment.Center
-    ) {
+            .padding(innerPadding),
+        contentAlignment = Alignment.Center  )
+    {
         LogoBackGround()
 
 
         Column (
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().fillMaxSize().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
