@@ -32,11 +32,6 @@ public class ProduktController {
         Produkt created = produktService.createProducts(
                 nowyProdukt.getProducent(),
                 nowyProdukt.getNazwa(),
-                nowyProdukt.getKcal(),
-                nowyProdukt.getBialko(),
-                nowyProdukt.getWeglowodany(),
-                nowyProdukt.getTluszcze(),
-                nowyProdukt.getBlonnik(),
                 nowyProdukt.getKodKreskowy(),
                 nowyProdukt.getObjetosc()
         );
