@@ -3,18 +3,23 @@ package com.example.balansapp.ui.service
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.data.LoginRequest
+import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.balansapp.ui.service.data.Uzytkownik
 import kotlinx.coroutines.launch
 import java.util.Base64
 
 class LoginViewModel : ViewModel() {
+
     var userEmail by mutableStateOf<String?>(null)
     var user by mutableStateOf<Uzytkownik?>(null)
     var token by mutableStateOf<String?>(null)
     var errorMessage by mutableStateOf<String?>(null)
+    var message by mutableStateOf<String?>(null)
+
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -48,6 +53,26 @@ class LoginViewModel : ViewModel() {
                     user = response.body()
                 } else {
                     errorMessage = "Błąd logowania: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+    fun addWeightoUser(pommiarWagii: PommiarWagii) {
+        viewModelScope.launch {
+            try {
+
+                val response = ApiClient.api.addUserWeigt(pommiarWagii,"Bearer $token")
+                if (response.isSuccessful) {
+                    message = response.body()
+                    val wagii : List<PommiarWagii> = user?.waga ?: emptyList()
+                    val nowaLista = wagii + pommiarWagii
+                    user = user?.copy(waga = nowaLista)
+
+                } else {
+                    errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage
