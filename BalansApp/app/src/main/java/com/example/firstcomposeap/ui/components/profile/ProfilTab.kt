@@ -35,9 +35,9 @@ fun ProfilTab (loginViewModel: LoginViewModel) {
     )
 
     UserInformationCard(loginViewModel)
-    UserWeightCard(loginViewModel)
     UserPasswordCard(loginViewModel)
     UserKcalCard(loginViewModel)
+    UserWeightCard(loginViewModel)
 }
 
 
@@ -51,6 +51,7 @@ fun UserInformationCard(loginViewModel: LoginViewModel
         data = {
             Text("imie: ${user?.imie}", fontSize = 30.sp)
             Text("nazwisko: ${user?.nazwisko}", fontSize = 30.sp)
+            Text("Data urodzenia: ${getFormOnlyDate(user?.dataUrodzenia ?: " ")}", fontSize = 25.sp)
 
             Spacer(modifier = Modifier.height(5.dp))
             Text("plec: ${user?.plec}", fontSize = 25.sp)
@@ -74,6 +75,7 @@ fun UserInformationCard(loginViewModel: LoginViewModel
             onDismiss = { showDialog = false },
             onConfirm = { updatedUser ->
                 loginViewModel.updateUserBasicInfo(updatedUser)
+                showDialog = false
             }
         )
     }
