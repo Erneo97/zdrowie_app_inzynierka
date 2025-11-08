@@ -13,6 +13,7 @@ data class Uzytkownik(
     var waga: List<PommiarWagii> = emptyList(),
     var wzrost: Int = 0,
     var plec: Plec,
+    var dataUrodzenia: String,
     var przyjaciele: List<Przyjaciele> = emptyList(),
     var dania: List<Dania> = emptyList(),
     var zapotrzebowanieKcal: Int
