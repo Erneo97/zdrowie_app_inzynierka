@@ -82,11 +82,25 @@ class LoginViewModel : ViewModel() {
 
 
     fun updateUserBasicInfo(userUpdate: Uzytkownik) {
-
+        val basicUser = Uzytkownik(
+            imie = userUpdate.imie,
+            nazwisko = userUpdate.nazwisko,
+            dataUrodzenia = userUpdate.dataUrodzenia,
+            wzrost = userUpdate.wzrost,
+            email = userUpdate.email,
+            zapotrzebowanieKcal = userUpdate.zapotrzebowanieKcal,
+            plec = userUpdate.plec,
+            id = 0,
+            aktualnyPlan = 0,
+            haslo = "",
+            waga = emptyList(),
+            przyjaciele = emptyList(),
+            dania = emptyList(),
+        )
 
         viewModelScope.launch {
             try {
-                val response = ApiClient.api.updateBasicInformationUser(userUpdate,"Bearer $token")
+                val response = ApiClient.api.updateBasicInformationUser(basicUser,"Bearer $token")
                 if (response.isSuccessful) {
                     val json = response.body()?.string()
                     try {
