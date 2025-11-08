@@ -149,7 +149,7 @@ public class UzytkownikController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
         String userEmail = authentication.getName();
-        log.info("updateUser: {}  {}", userEmail, updatedUser);
+        log.info("updateUser: {}  {} {} - {}", userEmail, updatedUser, updatedUser.getDataUrodzenia(), updatedUser.getDataUrodzenia().getClass());
 
         Optional<Uzytkownik> opt = uzytkownikService.loginUser(updatedUser.getEmail());
         if( opt.isPresent() && !opt.get().getEmail().equals(userEmail) ) {
@@ -160,21 +160,6 @@ public class UzytkownikController {
         return user.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
-
-    /**
-     * Możliwośc usunięcia użytkownika na podstawie wskazanego id
-     * @param id
-     * @return
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        // TODO: token
-        boolean deleted = uzytkownikService.deleteUser(id);
-        return deleted ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
-    }
-
 
 
     @PutMapping("/password")

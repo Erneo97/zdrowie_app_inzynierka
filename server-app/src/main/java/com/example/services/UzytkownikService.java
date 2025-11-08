@@ -74,6 +74,7 @@ public class UzytkownikService {
             existingUser.setImie(updatedUser.getImie());
             existingUser.setNazwisko(updatedUser.getNazwisko());
             existingUser.setZapotrzebowanieKcal(updatedUser.getZapotrzebowanieKcal());
+            existingUser.setDataUrodzenia(updatedUser.getDataUrodzenia());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setWzrost(updatedUser.getWzrost());
             return repository.save(existingUser);
