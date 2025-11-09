@@ -12,6 +12,7 @@ import com.example.balansapp.ui.service.data.LoginRequest
 import com.example.balansapp.ui.service.data.Plec
 import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.balansapp.ui.service.data.Uzytkownik
+import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.components.calculateUserAge
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -192,6 +193,60 @@ fun calculatePPM( ) {
             }
         }
 
+    }
+
+    suspend  fun downloadInfitationInformationList() : List<ZaproszenieInfo> {
+        return try {
+            val response = ApiClient.api.getAllInvitationUser("Bearer $token")
+            if (response.isSuccessful) {
+                response.body() ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            errorMessage = e.localizedMessage
+            emptyList()
+        }
+    }
+
+
+    fun acceptInvitation(zaproszenie: ZaproszenieInfo ) {
+        invitationResult = null
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.akceptInvitation(zaproszenie, "Bearer $token")
+                if( response.isSuccessful) {
+                    Log.d("Invite", "isSuccessful: ${response.isSuccessful}, body: ${response.body()?.message}, code: ${response.code()}")
+                    invitationResult = InvitationResult.Success( "Zaakceptowano zaproszenie")
+                }
+                else {
+                    invitationResult = InvitationResult.Error(response.errorBody()?.string() ?: "Nieznany błąd")
+                }
+            }
+            catch (e : Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+
+    fun cancelInvitation(zaproszenie: ZaproszenieInfo ) {
+        invitationResult = null
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.cancelInvitation(zaproszenie, "Bearer $token")
+                if( response.isSuccessful) {
+                    Log.d("Invite", "isSuccessful: ${response.isSuccessful}, body: ${response.body()?.message}, code: ${response.code()}")
+                    invitationResult = InvitationResult.Success( "Zaakceptowano zaproszenie")
+                }
+                else {
+                    invitationResult = InvitationResult.Error(response.errorBody()?.string() ?: "Nieznany błąd")
+                }
+            }
+            catch (e : Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import com.example.balansapp.ui.service.data.RegisterRequest
 import com.example.balansapp.ui.service.data.RegisterResponse
 import com.example.balansapp.ui.service.data.SimpleMessage
 import com.example.balansapp.ui.service.data.Uzytkownik
+import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -44,4 +45,17 @@ interface ApiService {
     @POST("uzytkownicy/invitation/new")
     suspend fun inviteFriend(@Body body: String, @Header("Authorization") authorization: String)
     : Response<SimpleMessage>
+
+    @GET("uzytkownicy/invitation/all")
+    suspend fun getAllInvitationUser(@Header("Authorization") authorization: String)
+            : Response<List<ZaproszenieInfo>>
+
+
+    @PUT("uzytkownicy/invitation/accept")
+    suspend fun akceptInvitation( @Body body: ZaproszenieInfo, @Header("Authorization") authorization: String)
+            : Response<SimpleMessage>
+
+    @PUT("uzytkownicy/invitation/del")
+    suspend fun cancelInvitation( @Body body: ZaproszenieInfo, @Header("Authorization") authorization: String)
+            : Response<SimpleMessage>
 }
