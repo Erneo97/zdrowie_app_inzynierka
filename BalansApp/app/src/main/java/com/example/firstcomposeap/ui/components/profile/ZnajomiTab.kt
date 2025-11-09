@@ -24,8 +24,10 @@ import com.example.balansapp.R
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.service.LoginViewModel
+import com.example.balansapp.ui.service.data.PrzyjacieleInfo
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab.InvateFriendDialoge
+import com.example.firstcomposeap.ui.components.profile.ZnajomiTab.UserFriendCard
 import com.example.firstcomposeap.ui.components.profile.ZnajomiTab.UserInfitationCard
 
 
@@ -94,6 +96,28 @@ fun ZnajomiTab (loginViewModel: LoginViewModel) {
 @Composable
 fun FirendsTab(loginViewModel: LoginViewModel) {
     Text("Znajomi lista")
+    val znajomi = remember { mutableStateListOf<PrzyjacieleInfo> () }
+
+    LaunchedEffect(Unit) {
+        val list = loginViewModel.downloadFrendsInformationList()
+        znajomi.clear()
+        znajomi.addAll(list)
+    }
+
+    if( znajomi.isEmpty()) {
+        HeadText(text = "Nie masz zanjomych, czas poznać nowych", fontSize = 25.sp)
+    }
+
+    else {
+        znajomi.forEach { info ->
+            UserFriendCard(info = info,
+                onChange = {
+                   },
+                onDelete = {znajomi.remove(info)
+                    }
+            )
+        }
+    }
 }
 
 @Composable
