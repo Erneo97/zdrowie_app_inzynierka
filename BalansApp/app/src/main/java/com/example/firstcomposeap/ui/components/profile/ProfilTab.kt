@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.firstcomposeap.ui.components.UniversalEditCard

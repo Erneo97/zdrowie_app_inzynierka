@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.sp
-import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.UniversalEditCard
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab.PhysicalActivitySelector
