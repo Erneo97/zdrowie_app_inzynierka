@@ -1,5 +1,6 @@
 package com.example.balansapp.ui.service
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -26,7 +27,8 @@ class LoginViewModel : ViewModel() {
     var message by mutableStateOf<String?>(null)
 
 //     Podstawowa Przemiana Materii (PPM) wzór Mifflina
-    fun calculatePPM( ) {
+@SuppressLint("SuspiciousIndentation")
+fun calculatePPM( ) {
         val wagaUzytkownika : Double = user!!.waga.last().wartosc
         val dataUrodzenia : String = user!!.dataUrodzenia
 
