@@ -68,6 +68,10 @@ public class UzytkownikService {
         return repository.findByEmail(email);
     }
 
+    public Optional<Uzytkownik> getUserById(int id) {
+        return repository.findById(id);
+    }
+
     public Optional<Uzytkownik> loginUser(String email) {
         return repository.findByEmail(email);
     }

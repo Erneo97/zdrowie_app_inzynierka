@@ -1,6 +1,7 @@
 package com.example.controllers;
 
 import com.example.auth.jwt.JwtUtils;
+import com.example.kolekcje.PrzyjacieleInfo;
 import com.example.kolekcje.Zaproszenie;
 import com.example.kolekcje.ZaproszenieInfo;
 import com.example.kolekcje.posilki.Dania;
@@ -25,10 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -275,6 +273,33 @@ public class UzytkownikController {
             boolean ret = uzytkownikService.cancelInviotationUser(zaproszenie, OptUser.get());
             return ret ? ResponseEntity.ok(Map.of("message", "Zaproszenie odrzucone"))
                     : ResponseEntity.status(HttpStatus.CONFLICT).body("Brak autoryzacji");
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+    }
+
+
+    @GetMapping("/friends")
+    public ResponseEntity<?> cancelInvitation(Authentication authentication) {
+        log.info("cancelInvitation");
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> OptUser = uzytkownikService.getUserByEmail(userEmail);
+        if ( OptUser.isPresent() ) {
+            List<PrzyjacieleInfo> przyjacieleInfos = new ArrayList<>();
+            Uzytkownik uzytkownik = OptUser.get();
+
+            uzytkownik.getPrzyjaciele().forEach(przyjaciel -> {
+                Optional<Uzytkownik> przyjacielObj = uzytkownikService.getUserById(przyjaciel.getId());
+                if( przyjacielObj.isPresent() ) {
+                    Uzytkownik p = przyjacielObj.get();
+                    przyjacieleInfos.add(new PrzyjacieleInfo(p.getId(), p.getImie(), p.getNazwisko(), p.getEmail(), przyjaciel.isCzyDozwolony()));
+                }
+            });
+
+            return ResponseEntity.ok().body(przyjacieleInfos);
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
