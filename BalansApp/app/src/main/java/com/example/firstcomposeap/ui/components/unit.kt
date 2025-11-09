@@ -1,6 +1,7 @@
 package com.example.firstcomposeap.ui.components
 
 import java.time.LocalDate
+import java.time.Period
 import java.time.format.DateTimeFormatter
 
 fun getCurrentDate() : String {
@@ -10,4 +11,20 @@ fun getCurrentDate() : String {
 
 fun getFormOnlyDate(date : String) : String {
     return if (date.length >= 10) date.substring(0, 10) else date
+}
+
+fun calculateUserAge(dataUrodzenia: String): Double {
+    val ograniczonaDataUrodzenia = getFormOnlyDate(dataUrodzenia)
+    return try {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val birthDate = LocalDate.parse(ograniczonaDataUrodzenia, formatter)
+        val today = LocalDate.now()
+        val period = Period.between(birthDate, today)
+
+
+        val ageWithFraction = period.years + (period.months / 12.0) + (period.days / 365.0)
+        String.format("%.2f", ageWithFraction).toDouble()
+    } catch (e: Exception) {
+        0.0
+    }
 }
