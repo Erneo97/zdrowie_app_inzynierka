@@ -150,6 +150,7 @@ public class UzytkownikController {
         }
         String userEmail = authentication.getName();
         log.info("updateUser: {}  {} {} - {}", userEmail, updatedUser, updatedUser.getDataUrodzenia(), updatedUser.getDataUrodzenia().getClass());
+//        todo: zmiana tokena na nowy email po jego zmianie
 
         Optional<Uzytkownik> opt = uzytkownikService.loginUser(updatedUser.getEmail());
         if( opt.isPresent() && !opt.get().getEmail().equals(userEmail) ) {

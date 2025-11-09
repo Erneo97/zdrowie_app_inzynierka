@@ -33,7 +33,6 @@ import com.example.firstcomposeap.ui.components.profile.ZnajomiTab
 fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewModel) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_profil)) }
-    val user = loginViewModel.user
 
     val tabs = listOf(context.getString(R.string.menu_profil),
         context.getString(R.string.statistic),
@@ -76,7 +75,7 @@ fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewMod
 
                 when (selectedTabIndex) {
                     0 -> ProfilTab(loginViewModel)
-                    1 -> StatystykiTab()
+                    1 -> StatystykiTab(loginViewModel)
                     2 -> ZnajomiTab()
                 }
             }

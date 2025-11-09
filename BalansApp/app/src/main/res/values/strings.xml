@@ -19,6 +19,7 @@
     <string name="menu_profil">Profil</string>
     <string name="statistic">Statystyki</string>
     <string name="friends">Znajomi</string>
+    <string name="invitation">Zaproszenia</string>
     <string name="menu_plans">Plany treningowe</string>
     <string name="bad_login_form">Uzupełnij email i hasło</string>
     <string name="bad_add_weight_form">Nie podano wagii</string>
