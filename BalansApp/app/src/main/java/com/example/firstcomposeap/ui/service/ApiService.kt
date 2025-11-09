@@ -40,4 +40,8 @@ interface ApiService {
     suspend fun updatePasswordUser( @Body body: ChangePassword, @Header("Authorization") authorization: String)
             : Response<SimpleMessage>
 
+
+    @POST("uzytkownicy/invitation/new")
+    suspend fun inviteFriend(@Body body: String, @Header("Authorization") authorization: String)
+    : Response<SimpleMessage>
 }
