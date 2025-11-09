@@ -110,10 +110,10 @@ fun FirendsTab(loginViewModel: LoginViewModel) {
     else {
         znajomi.forEach { info ->
             UserFriendCard(info = info,
-                onChange = {
-                   },
+                onChange = {},
                 onDelete = {znajomi.remove(info)
-                    }
+                    loginViewModel.deleteUserFrend(info)
+                }
             )
         }
     }

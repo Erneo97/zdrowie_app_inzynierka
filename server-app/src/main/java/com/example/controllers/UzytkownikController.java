@@ -323,7 +323,9 @@ public class UzytkownikController {
         if ( OptUser.isPresent() ) {
             boolean ret = uzytkownikService.deleteFriendUser(OptUser.get(), przyjacielInfo.getId());
 
-            return ResponseEntity.ok(Map.of("message", "Znajomy usuniety"));
+            return ret
+            ? ResponseEntity.ok(Map.of("message", "Znajomy usuniety"))
+                    : ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Nie usunięto przyjaciela");
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");

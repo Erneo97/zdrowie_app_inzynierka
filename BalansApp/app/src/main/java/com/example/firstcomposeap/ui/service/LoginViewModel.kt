@@ -264,5 +264,23 @@ fun calculatePPM( ) {
         }
     }
 
+
+    fun deleteUserFrend(przyjaciel: PrzyjacieleInfo ) {
+        invitationResult = null
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.deleteUserFrend(przyjaciel, "Bearer $token")
+                if( response.isSuccessful) {
+                    invitationResult = InvitationResult.Success( "Usunięto przyjaciela")
+                }
+                else {
+                    invitationResult = InvitationResult.Error(response.errorBody()?.string() ?: "Nieznany błąd")
+                }
+            }
+            catch (e : Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
 }
 

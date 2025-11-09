@@ -14,7 +14,9 @@ import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.PUT
 
@@ -63,4 +65,8 @@ interface ApiService {
     @GET("uzytkownicy/friends")
     suspend fun getUserFrends(@Header("Authorization") authorization: String)
             : Response<List<PrzyjacieleInfo>>
+
+    @HTTP(method = "DELETE", path = "uzytkownicy/friends", hasBody = true)
+    suspend fun deleteUserFrend(@Body body: PrzyjacieleInfo, @Header("Authorization") authorization: String)
+            : Response<List<SimpleMessage>>
 }
