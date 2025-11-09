@@ -1,4 +1,4 @@
-package com.example.firstcomposeap.ui.components.profile.StatystykiTab
+package com.example.firstcomposeap.ui.components.icon
 
 
 import androidx.compose.ui.graphics.Color
