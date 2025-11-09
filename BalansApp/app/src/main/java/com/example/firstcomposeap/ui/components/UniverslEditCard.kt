@@ -22,11 +22,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun UniversalEditCard(data: @Composable (() ->Unit),
-                        onClick: () -> Unit // kliknięcie wywoła edycję danych użytkownika
+                        onClick: () -> Unit, // kliknięcie wywoła edycję danych użytkownika
+                      icon: ImageVector = Icons.Default.Edit
 ) {
     var shadowColor = MaterialTheme.colorScheme.primary
 
@@ -73,7 +75,7 @@ fun UniversalEditCard(data: @Composable (() ->Unit),
                     modifier = Modifier.size(42.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Edit,
+                        imageVector = icon,
                         contentDescription = "Edytuj dane",
                         tint = Color.White
                     )

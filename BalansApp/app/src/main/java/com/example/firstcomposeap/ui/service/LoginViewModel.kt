@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.data.ChangePassword
 import com.example.balansapp.ui.service.data.LoginRequest
+import com.example.balansapp.ui.service.data.Plec
 import com.example.balansapp.ui.service.data.PommiarWagii
 import com.example.balansapp.ui.service.data.Uzytkownik
+import com.example.firstcomposeap.ui.components.calculateUserAge
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.util.Base64
@@ -17,10 +19,26 @@ class LoginViewModel : ViewModel() {
 
     var userEmail by mutableStateOf<String?>(null)
     var user by mutableStateOf<Uzytkownik?>(null)
+    var ppm by mutableStateOf<Double>(0.0)
+
     var token by mutableStateOf<String?>(null)
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
 
+//     Podstawowa Przemiana Materii (PPM) wzór Mifflina
+    fun calculatePPM( ) {
+        val wagaUzytkownika : Double = user!!.waga.last().wartosc
+        val dataUrodzenia : String = user!!.dataUrodzenia
+
+        ppm = 10.0 * wagaUzytkownika + (6.25 * user!!.wzrost)
+                - (5.0 * calculateUserAge(dataUrodzenia))
+        if( user!!.plec == Plec.KOBIETA) {
+            ppm = ppm - 161
+        }
+        else {
+            ppm = ppm  - 5
+        }
+    }
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -37,6 +55,7 @@ class LoginViewModel : ViewModel() {
                     token = body?.token
                     userEmail = body?.email
                     downloadUserData()
+                    calculatePPM()
                 } else {
                     errorMessage = "Błąd logowania: ${response.code()}"
                 }
