@@ -29,11 +29,6 @@ import kotlin.collections.emptyList
 
 @Composable
 fun ProfilTab (loginViewModel: LoginViewModel) {
-    HeadText(
-        fontSize = 48.sp,
-        text = "To jest ekran profilu"
-    )
-
     UserInformationCard(loginViewModel)
     UserPasswordCard(loginViewModel)
     UserKcalCard(loginViewModel)
