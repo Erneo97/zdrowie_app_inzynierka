@@ -280,7 +280,7 @@ public class UzytkownikController {
 
 
     @GetMapping("/friends")
-    public ResponseEntity<?> cancelInvitation(Authentication authentication) {
+    public ResponseEntity<?> getUserFrends(Authentication authentication) {
         log.info("cancelInvitation");
         if( authentication == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
