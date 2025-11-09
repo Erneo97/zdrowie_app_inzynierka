@@ -38,3 +38,10 @@ data class Przyjaciele(
     val czyDozwolony: Boolean,
     val czyPrzyjaciel: Boolean
 )
+
+data class ZaproszenieInfo (
+    val id: Int,
+    val imie: String,
+    val nazwisko: String,
+    val email: String
+)

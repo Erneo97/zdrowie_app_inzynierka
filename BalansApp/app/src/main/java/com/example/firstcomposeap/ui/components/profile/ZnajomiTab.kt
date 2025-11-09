@@ -1,7 +1,6 @@
 package com.example.firstcomposeap.ui.components.profile
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -22,9 +22,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.FullSizeButton
+import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.service.LoginViewModel
+import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab.InvateFriendDialoge
-import kotlin.math.log
+import com.example.firstcomposeap.ui.components.profile.ZnajomiTab.UserInfitationCard
+
 
 @Composable
 fun ZnajomiTab (loginViewModel: LoginViewModel) {
@@ -37,6 +40,8 @@ fun ZnajomiTab (loginViewModel: LoginViewModel) {
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     var showInvitateFriendDialoge by remember { mutableStateOf(false) }
+    FullSizeButton(text = "Zaproś znajomego", onClick = {showInvitateFriendDialoge = true})
+
 
     Column(
         modifier = Modifier
@@ -58,7 +63,7 @@ fun ZnajomiTab (loginViewModel: LoginViewModel) {
             1 -> {InfitationTab(loginViewModel)}
         }
     }
-    FullSizeButton(text = "Zaproś znajomego", onClick = {showInvitateFriendDialoge = true})
+
 
     if( showInvitateFriendDialoge) {
         InvateFriendDialoge(
@@ -93,5 +98,32 @@ fun FirendsTab(loginViewModel: LoginViewModel) {
 
 @Composable
 fun InfitationTab(loginViewModel: LoginViewModel) {
-    Text("Zaproszenia lista")
+
+    val zaproszenia = remember {
+        mutableStateListOf<ZaproszenieInfo>()
+    }
+
+    LaunchedEffect(Unit) {
+        val list = loginViewModel.downloadInfitationInformationList()
+        zaproszenia.clear()
+        zaproszenia.addAll(list)
+    }
+
+    if( zaproszenia.isEmpty()) {
+        HeadText(text = "Nie masz zaproszeń do grona znajomych", fontSize = 25.sp)
+    }
+    else {
+        zaproszenia.forEach { info ->
+            UserInfitationCard(info = info,
+                onAccept = {zaproszenia.remove(info)
+                           loginViewModel.acceptInvitation(info)},
+                onDelete = {zaproszenia.remove(info)
+                            loginViewModel.cancelInvitation(info)}
+            )
+        }
+    }
+
+
+
+
 }

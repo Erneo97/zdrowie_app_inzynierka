@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.UniversalEditCard
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab.PhysicalActivitySelector
-import com.example.firstcomposeap.ui.components.profile.StatystykiTab.Question_mark
+import com.example.firstcomposeap.ui.components.icon.Question_mark
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab.ToolTipDialoge
 
 //TODO: string.yml
