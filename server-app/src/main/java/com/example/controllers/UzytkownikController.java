@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.auth.jwt.JwtUtils;
 import com.example.kolekcje.Zaproszenie;
+import com.example.kolekcje.ZaproszenieInfo;
 import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
 import com.example.kolekcje.uzytkownik.Przyjaciele;
@@ -18,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -203,8 +205,10 @@ public class UzytkownikController {
         Optional<Uzytkownik > optUsr = uzytkownikService.getUserByEmail(userEmail);
 
         if ( optUsr.isEmpty() ) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nie znaleziono użytkownika");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
+
+        // TODO: spr czy nie są znajomyni
 
         log.info("{} {}", optUsr.get().getId(), email.replace("\"", ""));
         boolean spr = uzytkownikService.sendInvitation(optUsr.get().getId(), email.replace("\"", ""));
@@ -214,24 +218,65 @@ public class UzytkownikController {
                 : ResponseEntity.status(HttpStatus.CONFLICT).body("Nie można utworzyć takiego zaproszenia");
     }
 
-    @PostMapping("/invitation/accept")
-    public void akceptInvitation(@RequestParam int id, @RequestParam int idInvitation) {
-//        TODO: dodanie porzyjaciela
-        Uzytkownik uzytkownik = uzytkownikService.getUserByEmail("").get();
+    @GetMapping("/invitation/all")
+    public ResponseEntity<?> getAllInvitationUser(Authentication authentication) {
+        log.info("getAllInvitationUser");
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
 
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik > optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if ( optUsr.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
 
-        Optional<Zaproszenie> zaproszenie = uzytkownikService.getZaproszenieById(idInvitation);
-        uzytkownikService.deleteInvitationById(idInvitation);
+        // TODO: spr czy nie są znajomyni
 
-        Przyjaciele nowyPrzyjaciele = new Przyjaciele();
-        nowyPrzyjaciele.setId(zaproszenie.get().getidZapraszajacego());
-
-
-        List<Przyjaciele> przyjaciele = uzytkownik.getPrzyjaciele();
-        przyjaciele.add(nowyPrzyjaciele);
-
-        uzytkownik.setPrzyjaciele(przyjaciele);
+        log.info("{}",userEmail);
+        List<ZaproszenieInfo> ret = uzytkownikService.getAllZaproszenies(userEmail);
+        log.info("spr: {}", ret);
+        return ret != null
+                ? ResponseEntity.ok().body(ret)
+                : ResponseEntity.status(HttpStatus.CONFLICT).body("Brak zaproszeń");
     }
 
+    @PutMapping("/invitation/accept")
+    public ResponseEntity<?> akceptInvitation(@RequestBody ZaproszenieInfo zaproszenie, Authentication authentication) {
+        log.info("akceptInvitation");
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
 
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if ( optUsr.isPresent() ) {
+            boolean ret = uzytkownikService.acceptInvitation(optUsr.get(), zaproszenie);
+            if( ret ) {
+                ResponseEntity.ok(Map.of("message", "Zaproszenie zaakceptowane"));
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Błąd akceptowania zaproszenia");
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+    }
+
+    @PutMapping("/invitation/del")
+    public ResponseEntity<?> cancelInvitation(@RequestBody ZaproszenieInfo zaproszenie, Authentication authentication) {
+        log.info("cancelInvitation");
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> OptUser = uzytkownikService.getUserByEmail(userEmail);
+        if ( OptUser.isPresent() ) {
+            boolean ret = uzytkownikService.cancelInviotationUser(zaproszenie, OptUser.get());
+            return ret ? ResponseEntity.ok(Map.of("message", "Zaproszenie odrzucone"))
+                    : ResponseEntity.status(HttpStatus.CONFLICT).body("Brak autoryzacji");
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+    }
 }

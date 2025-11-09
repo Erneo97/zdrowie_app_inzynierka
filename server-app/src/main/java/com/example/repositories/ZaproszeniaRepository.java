@@ -14,4 +14,6 @@ public interface ZaproszeniaRepository extends MongoRepository<Zaproszenie, Stri
     List<Zaproszenie> findByIdZapraszanego(int idZapraszanego);
     void deleteById(int id);
     Optional<Zaproszenie> findById(int id);
+
+
 }

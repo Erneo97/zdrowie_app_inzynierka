@@ -1,6 +1,7 @@
 package com.example.services;
 
 import com.example.kolekcje.Zaproszenie;
+import com.example.kolekcje.ZaproszenieInfo;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.Plec;
 import com.example.kolekcje.posilki.Dania;
@@ -83,13 +84,13 @@ public class UzytkownikService {
         });
     }
 
-    public boolean deleteUser(int id) {
-        if( repository.existsById(id)) {
-            repository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
+//    public boolean deleteUser(int id) {
+//        if( repository.existsById(id)) {
+//            repository.deleteById(id);
+//            return true;
+//        }
+//        return false;
+//    }
 
 
     public boolean addUserWeights(String email, PommiarWagii noweDane) {
@@ -113,12 +114,19 @@ public class UzytkownikService {
 
 
     public void updateUserPassword(String email, String password) {
-        // TODO: hash hasła
         repository.findByEmail(email).ifPresent(u -> {
             u.setHaslo(password);
             repository.save(u);
         });
     }
+
+    private void addFriendToUser(Przyjaciele friend, Uzytkownik user) {
+        List<Przyjaciele> list = user.getPrzyjaciele();
+        list.add(friend);
+        user.setPrzyjaciele(list);
+        repository.save(user);
+    }
+
 
     /**
      * Zmiana aktualnego planu treniongowego
@@ -187,6 +195,59 @@ public class UzytkownikService {
             return true;
         }
 
+        return false;
+    }
+
+
+    public List<ZaproszenieInfo> getAllZaproszenies(String email) {
+        Optional<Uzytkownik> optUser = getUserByEmail(email);
+        if(optUser.isPresent()) {
+            Uzytkownik user = optUser.get();
+
+            List<Zaproszenie> zaproszenia = zaproszeniaRepository.findByIdZapraszanego(user.getId());
+            List<ZaproszenieInfo> zaproszenieInfo = new ArrayList<>();
+            zaproszenia.forEach(zaproszenie -> {
+                Optional<Uzytkownik> optZapraszajacy = uzytkownikRepository.findById(zaproszenie.getidZapraszajacego());
+                if( optZapraszajacy.isPresent()) {
+                    Uzytkownik zap = optZapraszajacy.get();
+                    ZaproszenieInfo zapro = new ZaproszenieInfo(zap.getImie(), zap.getNazwisko(), zap.getEmail(), zaproszenie.getId());
+                    zaproszenieInfo.add(zapro);
+                }
+            });
+
+            return zaproszenieInfo;
+        }
+        return null;
+    }
+
+    private void delInvitation(Zaproszenie zaproszenie) {
+        zaproszeniaRepository.delete(zaproszenie);
+    }
+
+    public boolean cancelInviotationUser(ZaproszenieInfo zaproszenieInfo, Uzytkownik user) {
+        Optional<Zaproszenie> optZap = zaproszeniaRepository.findById(zaproszenieInfo.getId());
+        if(optZap.isPresent()) {
+            Zaproszenie zaproszenie = optZap.get();
+            if( zaproszenie.getidZapraszanego() != user.getId())
+                return false;
+
+            delInvitation(zaproszenie);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean acceptInvitation(Uzytkownik user, ZaproszenieInfo zaproszenieInfo) {
+
+        Optional<Zaproszenie> optZap = zaproszeniaRepository.findById(zaproszenieInfo.getId());
+        if(optZap.isPresent()) {
+            Zaproszenie zaproszenie = optZap.get();
+            Przyjaciele przyjaciele = new Przyjaciele(zaproszenie.getidZapraszajacego());
+            addFriendToUser(przyjaciele, user);
+            delInvitation(zaproszenie);
+
+            return true;
+        }
         return false;
     }
 
