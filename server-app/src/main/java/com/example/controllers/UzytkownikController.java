@@ -193,6 +193,9 @@ public class UzytkownikController {
         uzytkownikService.updateUserTreningPlan(id, treningPlanID);
     }
 
+
+////    ----------------------  ZAPRASZANIE DO ZNAJOMYCH    ----------------------------------------------------
+
     @PostMapping("/invitation/new")
     public ResponseEntity<?> sendInvitation(@RequestBody String email, Authentication authentication) {
         log.info("sendInvitation");
@@ -279,6 +282,10 @@ public class UzytkownikController {
     }
 
 
+
+////     -----------------------  PRZYJACIELE -------------------------------------------------
+
+
     @GetMapping("/friends")
     public ResponseEntity<?> getUserFrends(Authentication authentication) {
         log.info("cancelInvitation");
@@ -304,4 +311,24 @@ public class UzytkownikController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
+
+    @DeleteMapping("/friends")
+    public ResponseEntity<?> deleteUserFrend(@RequestBody PrzyjacieleInfo przyjacielInfo,Authentication authentication) {
+        log.info("deleteUserFrend");
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> OptUser = uzytkownikService.getUserByEmail(userEmail);
+        if ( OptUser.isPresent() ) {
+            boolean ret = uzytkownikService.deleteFriendUser(OptUser.get(), przyjacielInfo.getId());
+
+            return ResponseEntity.ok(Map.of("message", "Znajomy usuniety"));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+    }
+
+
+
 }

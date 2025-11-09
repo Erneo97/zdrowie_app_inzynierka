@@ -242,7 +242,6 @@ public class UzytkownikService {
     }
 
     public boolean acceptInvitation(Uzytkownik user, ZaproszenieInfo zaproszenieInfo) {
-
         Optional<Zaproszenie> optZap = zaproszeniaRepository.findById(zaproszenieInfo.getId());
         if(optZap.isPresent()) {
             Zaproszenie zaproszenie = optZap.get();
@@ -262,6 +261,26 @@ public class UzytkownikService {
 
             return true;
         }
+        return false;
+    }
+
+    public boolean deleteFriendUser(Uzytkownik user, int id) {
+        Optional<Uzytkownik> usr = uzytkownikRepository.findById(id);
+        if( usr.isPresent() ) {
+            Uzytkownik us = usr.get();
+
+            List<Przyjaciele > lista = user.getPrzyjaciele();
+            lista.removeIf(przyjaciele -> przyjaciele.getId() == id);
+            user.setPrzyjaciele(lista);
+            uzytkownikRepository.save(user);
+
+            lista = us.getPrzyjaciele();
+            lista.removeIf(przyjaciele -> przyjaciele.getId() == id);
+            us.setPrzyjaciele(lista);
+            uzytkownikRepository.save(us);
+            return true;
+        }
+
         return false;
     }
 
