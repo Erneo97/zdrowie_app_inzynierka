@@ -1,6 +1,7 @@
 package com.example.balansapp.ui.service
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -162,6 +163,36 @@ fun calculatePPM( ) {
         }
     }
 
+
+
+
+//  -----------------   ZNAJOMI -------------------------------
+    sealed class InvitationResult {
+        data class Success(val message: String) : InvitationResult()
+        data class Error(val message: String) : InvitationResult()
+    }
+
+
+    var invitationResult by mutableStateOf<InvitationResult?>(null)
+    fun invitateUser(email: String ) {
+        invitationResult = null
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.inviteFriend(email, "Bearer $token")
+                if( response.isSuccessful) {
+                    Log.d("Invite", "isSuccessful: ${response.isSuccessful}, body: ${response.body()?.message}, code: ${response.code()}")
+                    invitationResult = InvitationResult.Success( "Wysłano zaproszenie")
+                }
+                else {
+                    invitationResult = InvitationResult.Error(response.errorBody()?.string() ?: "Nieznany błąd")
+                }
+            }
+            catch (e : Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+
+    }
 
 }
 

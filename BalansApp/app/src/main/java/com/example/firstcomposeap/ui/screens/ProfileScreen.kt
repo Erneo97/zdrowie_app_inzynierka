@@ -76,7 +76,7 @@ fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewMod
                 when (selectedTabIndex) {
                     0 -> ProfilTab(loginViewModel)
                     1 -> StatystykiTab(loginViewModel)
-                    2 -> ZnajomiTab()
+                    2 -> ZnajomiTab(loginViewModel)
                 }
             }
         }

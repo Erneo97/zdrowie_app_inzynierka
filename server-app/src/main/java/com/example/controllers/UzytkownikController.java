@@ -186,10 +186,6 @@ public class UzytkownikController {
         return ResponseEntity.ok(Map.of("message", "Zmieniono hasło pomyślnie"));
     }
 
-    @PostMapping("/meals")
-    public void addMealsUser( @RequestBody Dania danie) {
-
-    }
 
 
     @PostMapping("/{id}/treningPlan")
@@ -198,9 +194,24 @@ public class UzytkownikController {
     }
 
     @PostMapping("/invitation/new")
-    public ResponseEntity<?> sendInvitation(@RequestParam String email, @RequestParam int id) {
-        return uzytkownikService.sendInvitation(id, email) ? ResponseEntity.ok().build() :
-                ResponseEntity.notFound().build();
+    public ResponseEntity<?> sendInvitation(@RequestBody String email, Authentication authentication) {
+        log.info("sendInvitation");
+        if (authentication == null || email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik > optUsr = uzytkownikService.getUserByEmail(userEmail);
+
+        if ( optUsr.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nie znaleziono użytkownika");
+        }
+
+        log.info("{} {}", optUsr.get().getId(), email.replace("\"", ""));
+        boolean spr = uzytkownikService.sendInvitation(optUsr.get().getId(), email.replace("\"", ""));
+        log.info("spr: {}", spr);
+        return spr
+                ? ResponseEntity.ok(Map.of("message", "Wysłano zaproszenie do użytkownika"))
+                : ResponseEntity.status(HttpStatus.CONFLICT).body("Nie można utworzyć takiego zaproszenia");
     }
 
     @PostMapping("/invitation/accept")

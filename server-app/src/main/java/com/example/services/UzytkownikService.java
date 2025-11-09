@@ -7,10 +7,11 @@ import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.*;
 import com.example.repositories.UzytkownikRepository;
 import com.example.repositories.ZaproszeniaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,7 @@ public class UzytkownikService {
     private final SequenceGeneratorService sequenceGenerator;
     private final ZaproszeniaRepository zaproszeniaRepository;
     private final UzytkownikRepository uzytkownikRepository;
+    private static final Logger log = LoggerFactory.getLogger(UzytkownikService.class);
 
     public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator, ZaproszeniaRepository zaproszeniaRepository, UzytkownikRepository uzytkownikRepository) {
         this.repository = repository;
@@ -162,21 +164,30 @@ public class UzytkownikService {
         return zaproszeniaRepository.findById(id);
     }
 
+
     public boolean sendInvitation(int userId, String emailFriend) {
-        Optional<Uzytkownik> firend = uzytkownikRepository.findByEmail(emailFriend);
-        if(firend.isEmpty()) {
-            return false;
+        Optional<Uzytkownik> firend = getUserByEmail(emailFriend);
+
+        if(firend.isPresent()) {
+            Optional<Zaproszenie> optZap = zaproszeniaRepository.findByIdZapraszanegoAndIdZapraszajacego(firend.get().getId(), userId);
+            if( optZap.isPresent()) {
+                log.info("Powtóka {} {}", optZap.get().getidZapraszajacego(), optZap.get().getidZapraszanego());
+                return false;
+            }
+            if( userId == firend.get().getId())
+                return false;
+
+            Zaproszenie zaproszenie = new Zaproszenie();
+
+            zaproszenie.setId(sequenceGenerator.getNextSequence(LicznikiDB.ZAPROSZENIA.getNazwa()));
+            zaproszenie.setidZapraszajacego(userId);
+            zaproszenie.setidZapraszanego(firend.get().getId());
+            log.info("Udało się {} {}", zaproszenie, zaproszenie.getId());
+            zaproszeniaRepository.save(zaproszenie);
+            return true;
         }
 
-        Zaproszenie zaproszenie = new Zaproszenie();
-
-        zaproszenie.setId(sequenceGenerator.getNextSequence(LicznikiDB.ZAPROSZENIA.getNazwa()));
-        zaproszenie.setidZapraszajacego(userId);
-        zaproszenie.setidZapraszajacego(firend.get().getId());
-
-        zaproszeniaRepository.save(zaproszenie);
-
-        return true;
+        return false;
     }
 
 }

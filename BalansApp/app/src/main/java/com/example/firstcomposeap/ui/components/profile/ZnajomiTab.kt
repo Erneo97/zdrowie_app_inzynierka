@@ -1,5 +1,7 @@
 package com.example.firstcomposeap.ui.components.profile
 
+import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +10,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,15 +21,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.R
+import com.example.balansapp.ui.components.FullSizeButton
+import com.example.balansapp.ui.service.LoginViewModel
+import com.example.firstcomposeap.ui.components.profile.StatystykiTab.InvateFriendDialoge
+import kotlin.math.log
 
 @Composable
-fun ZnajomiTab () {
-    Spacer(modifier = Modifier.height(30.dp))
+fun ZnajomiTab (loginViewModel: LoginViewModel) {
+    Spacer(modifier = Modifier.height(20.dp))
+
     val context = LocalContext.current
     val tabs = listOf(context.getString(R.string.friends)
         , context.getString(R.string.invitation))
 
     var selectedTabIndex by remember { mutableStateOf(0) }
+
+    var showInvitateFriendDialoge by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -44,10 +54,44 @@ fun ZnajomiTab () {
         }
 
         when (selectedTabIndex ) {
-            0 -> {Text("Znajomi lista")}
-            1 -> {Text("Zaproszenia lista")}
+            0 -> {FirendsTab(loginViewModel)}
+            1 -> {InfitationTab(loginViewModel)}
         }
     }
+    FullSizeButton(text = "Zaproś znajomego", onClick = {showInvitateFriendDialoge = true})
 
+    if( showInvitateFriendDialoge) {
+        InvateFriendDialoge(
+            onConfirm = {email ->
+                loginViewModel.invitateUser(email)
+            },
+            onDismiss = {showInvitateFriendDialoge = false}
+        )
+    }
 
+    loginViewModel.invitationResult?.let {
+        result -> LaunchedEffect(result) {
+                val msg = when(result) {
+                    is LoginViewModel.InvitationResult.Success -> result.message
+                    is LoginViewModel.InvitationResult.Error -> result.message
+                }
+                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                if(result is LoginViewModel.InvitationResult.Success) {
+                    showInvitateFriendDialoge = false
+                }
+
+                loginViewModel.invitationResult = null
+            }
+    }
+
+}
+
+@Composable
+fun FirendsTab(loginViewModel: LoginViewModel) {
+    Text("Znajomi lista")
+}
+
+@Composable
+fun InfitationTab(loginViewModel: LoginViewModel) {
+    Text("Zaproszenia lista")
 }
