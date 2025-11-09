@@ -246,8 +246,18 @@ public class UzytkownikService {
         Optional<Zaproszenie> optZap = zaproszeniaRepository.findById(zaproszenieInfo.getId());
         if(optZap.isPresent()) {
             Zaproszenie zaproszenie = optZap.get();
-            Przyjaciele przyjaciele = new Przyjaciele(zaproszenie.getidZapraszajacego());
-            addFriendToUser(przyjaciele, user);
+
+            Optional<Uzytkownik> optUsr = uzytkownikRepository.findById(zaproszenie.getidZapraszajacego());
+            if (optUsr.isPresent()) {
+                Przyjaciele przyjaciele1 = new Przyjaciele(user.getId());
+                Przyjaciele przyjaciele = new Przyjaciele(zaproszenie.getidZapraszajacego());
+
+                Uzytkownik usr = optUsr.get();
+
+                addFriendToUser(przyjaciele, user);
+                addFriendToUser(przyjaciele1, usr);
+            }
+
             delInvitation(zaproszenie);
 
             return true;
