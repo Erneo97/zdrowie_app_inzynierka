@@ -37,7 +37,6 @@ import com.example.firstcomposeap.ui.components.icon.Delete
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun UserFriendCard(info: PrzyjacieleInfo

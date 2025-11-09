@@ -95,7 +95,6 @@ fun ZnajomiTab (loginViewModel: LoginViewModel) {
 
 @Composable
 fun FirendsTab(loginViewModel: LoginViewModel) {
-    Text("Znajomi lista")
     val znajomi = remember { mutableStateListOf<PrzyjacieleInfo> () }
 
     LaunchedEffect(Unit) {
