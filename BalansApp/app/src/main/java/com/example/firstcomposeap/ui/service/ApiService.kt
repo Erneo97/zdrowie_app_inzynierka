@@ -4,6 +4,7 @@ import com.example.balansapp.ui.service.data.ChangePassword
 import com.example.balansapp.ui.service.data.LoginRequest
 import com.example.balansapp.ui.service.data.LoginResponse
 import com.example.balansapp.ui.service.data.PommiarWagii
+import com.example.balansapp.ui.service.data.PrzyjacieleInfo
 import com.example.balansapp.ui.service.data.RegisterRequest
 import com.example.balansapp.ui.service.data.RegisterResponse
 import com.example.balansapp.ui.service.data.SimpleMessage
@@ -58,4 +59,8 @@ interface ApiService {
     @PUT("uzytkownicy/invitation/del")
     suspend fun cancelInvitation( @Body body: ZaproszenieInfo, @Header("Authorization") authorization: String)
             : Response<SimpleMessage>
+
+    @GET("uzytkownicy/friends")
+    suspend fun getUserFrends(@Header("Authorization") authorization: String)
+            : Response<List<PrzyjacieleInfo>>
 }

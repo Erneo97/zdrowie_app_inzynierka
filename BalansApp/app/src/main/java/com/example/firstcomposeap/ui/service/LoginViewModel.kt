@@ -11,6 +11,7 @@ import com.example.balansapp.ui.service.data.ChangePassword
 import com.example.balansapp.ui.service.data.LoginRequest
 import com.example.balansapp.ui.service.data.Plec
 import com.example.balansapp.ui.service.data.PommiarWagii
+import com.example.balansapp.ui.service.data.PrzyjacieleInfo
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.components.calculateUserAge
@@ -246,6 +247,20 @@ fun calculatePPM( ) {
             catch (e : Exception) {
                 errorMessage = e.localizedMessage
             }
+        }
+    }
+
+    suspend  fun downloadFrendsInformationList() : List<PrzyjacieleInfo> {
+        return try {
+            val response = ApiClient.api.getUserFrends("Bearer $token")
+            if (response.isSuccessful) {
+                response.body() ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            errorMessage = e.localizedMessage
+            emptyList()
         }
     }
 
