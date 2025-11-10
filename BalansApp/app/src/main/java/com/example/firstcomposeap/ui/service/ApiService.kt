@@ -34,7 +34,7 @@ interface ApiService {
 
     @POST("uzytkownicy/waga")
     suspend fun addUserWeigt(@Body body: PommiarWagii, @Header("Authorization") authorization: String)
-    : Response<String>
+    : Response<SimpleMessage>
 
     @PUT("uzytkownicy/update")
     suspend fun updateBasicInformationUser( @Body body: Uzytkownik, @Header("Authorization") authorization: String)

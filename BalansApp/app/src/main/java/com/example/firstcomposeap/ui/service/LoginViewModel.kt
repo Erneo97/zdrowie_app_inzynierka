@@ -94,7 +94,7 @@ fun calculatePPM( ) {
 
                 val response = ApiClient.api.addUserWeigt(pommiarWagii,"Bearer $token")
                 if (response.isSuccessful) {
-                    message = response.body()
+                    message = response.body()?.message
                 } else {
                     errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
                 }
