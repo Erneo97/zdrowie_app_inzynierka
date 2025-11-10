@@ -3,6 +3,8 @@ package com.example.firstcomposeap.ui.components
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 fun getCurrentDate() : String {
     val dateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -27,4 +29,13 @@ fun calculateUserAge(dataUrodzenia: String): Double {
     } catch (e: Exception) {
         0.0
     }
+}
+
+
+fun getWeekDayNumbers(dateString: String): List<Int> {
+    val date = LocalDate.parse(dateString)
+    val dayNumber = date.dayOfWeek.value
+    val monday = date.minusDays((dayNumber - 1).toLong())
+
+    return (0..6).map { monday.plusDays(it.toLong()).dayOfMonth }
 }
