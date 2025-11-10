@@ -43,7 +43,7 @@ fun WeeakDaysSelector(
     val date = LocalDate.parse(baseDate)
     val dayNumber = date.dayOfWeek.value
 
-    var wybranyNumer by remember { mutableStateOf(dayNumber-1) }
+    var wybranyNumer by remember(baseDate) { mutableStateOf(dayNumber-1) }
     val mondayDate = date.minusDays((dayNumber - 1).toLong())
 
     val dniTygodnia = remember(baseDate) { getWeekDayNumbers(baseDate) }
