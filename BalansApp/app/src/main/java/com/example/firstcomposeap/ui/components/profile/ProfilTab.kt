@@ -124,7 +124,7 @@ fun UserWeightCard(loginViewModel: LoginViewModel
 @Composable
 fun UserPasswordCard(loginViewModel: LoginViewModel
 ) {
-
+    loginViewModel.errorMessage = null
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val message = loginViewModel.message

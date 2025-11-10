@@ -100,8 +100,9 @@ fun FirendsTab(loginViewModel: LoginViewModel) {
 
     LaunchedEffect(Unit) {
         val list = loginViewModel.downloadFrendsInformationList()
+        val sortedList = list.sortedBy { it.nazwisko }
         znajomi.clear()
-        znajomi.addAll(list)
+        znajomi.addAll(sortedList)
     }
 
     if( znajomi.isEmpty()) {
@@ -128,8 +129,9 @@ fun InfitationTab(loginViewModel: LoginViewModel) {
 
     LaunchedEffect(Unit) {
         val list = loginViewModel.downloadInfitationInformationList()
+        val sortedList = list.sortedWith ( compareBy<ZaproszenieInfo> {!it.creator  }.thenBy{it.nazwisko} )
         zaproszenia.clear()
-        zaproszenia.addAll(list)
+        zaproszenia.addAll(sortedList)
     }
 
     if( zaproszenia.isEmpty()) {
