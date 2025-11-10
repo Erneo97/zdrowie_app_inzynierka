@@ -275,9 +275,30 @@ public class UzytkownikService {
             uzytkownikRepository.save(user);
 
             lista = us.getPrzyjaciele();
-            lista.removeIf(przyjaciele -> przyjaciele.getId() == id);
+            lista.removeIf(przyjaciele -> usr.get().getId() == id);
             us.setPrzyjaciele(lista);
             uzytkownikRepository.save(us);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean changeAccessUserFrend(Uzytkownik user, int id) {
+        Optional<Uzytkownik> usr = uzytkownikRepository.findById(id);
+        if( usr.isPresent() ) {
+            Uzytkownik us = usr.get();
+
+            List<Przyjaciele > lista = user.getPrzyjaciele();
+            lista.forEach(przyjaciel -> {
+                if( przyjaciel.getId() == id ) {
+                    przyjaciel.setCzyDozwolony( !przyjaciel.isCzyDozwolony() );
+                }
+            });
+            user.setPrzyjaciele(lista);
+            uzytkownikRepository.save(user);
+
+
             return true;
         }
 

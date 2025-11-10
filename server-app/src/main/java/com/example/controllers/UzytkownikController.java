@@ -331,6 +331,23 @@ public class UzytkownikController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
+    @PutMapping("/friends")
+    public ResponseEntity<?> changeAccessUserFrend (@RequestBody PrzyjacieleInfo przyjacielInfo,Authentication authentication) {
+        log.info("changeAccessUserFrend");
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> OptUser = uzytkownikService.getUserByEmail(userEmail);
+        if ( OptUser.isPresent() ) {
+            boolean ret = uzytkownikService.changeAccessUserFrend(OptUser.get(), przyjacielInfo.getId());
 
+            return ret
+                    ? ResponseEntity.ok(Map.of("message", "Znajomy ma inny dostęp"))
+                    : ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Nie udało się zmienić dostępu przyjacielowi");
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+    }
 
 }

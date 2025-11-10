@@ -69,4 +69,8 @@ interface ApiService {
     @HTTP(method = "DELETE", path = "uzytkownicy/friends", hasBody = true)
     suspend fun deleteUserFrend(@Body body: PrzyjacieleInfo, @Header("Authorization") authorization: String)
             : Response<List<SimpleMessage>>
+
+    @PUT("uzytkownicy/friends")
+    suspend fun changeAccessUserFrend(@Body body: PrzyjacieleInfo, @Header("Authorization") authorization: String)
+            : Response<List<SimpleMessage>>
 }
