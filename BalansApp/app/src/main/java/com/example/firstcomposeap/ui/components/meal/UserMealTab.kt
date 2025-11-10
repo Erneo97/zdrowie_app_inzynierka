@@ -3,6 +3,7 @@ package com.example.firstcomposeap.ui.components.meal
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -21,8 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.icon.Question_mark
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab.ToolTipDialoge
@@ -41,7 +41,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
     Spacer(Modifier.height(10.dp))
     if( loginViewModel.isLoadedUserData ) {
         loginViewModel.calculatePPM()
-        Row (Modifier.fillMaxWidth(),
+        Row (Modifier.fillMaxWidth().fillMaxHeight(),
             verticalAlignment = Alignment.CenterVertically
         ){
             Box(modifier = Modifier.weight(9f).padding(4.dp)) {
@@ -65,7 +65,8 @@ fun userMealTab(loginViewModel: LoginViewModel,
         }
 
 
-        val sampleMeals =remember { mutableListOf(
+
+        val sampleMeals =remember { mutableStateListOf(
             MealInfo(
                 id = 1,
                 nazwa = "Owsianka z mlekiem",
@@ -198,15 +199,26 @@ fun userMealTab(loginViewModel: LoginViewModel,
             )
         ) }
 
+        val timeOfDays = listOf( "Śniadanie", "Lunch", "Obiad", "Kolacja", "Przekąska")
 
-        sampleMeals.forEach { mealInfo ->
-            MealProductAdded(mealInfo, onClick = {sampleMeals.remove(mealInfo)} )
+        timeOfDays.forEach { timeOfDays ->
+            TimeOfDayMealCard(title = timeOfDays,
+                            meals = sampleMeals,
+                onAddClick = {},
+                onRemoveClick = {  meal -> sampleMeals.remove(meal)}
+                )
 
         }
+
+//        sampleMeals.forEach { mealInfo ->
+//            MealProductAdded(mealInfo, onClick = {sampleMeals.remove(mealInfo)} )
+//
+//        }
 
 
     }
     else {
+        // Dane śię ładują
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -214,12 +226,6 @@ fun userMealTab(loginViewModel: LoginViewModel,
             CircularProgressIndicator()
         }
     }
-
-
-    HeadText(
-        fontSize = 48.sp,
-        text = "To jest ekran userMealTab"
-    )
 
 
     if( showToolTip ) {
