@@ -208,13 +208,33 @@ public class UzytkownikService {
         if(optUser.isPresent()) {
             Uzytkownik user = optUser.get();
 
-            List<Zaproszenie> zaproszenia = zaproszeniaRepository.findByIdZapraszanego(user.getId());
+            List<Zaproszenie> zaproszenia = zaproszeniaRepository.findByIdZapraszanegoOrIdZapraszajacego(user.getId(), user.getId());
             List<ZaproszenieInfo> zaproszenieInfo = new ArrayList<>();
             zaproszenia.forEach(zaproszenie -> {
                 Optional<Uzytkownik> optZapraszajacy = uzytkownikRepository.findById(zaproszenie.getidZapraszajacego());
-                if( optZapraszajacy.isPresent()) {
+                Optional<Uzytkownik> optZapraszany = uzytkownikRepository.findById(zaproszenie.getidZapraszanego());
+                if( optZapraszajacy.isPresent() && optZapraszany.isPresent()) {
                     Uzytkownik zap = optZapraszajacy.get();
-                    ZaproszenieInfo zapro = new ZaproszenieInfo(zap.getImie(), zap.getNazwisko(), zap.getEmail(), zaproszenie.getId());
+                    Uzytkownik zapra = optZapraszany.get();
+                    ZaproszenieInfo zapro;
+                    if(user.getId() != zaproszenie.getidZapraszajacego() ) {
+
+                         zapro = new ZaproszenieInfo(zap.getImie(),
+                                zap.getNazwisko(),
+                                zap.getEmail(),
+                                zaproszenie.getId(),
+                                false
+                        );
+                    }
+                    else {
+                        zapro = new ZaproszenieInfo(zapra.getImie(),
+                                zapra.getNazwisko(),
+                                zapra.getEmail(),
+                                zaproszenie.getId(),
+                                true
+                        );
+                    }
+
                     zaproszenieInfo.add(zapro);
                 }
             });
@@ -228,12 +248,10 @@ public class UzytkownikService {
         zaproszeniaRepository.delete(zaproszenie);
     }
 
-    public boolean cancelInviotationUser(ZaproszenieInfo zaproszenieInfo, Uzytkownik user) {
+    public boolean cancelInviotationUser(ZaproszenieInfo zaproszenieInfo) {
         Optional<Zaproszenie> optZap = zaproszeniaRepository.findById(zaproszenieInfo.getId());
         if(optZap.isPresent()) {
             Zaproszenie zaproszenie = optZap.get();
-            if( zaproszenie.getidZapraszanego() != user.getId())
-                return false;
 
             delInvitation(zaproszenie);
             return true;

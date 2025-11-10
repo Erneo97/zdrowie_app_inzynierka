@@ -273,7 +273,7 @@ public class UzytkownikController {
         String userEmail = authentication.getName();
         Optional<Uzytkownik> OptUser = uzytkownikService.getUserByEmail(userEmail);
         if ( OptUser.isPresent() ) {
-            boolean ret = uzytkownikService.cancelInviotationUser(zaproszenie, OptUser.get());
+            boolean ret = uzytkownikService.cancelInviotationUser(zaproszenie);
             return ret ? ResponseEntity.ok(Map.of("message", "Zaproszenie odrzucone"))
                     : ResponseEntity.status(HttpStatus.CONFLICT).body("Brak autoryzacji");
         }
