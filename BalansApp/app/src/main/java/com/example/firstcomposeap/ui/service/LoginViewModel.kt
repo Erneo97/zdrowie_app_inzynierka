@@ -32,6 +32,9 @@ class LoginViewModel : ViewModel() {
 //     Podstawowa Przemiana Materii (PPM) wzór Mifflina
 @SuppressLint("SuspiciousIndentation")
 fun calculatePPM( ) {
+    if( user == null )
+        return;
+
         val wagaUzytkownika : Double = user!!.waga.last().wartosc
         val dataUrodzenia : String = user!!.dataUrodzenia
 
@@ -69,13 +72,17 @@ fun calculatePPM( ) {
             }
         }
     }
+
+    var isLoadedUserData by mutableStateOf(false)
     fun downloadUserData() {
+        isLoadedUserData = false
         viewModelScope.launch {
             try {
 
                 val response = ApiClient.api.getUser("Bearer $token")
                 if (response.isSuccessful) {
                     user = response.body()
+                    isLoadedUserData = true
                 } else {
                     errorMessage = "Błąd logowania: ${response.code()}"
                 }

@@ -19,6 +19,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
-import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayout
 import com.example.balansapp.ui.service.LoginViewModel
@@ -36,12 +37,21 @@ import com.example.firstcomposeap.ui.components.getFormOnlyDate
 import com.example.firstcomposeap.ui.components.icon.Edit_calendar
 import com.example.firstcomposeap.ui.components.icon.Today
 import com.example.firstcomposeap.ui.components.meal.WeeakDaysSelector
+import com.example.firstcomposeap.ui.components.meal.friendsMealTab
+import com.example.firstcomposeap.ui.components.meal.userMealTab
 
 @Composable
 fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_meal)) }
     var user = loginViewModel.user
+
+
+    val tabs = listOf(context.getString(R.string.menu_profil),
+        context.getString(R.string.friends)
+        )
+    var selectedTabIndex by remember { mutableStateOf(0) }
+
 
     var wybranaData by remember { mutableStateOf(getFormOnlyDate(getCurrentDate())) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -116,16 +126,28 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    HeadText(
-                        fontSize = 48.sp,
-                        text = "To jest ekran posiłki"
-                    )
+
+                    TabRow(selectedTabIndex = selectedTabIndex) {
+                        tabs.forEachIndexed { index, title ->
+                            Tab(selected = selectedTabIndex == index,
+                                onClick = {selectedTabIndex = index},
+                                text =  {Text(title, fontSize = 22.sp)}
+                                )
+
+                        }
+                    }
+
+                    when (selectedTabIndex) {
+                        0 -> userMealTab(loginViewModel, wybranaData)
+                        1 -> friendsMealTab(loginViewModel, wybranaData)
+                    }
+
+
                 }
             }
         }
     }
-
 }
