@@ -5,13 +5,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.sp
 
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -58,27 +60,45 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
         onItemSelected = { selectedItem = it }
     ) { innerPadding ->
         Column {
-            Row{
-                Text("Dziś: ${wybranaData}")
-                Spacer(Modifier.width(58.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth().height(45.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    wybranaData,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 4.dp)
+                )
+
                 IconButton(
-                    onClick = {showDatePicker = true},
-                    modifier = Modifier.size(88.dp)) {
-                    Row (verticalAlignment = Alignment.CenterVertically) {
-                        Icon ( imageVector = Edit_calendar, contentDescription = "wybierz date")
+                    onClick = { showDatePicker = true },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(imageVector = Edit_calendar, contentDescription = "wybierz date")
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text("Wybierz datę")
                     }
                 }
-                Spacer(Modifier.width(50.dp))
+
                 IconButton(
                     onClick = { wybranaData = getFormOnlyDate(getCurrentDate()) },
-                    modifier = Modifier.size(68.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Today,
-                            contentDescription = "Dzisiejsza data"
-                        )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(imageVector = Today, contentDescription = "Dzisiejsza data")
                         Spacer(modifier = Modifier.width(4.dp))
                         Text("Dziś")
                     }
