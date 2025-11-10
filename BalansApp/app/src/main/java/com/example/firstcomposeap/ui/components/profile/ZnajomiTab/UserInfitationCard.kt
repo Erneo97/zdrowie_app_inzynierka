@@ -75,16 +75,18 @@ fun UserInfitationCard(info: ZaproszenieInfo
                 Text(info.email, fontSize = 20.sp)
             }
             Column (horizontalAlignment = Alignment.End) {
-                FloatingActionButton(
-                    onClick = onAccept,
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(42.dp)
-                ) {
-                    Icon(
-                        imageVector = Done,
-                        contentDescription = "Potwierdź",
-                        tint = Color.White
-                    )
+                if( !info.creator) {
+                    FloatingActionButton(
+                        onClick = onAccept,
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(42.dp)
+                    ) {
+                        Icon(
+                            imageVector = Done,
+                            contentDescription = "Potwierdź",
+                            tint = Color.White
+                        )
+                    }
                 }
                 Spacer(Modifier.height(10.dp))
                 FloatingActionButton(

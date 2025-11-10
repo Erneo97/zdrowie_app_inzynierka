@@ -1,5 +1,6 @@
 package com.example.firstcomposeap.ui.components.profile
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -136,6 +137,7 @@ fun InfitationTab(loginViewModel: LoginViewModel) {
     }
     else {
         zaproszenia.forEach { info ->
+            Log.d("UserInfo", "isCreator = ${info.creator} ${info.id}")
             UserInfitationCard(info = info,
                 onAccept = {zaproszenia.remove(info)
                            loginViewModel.acceptInvitation(info)},

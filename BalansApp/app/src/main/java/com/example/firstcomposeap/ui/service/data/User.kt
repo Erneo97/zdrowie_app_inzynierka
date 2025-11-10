@@ -43,7 +43,8 @@ data class ZaproszenieInfo (
     val id: Int,
     val imie: String,
     val nazwisko: String,
-    val email: String
+    val email: String,
+    val creator: Boolean,
 )
 
 data class PrzyjacieleInfo (
