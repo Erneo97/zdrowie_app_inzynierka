@@ -3,14 +3,14 @@ package com.example.kolekcje.posilki;
 import com.example.kolekcje.enumy.Jednostki;
 
 public class Dawka {
-    private int wartosc;
+    private float wartosc;
     Jednostki jednostki;
     private float kcal, bialko, weglowodany, tluszcze, blonnik;
 
-    public int getWartosc() {
+    public float getWartosc() {
         return wartosc;
     }
-    public void setWartosc(int wartosc) {
+    public void setWartosc(float wartosc) {
         this.wartosc = wartosc;
     }
 
