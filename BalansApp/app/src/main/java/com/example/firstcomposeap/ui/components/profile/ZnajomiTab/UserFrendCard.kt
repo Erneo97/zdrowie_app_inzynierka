@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.balansapp.ui.service.data.PrzyjacieleInfo
-import com.example.firstcomposeap.ui.components.icon.No_meals
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,9 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.firstcomposeap.ui.components.icon.Delete
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.LaunchedEffect
+import com.example.firstcomposeap.ui.components.icon.Utensils
+import com.example.firstcomposeap.ui.components.icon.UtensilsCrossed
 
 @Composable
 fun UserFriendCard(info: PrzyjacieleInfo
@@ -48,12 +47,12 @@ fun UserFriendCard(info: PrzyjacieleInfo
     val kolorOK = MaterialTheme.colorScheme.primary;
     val kolorErr = MaterialTheme.colorScheme.error
 
-    var icon = if (info.czyDozwolony) Icons.Default.Favorite else No_meals
+    var icon = if (info.czyDozwolony) UtensilsCrossed else Utensils
     var colorBackground = if (info.czyDozwolony) kolorOK else kolorErr
 
 
     LaunchedEffect(czyDozwolony) {
-        icon = if (info.czyDozwolony) Icons.Default.Favorite else No_meals
+        icon = if (info.czyDozwolony) UtensilsCrossed else Utensils
         colorBackground = if (info.czyDozwolony) kolorOK else kolorErr
     }
 
