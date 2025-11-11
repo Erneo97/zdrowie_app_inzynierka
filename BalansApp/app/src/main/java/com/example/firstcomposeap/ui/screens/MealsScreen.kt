@@ -147,6 +147,7 @@ fun RowDataInformation(baseDate: String,
                 .weight(1f)
                 .shadow(10.dp, RectangleShape)
                 .fillMaxHeight()
+                .padding(5.dp)
                 .background(
                     MaterialTheme.colorScheme.primary,
                     RoundedCornerShape(10.dp)
@@ -168,15 +169,20 @@ fun RowDataInformation(baseDate: String,
                       },
             modifier = Modifier
                 .weight(1f)
+                .shadow(10.dp, RectangleShape)
                 .fillMaxHeight()
+                .padding(5.dp)
+                .background(color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(10.dp)
+                )
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Icon(imageVector = Today, contentDescription = "Dzisiejsza data")
+                Icon(imageVector = Today, contentDescription = "Dzisiejsza data", tint = Color.White)
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("Dziś")
+                Text("Dziś", color = Color.White)
             }
         }
     }
