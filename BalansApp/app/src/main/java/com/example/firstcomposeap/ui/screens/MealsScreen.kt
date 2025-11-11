@@ -1,5 +1,6 @@
 package com.example.balansapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,14 +17,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -55,6 +61,7 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
 
     var wybranaData by remember { mutableStateOf(getFormOnlyDate(getCurrentDate())) }
     var showDatePicker by remember { mutableStateOf(false) }
+    
     CalendarDialoge(
         baseDate = wybranaData,
         showDialog = showDatePicker,
@@ -70,52 +77,14 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
         onItemSelected = { selectedItem = it }
     ) { innerPadding ->
         Column {
-            Row(
-                modifier = Modifier.fillMaxWidth().height(45.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    wybranaData,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 4.dp)
-                )
-
-                IconButton(
-                    onClick = { showDatePicker = true },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(imageVector = Edit_calendar, contentDescription = "wybierz date")
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Wybierz datę")
-                    }
-                }
-
-                IconButton(
-                    onClick = { wybranaData = getFormOnlyDate(getCurrentDate()) },
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(imageVector = Today, contentDescription = "Dzisiejsza data")
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Dziś")
-                    }
-                }
-            }
-
+            RowDataInformation(
+                baseDate = wybranaData,
+                onToday = { wybranaData = it },
+                onDataPicker = { showDatePicker = it },
+            )
             WeeakDaysSelector(onClick = { wybranaData = it }, baseDate = wybranaData)
+
+
             Box(modifier = Modifier
                 .padding(innerPadding),
                 contentAlignment = Alignment.Center )
@@ -147,6 +116,67 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
 
 
                 }
+            }
+        }
+    }
+}
+
+@Composable 
+fun RowDataInformation(baseDate: String,
+                       onDataPicker: (Boolean) -> Unit,
+                       onToday: (String) -> Unit
+                       ) {
+    var wybranaData by remember { mutableStateOf(baseDate) }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(45.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Text(
+            wybranaData,
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 4.dp)
+        )
+
+        IconButton(
+            onClick = { onDataPicker(true) },
+            modifier = Modifier
+                .weight(1f)
+                .shadow(10.dp, RectangleShape)
+                .fillMaxHeight()
+                .background(
+                    MaterialTheme.colorScheme.primary,
+                    RoundedCornerShape(10.dp)
+                )
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(imageVector = Edit_calendar, contentDescription = "wybierz date", tint = Color.White)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("Wybierz datę", color = Color.White)
+            }
+        }
+
+        IconButton(
+            onClick = { wybranaData = getFormOnlyDate(getCurrentDate())
+                            onToday(wybranaData)
+                      },
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(imageVector = Today, contentDescription = "Dzisiejsza data")
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("Dziś")
             }
         }
     }
