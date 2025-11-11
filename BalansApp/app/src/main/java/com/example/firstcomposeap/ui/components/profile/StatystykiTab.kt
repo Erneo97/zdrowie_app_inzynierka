@@ -53,8 +53,8 @@ fun StatystykiTab (loginViewModel: LoginViewModel) {
             }
         },
         onClick =  {
-            textToolTip = "Całkowitą przemianę materii nazywamy sumę dobowych wydatków energetycznych związanych z metabolizmem podstawowym, niezbędnym do utrzymanaia podstawowych funkcji życiowych (PPM) i aktywnością fizyczną (współczynnikiem PAL z ang. physical activity level) " +
-                    "\n1,4: siedzący tryb życia </b> (praca biurowa)" +
+            textToolTip = "Całkowitą przemianę materii nazywamy sumę dobowych wydatków energetycznych związanych z metabolizmem podstawowym, niezbędnym do utrzymanaia podstawowych funkcji życiowych (PPM) i aktywnością fizyczną (współczynnikiem PAL z ang. physical activity level) \n" +
+                    "1,4: siedzący tryb życia (praca biurowa)\n" +
                     "1,5–1,6: niska aktywność (siedzący tryb pracy + 30-60 minut lekkiego wysiłku dziennie) \n" +
                     "1,7–1,8: umiarkowana aktywność (wysiłek o średnim nasileniu kilka razy w tygodniu) \n" +
                     "1,9–2,0: wysoka aktywność (codzienny wysiłek lub praca fizyczna) \n" +

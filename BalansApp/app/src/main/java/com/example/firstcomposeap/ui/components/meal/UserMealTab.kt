@@ -57,7 +57,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
             ) {
                 Icon(
                     imageVector = Question_mark,
-                    contentDescription = "Pokaz tooltip",
+                    contentDescription = "Pokaż tooltip",
                     tint = Color.White
                 )
             }
