@@ -131,7 +131,7 @@ fun TimeOfDayMealCard(title: String,
 private fun calculateCaloriesInMeal(meals: List<MealInfo>) : Double {
     var sum: Double = 0.0
 
-    meals.forEach { meal -> sum = sum + meal.dawka.kcal }
+    meals.forEach { meal -> sum = sum + meal.objetosc.kcal }
 
     return sum
 }

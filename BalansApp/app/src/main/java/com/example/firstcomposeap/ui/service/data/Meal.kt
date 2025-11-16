@@ -1,14 +1,24 @@
 package com.example.firstcomposeap.ui.service.data
 
 data class MealInfo (
-    val id: Int,    // id produktu w bazie danych
+    val id: Long,    // id produktu w bazie danych
     val nazwa: String,
-    var dawka: Dawka
+    val producent: String,
+    val kodKreskowy: String,
+    var objetosc: Dawka
+)
+
+data class Product (
+    val id: Long,    // id produktu w bazie danych
+    val nazwa: String,
+    val producent: String,
+    val kodKreskowy: String,
+    var objetosc: List<Dawka>
 )
 
 data class Dawka (
     val jednostka: JEDNOSTKA,
-    val wartosc: Double,
+    val wartosc: Float,
     val kcal: Float,
     val bialko: Float,
     val weglowodany: Float,

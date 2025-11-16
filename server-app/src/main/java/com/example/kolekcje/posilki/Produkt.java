@@ -2,6 +2,9 @@ package com.example.kolekcje.posilki;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document( collection = "Produkty")
 public class Produkt {
     @Id
@@ -9,7 +12,7 @@ public class Produkt {
     private String nazwa, producent;
 
     private String kodKreskowy;
-    private Dawka objetosc;
+    private List<Dawka> objetosc = new ArrayList<>();
 
 
     public void setProducent(String producent) {
@@ -25,10 +28,10 @@ public class Produkt {
 
 
 
-    public Dawka getObjetosc() {
+    public List<Dawka> getObjetosc() {
         return objetosc;
     }
-    public void setObjetosc(Dawka objetosc) {
+    public void setObjetosc(List<Dawka> objetosc) {
         this.objetosc = objetosc;
     }
 

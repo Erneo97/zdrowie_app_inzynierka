@@ -20,7 +20,7 @@ public class ProduktService {
         this.sequenceGenerator = sequenceGenerator;
     }
 
-    public Produkt createProducts(String producent, String nazwa, String kodkreskowy, Dawka objetosc) {
+    public Produkt createProducts(String producent, String nazwa, String kodkreskowy, List<Dawka> objetosc) {
         Produkt product = new Produkt();
 
         int id = sequenceGenerator.getNextSequence(LicznikiDB.PRODUKTY.getNazwa());

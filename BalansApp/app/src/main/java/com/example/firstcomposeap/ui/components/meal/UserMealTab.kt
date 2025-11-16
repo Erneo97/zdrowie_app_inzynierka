@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -75,9 +73,11 @@ fun userMealTab(loginViewModel: LoginViewModel,
             MealInfo(
                 id = 1,
                 nazwa = "Owsianka z mlekiem",
-                dawka = Dawka(
+                producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 250.0,
+                    wartosc = 250.0f,
                     kcal = 320f,
                     bialko = 12f,
                     weglowodany = 45f,
@@ -88,9 +88,11 @@ fun userMealTab(loginViewModel: LoginViewModel,
             MealInfo(
                 id = 2,
                 nazwa = "Jajecznica z 3 jaj",
-                dawka = Dawka(
+                producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 180.0,
+                    wartosc = 180.0f,
                     kcal = 280f,
                     bialko = 18f,
                     weglowodany = 2f,
@@ -101,9 +103,12 @@ fun userMealTab(loginViewModel: LoginViewModel,
             MealInfo(
                 id = 3,
                 nazwa = "Kurczak z ryżem i warzywami",
-                dawka = Dawka(
+
+                producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 350.0,
+                    wartosc = 350.0f,
                     kcal = 450f,
                     bialko = 35f,
                     weglowodany = 40f,
@@ -114,9 +119,12 @@ fun userMealTab(loginViewModel: LoginViewModel,
             MealInfo(
                 id = 4,
                 nazwa = "Kanapka z szynką i serem",
-                dawka = Dawka(
+
+                producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 180.0,
+                    wartosc = 180.0f,
                     kcal = 330f,
                     bialko = 17f,
                     weglowodany = 30f,
@@ -127,9 +135,11 @@ fun userMealTab(loginViewModel: LoginViewModel,
             MealInfo(
                 id = 5,
                 nazwa = "Sałatka z tuńczykiem",
-                dawka = Dawka(
+                producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 250.0,
+                    wartosc = 250.0f,
                     kcal = 260f,
                     bialko = 25f,
                     weglowodany = 8f,
@@ -140,9 +150,11 @@ fun userMealTab(loginViewModel: LoginViewModel,
             MealInfo(
                 id = 6,
                 nazwa = "Zupa pomidorowa z ryżem",
-                dawka = Dawka(
+                producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.MILILITR,
-                    wartosc = 400.0,
+                    wartosc = 400.0f,
                     kcal = 180f,
                     bialko = 6f,
                     weglowodany = 30f,
@@ -153,9 +165,11 @@ fun userMealTab(loginViewModel: LoginViewModel,
             MealInfo(
                 id = 7,
                 nazwa = "Jogurt naturalny 2%",
-                dawka = Dawka(
+                producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 150.0,
+                    wartosc = 150.0f,
                     kcal = 90f,
                     bialko = 5f,
                     weglowodany = 6f,
@@ -165,10 +179,11 @@ fun userMealTab(loginViewModel: LoginViewModel,
             ),
             MealInfo(
                 id = 8,
-                nazwa = "Banan",
-                dawka = Dawka(
+                nazwa = "Banan",producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 120.0,
+                    wartosc = 120.0f,
                     kcal = 105f,
                     bialko = 1f,
                     weglowodany = 27f,
@@ -178,10 +193,11 @@ fun userMealTab(loginViewModel: LoginViewModel,
             ),
             MealInfo(
                 id = 9,
-                nazwa = "Makaron z sosem bolońskim",
-                dawka = Dawka(
+                nazwa = "Makaron z sosem bolońskim",producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 400.0,
+                    wartosc = 400.0f,
                     kcal = 520f,
                     bialko = 28f,
                     weglowodany = 60f,
@@ -191,10 +207,11 @@ fun userMealTab(loginViewModel: LoginViewModel,
             ),
             MealInfo(
                 id = 10,
-                nazwa = "Omlet z warzywami",
-                dawka = Dawka(
+                nazwa = "Omlet z warzywami",producent = "",
+                kodKreskowy = "",
+                objetosc = Dawka(
                     jednostka = JEDNOSTKA.GRAM,
-                    wartosc = 200.0,
+                    wartosc = 200.0f,
                     kcal = 250f,
                     bialko = 16f,
                     weglowodany = 6f,
