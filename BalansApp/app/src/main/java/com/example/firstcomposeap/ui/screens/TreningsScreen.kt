@@ -40,7 +40,7 @@ fun TreningsScreen(navController: NavHostController) {
 
 
         Column (
-            modifier = Modifier.fillMaxSize().fillMaxSize().verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
