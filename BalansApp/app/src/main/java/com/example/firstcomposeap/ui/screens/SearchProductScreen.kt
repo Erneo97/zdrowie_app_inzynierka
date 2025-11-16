@@ -174,18 +174,6 @@ fun SearchProductScreen(
                     nazwa = item,
                 )
                 Divider()
-                SearchedItem(
-                    nazwa = item,
-                )
-                Divider()
-                SearchedItem(
-                    nazwa = item,
-                )
-                Divider()
-                SearchedItem(
-                    nazwa = item,
-                )
-                Divider()
             }
         }
         Spacer(Modifier.height(16.dp))
