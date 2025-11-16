@@ -90,7 +90,6 @@ fun SearchProductScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxHeight()
             .fillMaxSize()
             .padding(16.dp)
             .clickable(
@@ -102,30 +101,34 @@ fun SearchProductScreen(
             }
     ) {
 
+        Column( modifier = Modifier
+            .weight(2f)
+            .fillMaxWidth()
+        ) {
+            Text(mainText, style = MaterialTheme.typography.titleLarge)
 
-        Text(mainText, style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(12.dp))
 
-        Spacer(Modifier.height(12.dp))
+            TextField(
+                value = query,
+                onValueChange = { searchViewModel.searchQuery = it },
+                placeholder = { Text("Nazwa produktu...") },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { focusState ->
+                        isFocused = focusState.isFocused
+                    }
+            )
 
-        TextField(
-            value = query,
-            onValueChange = { searchViewModel.searchQuery = it },
-            placeholder = { Text("Nazwa produktu...") },
-            singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { focusState ->
-                    isFocused = focusState.isFocused
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(selected = selectedTabIndex == index,
+                        onClick = {selectedTabIndex = index},
+                        text =  {Text(title, fontSize = 22.sp)}
+                    )
+
                 }
-        )
-
-        TabRow(selectedTabIndex = selectedTabIndex) {
-            tabs.forEachIndexed { index, title ->
-                Tab(selected = selectedTabIndex == index,
-                    onClick = {selectedTabIndex = index},
-                    text =  {Text(title, fontSize = 22.sp)}
-                )
-
             }
         }
         AnimatedVisibility(visible = suggestions.isNotEmpty() && isFocused) {
@@ -161,11 +164,24 @@ fun SearchProductScreen(
         // lista znalezionych produktów
         LazyColumn(
             modifier = Modifier
+                .weight(9f)
                 .fillMaxWidth()
-                .heightIn(max = 750.dp)
+                .heightIn(max = 650.dp)
                 .background(Color.White)
         ) {
             items(suggestions) { item ->
+                SearchedItem(
+                    nazwa = item,
+                )
+                Divider()
+                SearchedItem(
+                    nazwa = item,
+                )
+                Divider()
+                SearchedItem(
+                    nazwa = item,
+                )
+                Divider()
                 SearchedItem(
                     nazwa = item,
                 )
@@ -178,7 +194,7 @@ fun SearchProductScreen(
             onClick = { onClose( )
                       searchViewModel.searchQuery = ""
                       },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier.weight(1f).align(Alignment.End)
         ) {
             Text("Anuluj")
         }
