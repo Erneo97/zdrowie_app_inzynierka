@@ -19,9 +19,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.*
@@ -32,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.input.LogoBackGround
@@ -45,18 +48,25 @@ import com.example.firstcomposeap.ui.components.icon.Today
 import com.example.firstcomposeap.ui.components.meal.WeeakDaysSelector
 import com.example.firstcomposeap.ui.components.meal.friendsMealTab
 import com.example.firstcomposeap.ui.components.meal.userMealTab
+import com.example.firstcomposeap.ui.screens.SearchProductScreen
+import com.example.firstcomposeap.ui.service.SearchViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_meal)) }
     var user = loginViewModel.user
 
+    var showSearchSheet by remember { mutableStateOf(false) }
+    val searchViewModel: SearchViewModel = viewModel ()
+    searchViewModel.token = loginViewModel.token
 
     val tabs = listOf(context.getString(R.string.menu_profil),
         context.getString(R.string.friends)
         )
     var selectedTabIndex by remember { mutableStateOf(0) }
+
 
 
     var wybranaData by remember { mutableStateOf(getFormOnlyDate(getCurrentDate())) }
@@ -110,7 +120,10 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
                     }
 
                     when (selectedTabIndex) {
-                        0 -> userMealTab(loginViewModel, wybranaData)
+                        0 -> userMealTab(loginViewModel,
+                            onAddClick = {showSearchSheet = true},
+                            addProduct = { }, // TODO: zwracanie z wyszukiwania
+                            date = wybranaData)
                         1 -> friendsMealTab(loginViewModel, wybranaData)
                     }
 
@@ -119,6 +132,21 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
             }
         }
     }
+
+    if (showSearchSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showSearchSheet = false }
+        ) {
+            SearchProductScreen(
+                onClose = {
+                    showSearchSheet = false
+//                          TODO: oddawanie wybranych produktów
+                },
+                searchViewModel = searchViewModel,
+            )
+        }
+    }
+
 }
 
 @Composable 

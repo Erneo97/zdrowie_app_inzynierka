@@ -28,19 +28,20 @@ import androidx.compose.ui.unit.dp
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.icon.Question_mark
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab.ToolTipDialoge
-import com.example.firstcomposeap.ui.screens.SearchProductScreen
 import com.example.firstcomposeap.ui.service.data.Dawka
 import com.example.firstcomposeap.ui.service.data.JEDNOSTKA
 import com.example.firstcomposeap.ui.service.data.MealInfo
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun userMealTab(loginViewModel: LoginViewModel,
+                onAddClick: () -> Unit,
+                addProduct: () -> Unit,
                 date: String
 ) {
-    var showSearchSheet by remember { mutableStateOf(false) }
+
     var showToolTip by remember { mutableStateOf(false) }
     var textToolTip by remember { mutableStateOf("") }
+
 
     Spacer(Modifier.height(10.dp))
     if( loginViewModel.isLoadedUserData ) {
@@ -208,21 +209,14 @@ fun userMealTab(loginViewModel: LoginViewModel,
         timeOfDays.forEach { timeOfDays ->
             TimeOfDayMealCard(title = timeOfDays,
                             meals = sampleMeals,
-                onAddClick = {showSearchSheet = true},
+                onAddClick = onAddClick,
                 onRemoveClick = {  meal -> sampleMeals.remove(meal)}
                 )
 
         }
-
-//        sampleMeals.forEach { mealInfo ->
-//            MealProductAdded(mealInfo, onClick = {sampleMeals.remove(mealInfo)} )
-//
-//        }
-
-
     }
     else {
-        // Dane śię ładują
+        // Dane się ładują
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -235,19 +229,6 @@ fun userMealTab(loginViewModel: LoginViewModel,
     if( showToolTip ) {
         ToolTipDialoge (onConfirm = {showToolTip = false},
             text = textToolTip)
-    }
-
-    if (showSearchSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showSearchSheet = false }
-        ) {
-            SearchProductScreen(
-                onClose = { showSearchSheet = false
-//                          TODO: oddawanie wybranych produktów
-                          },
-                loginViewModel = loginViewModel
-            )
-        }
     }
 }
 

@@ -24,7 +24,6 @@ class LoginViewModel : ViewModel() {
     var userEmail by mutableStateOf<String?>(null)
     var user by mutableStateOf<Uzytkownik?>(null)
     var ppm by mutableStateOf<Double>(0.0)
-    var searchQuery by mutableStateOf("")
     var token by mutableStateOf<String?>(null)
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
