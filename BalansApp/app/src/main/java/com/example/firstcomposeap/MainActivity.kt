@@ -1,8 +1,10 @@
 package com.example.balansapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.balansapp.ui.screens.LoginScreen
@@ -18,7 +20,9 @@ import com.example.balansapp.ui.screens.TreningsScreen
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.RegisterViewModel
 import com.example.balansapp.ui.theme.balansappTheme
+import com.example.firstcomposeap.ui.screens.NewProductScreen
 import com.example.firstcomposeap.ui.screens.SearchProductScreen
+import com.example.firstcomposeap.ui.service.ProductViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,10 +30,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             val loginViewModel: LoginViewModel = viewModel()
             val registerViewModel: RegisterViewModel = viewModel()
+            val productViewModel: ProductViewModel = viewModel ()
+
             loginViewModel.login("michal@michal.michal", "michal")
+
 
             balansappTheme {
                 val navController: NavHostController = rememberNavController()
+                val context = LocalContext.current
+
                 NavHost(
                     navController = navController,
                     startDestination = Screen.Home.route
@@ -40,8 +49,20 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
+                    composable(Screen.NewProduct.route) { NewProductScreen(productViewModel, onClose = {navController.popBackStack()}) }
 
-                    composable(Screen.ProductSearch.route) { SearchProductScreen(onClose = {navController.popBackStack()}) }
+                    composable(Screen.ProductSearch.route) { SearchProductScreen(
+                        onClose = {navController.popBackStack()},
+                        onAdd = { selectedType ->
+
+                            if(selectedType == context.getString(R.string.product)) {
+                                navController.navigate(Screen.NewProduct.route)
+                            }
+                            else {
+
+                            }
+                        }
+                        ) }
                 }
             }
         }

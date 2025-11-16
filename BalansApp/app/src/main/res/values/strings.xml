@@ -28,4 +28,9 @@
     <string name="register_password">\'Hasła muszą być takie same\'</string>
     <string name="register_emptyInput">\'Nie wszystkie pola zostały wypełnione\'</string>
     <string name="register_text">Rejestacja</string>
+    <string name="search">Wyszukaj</string>
+    <string name="product">produkt</string>
+    <string name="meal">danie</string>
+    <string name="products">Produkty</string>
+    <string name="mealHead">Danie</string>
 </resources>

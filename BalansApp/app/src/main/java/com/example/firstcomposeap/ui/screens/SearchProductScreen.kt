@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,6 +29,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import com.example.balansapp.R
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -48,6 +48,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,10 +61,12 @@ import com.example.firstcomposeap.ui.service.SearchViewModel
 @Composable
 fun SearchProductScreen(
     onClose: () -> Unit,
-    searchViewModel: SearchViewModel = viewModel()
+    searchViewModel: SearchViewModel = viewModel(),
+    onAdd: (String) -> Unit
 ) {
-    val tabs = listOf("Produkty",
-        "Danie"
+    val context = LocalContext.current
+    val tabs = listOf(context.getString(R.string.products),
+        context.getString(R.string.mealHead)
     )
     var mainText by remember { mutableStateOf("") }
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -74,8 +77,8 @@ fun SearchProductScreen(
             1 -> searchViewModel.setSearcMeal()
         }
         when (selectedTabIndex) {
-            0 -> mainText = "produkt"
-            1 -> mainText = "danie"
+            0 -> mainText = context.getString(R.string.product)
+            1 -> mainText = context.getString(R.string.meal)
         }
     }
 
@@ -102,25 +105,19 @@ fun SearchProductScreen(
             }
     ) {
 
+
         Column( modifier = Modifier
             .weight(3f)
             .fillMaxWidth()
         ) {
-            Row( modifier = Modifier.fillMaxWidth()) {
-                Button(
-                    onClick = { onClose( )
-                        searchViewModel.searchQuery = ""
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                ) {  Text("Anuluj") }
-                Box(Modifier.weight(1f)) {
-                    FullSizeButton(text = "Dodaj ${mainText}", // TODO: dodawanie produktów
-                        onClick = {})
-                }
-            }
+            NavigationButtonsRetAdd(
+                onClose = onClose,
+                onAdd = { onAdd(mainText) }  ,
+                searchViewModel = searchViewModel,
+                mainText = mainText
+            )
 
-            Text("Wyszukaj ${ mainText }", style = MaterialTheme.typography.titleLarge)
+            Text("${context.getString(R.string.search)} ${ mainText }", style = MaterialTheme.typography.titleLarge)
 
             Spacer(Modifier.height(12.dp))
 
@@ -197,7 +194,31 @@ fun SearchProductScreen(
     }
 }
 
+@Composable
+fun NavigationButtonsRetAdd(onClose: () -> Unit,
+                            onAdd: (String) -> Unit,
+                            searchViewModel: SearchViewModel,
+                            mainText: String
+                            ) {
+    Row( modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { onClose( )
+                searchViewModel.searchQuery = ""
+            },
+            modifier = Modifier
+                .weight(1f)
+        ) {  Text("Anuluj") }
+        Box(Modifier.weight(1f)) {
+            FullSizeButton(text = "Dodaj ${mainText}",
+                onClick = {onAdd(mainText)}
+            )
+        }
+    }
+}
 
+/**
+ * Komponent do wyświetlania produktu / dania w wyszukiwarce
+ */
 @Composable
 fun SearchedItem( nazwa: String) {
     var shadowColor = MaterialTheme.colorScheme.primary
