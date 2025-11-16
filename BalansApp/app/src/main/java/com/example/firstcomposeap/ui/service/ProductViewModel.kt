@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class ProductViewModel : ViewModel() {
     var token by mutableStateOf<String?>(null)
 
-    
+
 
 
     fun addNewProduct(product: Product) {
