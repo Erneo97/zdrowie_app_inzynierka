@@ -25,17 +25,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             val loginViewModel: LoginViewModel = viewModel()
             val registerViewModel: RegisterViewModel = viewModel()
-//            loginViewModel.login("michal@michal.michal", "michal")
+            loginViewModel.login("michal@michal.michal", "michal")
+
             balansappTheme {
                 val navController: NavHostController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Login.route
+                    startDestination = Screen.Home.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
                     composable(Screen.Home.route) { MealScreen(navController, loginViewModel) }
-                    composable(Screen.Profile.route) { ProfileScreen(navController) }
+                    composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
                 }
