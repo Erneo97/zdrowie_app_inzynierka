@@ -23,7 +23,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.*
@@ -39,6 +38,7 @@ import androidx.navigation.NavHostController
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayout
+import com.example.balansapp.ui.navigation.main.Screen
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.CalendarDialoge
 import com.example.firstcomposeap.ui.components.getCurrentDate
@@ -48,7 +48,6 @@ import com.example.firstcomposeap.ui.components.icon.Today
 import com.example.firstcomposeap.ui.components.meal.WeeakDaysSelector
 import com.example.firstcomposeap.ui.components.meal.friendsMealTab
 import com.example.firstcomposeap.ui.components.meal.userMealTab
-import com.example.firstcomposeap.ui.screens.SearchProductScreen
 import com.example.firstcomposeap.ui.service.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,18 +131,9 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
         }
     }
 
+
     if (showSearchSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showSearchSheet = false }
-        ) {
-            SearchProductScreen(
-                onClose = {
-                    showSearchSheet = false
-//                          TODO: oddawanie wybranych produktów
-                },
-                searchViewModel = searchViewModel,
-            )
-        }
+        navController.navigate(Screen.ProductSearch.route)
     }
 
 }

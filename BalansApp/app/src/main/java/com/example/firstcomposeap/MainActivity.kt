@@ -18,6 +18,7 @@ import com.example.balansapp.ui.screens.TreningsScreen
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.RegisterViewModel
 import com.example.balansapp.ui.theme.balansappTheme
+import com.example.firstcomposeap.ui.screens.SearchProductScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +40,8 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
+
+                    composable(Screen.ProductSearch.route) { SearchProductScreen(onClose = {navController.popBackStack()}) }
                 }
             }
         }
