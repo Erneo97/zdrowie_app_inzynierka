@@ -14,15 +14,27 @@ class SearchViewModel @Inject constructor(): ViewModel() {
     var message by mutableStateOf<String?>(null)
 
     var productList by mutableStateOf(listOf<String>())
+    var mealList by mutableStateOf(listOf<String>())
+    var searchItemsList by mutableStateOf(mealList)
+
+    fun setSearcMeal( ) {
+        searchQuery = ""
+        searchItemsList = mealList
+    }
+
+    fun setSearcProducts( ) {
+        searchQuery = ""
+        searchItemsList = productList
+    }
 
     fun suggestions(): List<String> {
         if (searchQuery.isBlank()) return emptyList()
 
         // Jeśli wpisana nazwa jest dokładnym dopasowaniem – nie pokazujemy sugestii
-        val exactMatch = productList.any { it.equals(searchQuery, ignoreCase = true) }
+        val exactMatch = searchItemsList.any { it.equals(searchQuery, ignoreCase = true) }
         if (exactMatch) return emptyList()
 
-        return productList.filter {
+        return searchItemsList.filter {
             it.contains(searchQuery, ignoreCase = true)
         }
     }

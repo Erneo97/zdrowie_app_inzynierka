@@ -56,7 +56,6 @@ import com.example.firstcomposeap.ui.service.SearchViewModel
 fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_meal)) }
-    var user = loginViewModel.user
 
     var showSearchSheet by remember { mutableStateOf(false) }
     val searchViewModel: SearchViewModel = viewModel ()
