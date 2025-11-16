@@ -53,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.balansapp.ui.components.FullSizeButton
 import com.example.firstcomposeap.ui.service.SearchViewModel
 
 @SuppressLint("ViewModelConstructorInComposable")
@@ -73,8 +74,8 @@ fun SearchProductScreen(
             1 -> searchViewModel.setSearcMeal()
         }
         when (selectedTabIndex) {
-            0 -> mainText = "Wyszukaj produkt"
-            1 -> mainText = "Wyszukaj danie"
+            0 -> mainText = "produkt"
+            1 -> mainText = "danie"
         }
     }
 
@@ -102,10 +103,24 @@ fun SearchProductScreen(
     ) {
 
         Column( modifier = Modifier
-            .weight(2f)
+            .weight(3f)
             .fillMaxWidth()
         ) {
-            Text(mainText, style = MaterialTheme.typography.titleLarge)
+            Row( modifier = Modifier.fillMaxWidth()) {
+                Button(
+                    onClick = { onClose( )
+                        searchViewModel.searchQuery = ""
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                ) {  Text("Anuluj") }
+                Box(Modifier.weight(1f)) {
+                    FullSizeButton(text = "Dodaj ${mainText}", // TODO: dodawanie produktów
+                        onClick = {})
+                }
+            }
+
+            Text("Wyszukaj ${ mainText }", style = MaterialTheme.typography.titleLarge)
 
             Spacer(Modifier.height(12.dp))
 
@@ -178,14 +193,7 @@ fun SearchProductScreen(
         }
         Spacer(Modifier.height(16.dp))
 
-        Button(
-            onClick = { onClose( )
-                      searchViewModel.searchQuery = ""
-                      },
-            modifier = Modifier.weight(1f).align(Alignment.End)
-        ) {
-            Text("Anuluj")
-        }
+
     }
 }
 
