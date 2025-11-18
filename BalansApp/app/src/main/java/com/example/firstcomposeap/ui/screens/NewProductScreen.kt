@@ -230,6 +230,9 @@ fun DawkaForm(
         NumericInput("Tłuszcze (g)", dawka.tluszcze) { newValue ->
             updateField { d -> d.copy(tluszcze = newValue) }
         }
+        NumericInput("Klaoryczność (kcal)", dawka.kcal) { newValue ->
+            updateField { d -> d.copy(kcal = newValue) }
+        }
         NumericInput("Błonnik (g)", dawka.blonnik) { newValue ->
             updateField { d -> d.copy(blonnik = newValue) }
         }
