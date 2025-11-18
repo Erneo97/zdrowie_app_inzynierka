@@ -7,6 +7,8 @@ public class Dawka {
     Jednostki jednostki;
     private float kcal, bialko, weglowodany, tluszcze, blonnik;
 
+    public Dawka() {}
+
     public float getWartosc() {
         return wartosc;
     }

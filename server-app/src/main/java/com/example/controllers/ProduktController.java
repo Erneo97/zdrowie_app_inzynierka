@@ -2,6 +2,9 @@ package com.example.controllers;
 
 import com.example.kolekcje.posilki.Produkt;
 import com.example.services.ProduktService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/spozywcze")
+@RequestMapping("/api/produkty")
 public class ProduktController {
     private final ProduktService produktService;
 
@@ -17,17 +20,18 @@ public class ProduktController {
         this.produktService = produktService;
     }
 
+
+    private static final Logger log = LoggerFactory.getLogger(ProduktController.class);
+
+
     @PostMapping("/produkt")
     public ResponseEntity<?> createProduct(@RequestBody Produkt nowyProdukt) {
+        log.info("createProduct  " + nowyProdukt.getNazwa());
 
-        if( nowyProdukt.getKodKreskowy() != null ) {
-            Optional<Produkt> produkt = produktService.findByKodKreskowy(nowyProdukt.getKodKreskowy());
 
-            if (produkt.isPresent() && produkt.get().getKodKreskowy() != null ) {
-                return ResponseEntity.status(401).body("Podany kod kreskowy jest przypisany do istniejącego produktu");
-            }
+        if( nowyProdukt.getObjetosc().isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Brak przypisanych wartości odrzywczych");
         }
-
 
         Produkt created = produktService.createProducts(
                 nowyProdukt.getProducent(),

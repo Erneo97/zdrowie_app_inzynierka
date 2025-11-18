@@ -24,7 +24,11 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers("/api/uzytkownicy", "/api/uzytkownicy/**").permitAll()
+                .requestMatchers("/api/uzytkownicy",
+                        "/api/uzytkownicy/**",
+                        "/api/produkty/**",
+                        "/api/serach/**")
+                .permitAll()
                 .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // wyłączenie ciasteczek
         http.httpBasic(withDefaults());
