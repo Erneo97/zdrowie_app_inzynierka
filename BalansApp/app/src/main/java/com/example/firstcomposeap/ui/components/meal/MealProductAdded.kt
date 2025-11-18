@@ -31,7 +31,7 @@ fun MealProductAdded(meal: MealInfo, onClick : () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(meal.nazwa, fontWeight = FontWeight.Bold, modifier = Modifier.weight(6f), fontSize = 25.sp)
-                Text(text ="${ meal.objetosc.wartosc} ${meal.objetosc.jednostka.displayName}", fontSize = 15.sp, modifier = Modifier.weight(2f))
+                Text(text ="${ meal.objetosc.wartosc} ${meal.objetosc.jednostki.displayName}", fontSize = 15.sp, modifier = Modifier.weight(2f))
                 Text(text ="${ meal.objetosc.kcal} kcal", fontSize = 15.sp, modifier = Modifier.weight(2f))
             }
         }

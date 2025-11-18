@@ -1,7 +1,6 @@
 package com.example.balansapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
@@ -33,7 +32,7 @@ class MainActivity : ComponentActivity() {
             val productViewModel: ProductViewModel = viewModel ()
 
             loginViewModel.login("michal@michal.michal", "michal")
-
+            productViewModel.token = loginViewModel.token
 
             balansappTheme {
                 val navController: NavHostController = rememberNavController()
@@ -49,6 +48,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
+
                     composable(Screen.NewProduct.route) { NewProductScreen(productViewModel, onClose = {navController.popBackStack()}) }
 
                     composable(Screen.ProductSearch.route) { SearchProductScreen(

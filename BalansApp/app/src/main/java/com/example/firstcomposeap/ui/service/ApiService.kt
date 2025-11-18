@@ -10,11 +10,11 @@ import com.example.balansapp.ui.service.data.RegisterResponse
 import com.example.balansapp.ui.service.data.SimpleMessage
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
+import com.example.firstcomposeap.ui.service.data.Product
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.Response
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
@@ -73,4 +73,12 @@ interface ApiService {
     @PUT("uzytkownicy/friends")
     suspend fun changeAccessUserFrend(@Body body: PrzyjacieleInfo, @Header("Authorization") authorization: String)
             : Response<List<SimpleMessage>>
+
+
+    @POST("produkty/produkt")
+    suspend fun addProductToDb(@Body body: Product) : Response<Product>
+
+    @GET("produkty/produkty")
+    suspend fun getAllMatchesProduktNames(@Body body: Product) : Response<List<String>>
+
 }

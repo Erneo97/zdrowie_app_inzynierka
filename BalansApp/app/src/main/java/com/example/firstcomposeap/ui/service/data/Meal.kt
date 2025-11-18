@@ -1,5 +1,13 @@
 package com.example.firstcomposeap.ui.service.data
 
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import java.lang.reflect.Type
+
 data class MealInfo (
     val id: Long,    // id produktu w bazie danych
     val nazwa: String,
@@ -17,7 +25,7 @@ data class Product (
 )
 
 data class Dawka (
-    val jednostka: JEDNOSTKA,
+    val jednostki: Jednostki ,
     val wartosc: Float,
     val kcal: Float,
     val bialko: Float,
@@ -26,16 +34,39 @@ data class Dawka (
     val blonnik: Float
 )
 
-enum class JEDNOSTKA (val displayName: String) {
+enum class Jednostki  (val displayName: String) {
     LITR("l."),
     GRAM("g."),
     KILOGRAM("kg."),
     SZTUKI("szt."),
     MILILITR("ml.");
 
+
+
     companion object {
-        fun fromDisplayName(name: String): JEDNOSTKA? {
+        fun fromDisplayName(name: String): Jednostki ? {
             return values().firstOrNull { it.displayName == name }
         }
+    }
+
+}
+
+class JednostkiAdapter : JsonSerializer<Jednostki>, JsonDeserializer<Jednostki> {
+
+    override fun serialize(
+        src: Jednostki?,
+        typeOfSrc: Type?,
+        context: JsonSerializationContext?
+    ): JsonElement {
+        return JsonPrimitive(src?.name) // wysyłamy "GRAM"
+    }
+
+    override fun deserialize(
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
+    ): Jednostki {
+        val name = json?.asString
+        return Jednostki.valueOf(name!!) // przyjmujemy "GRAM" → enum
     }
 }

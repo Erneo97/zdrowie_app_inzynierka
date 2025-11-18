@@ -27,7 +27,7 @@ import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.icon.Question_mark
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab.ToolTipDialoge
 import com.example.firstcomposeap.ui.service.data.Dawka
-import com.example.firstcomposeap.ui.service.data.JEDNOSTKA
+import com.example.firstcomposeap.ui.service.data.Jednostki
 import com.example.firstcomposeap.ui.service.data.MealInfo
 
 @Composable
@@ -76,7 +76,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 250.0f,
                     kcal = 320f,
                     bialko = 12f,
@@ -91,7 +91,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 180.0f,
                     kcal = 280f,
                     bialko = 18f,
@@ -107,7 +107,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 350.0f,
                     kcal = 450f,
                     bialko = 35f,
@@ -123,7 +123,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 180.0f,
                     kcal = 330f,
                     bialko = 17f,
@@ -138,7 +138,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 250.0f,
                     kcal = 260f,
                     bialko = 25f,
@@ -153,7 +153,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.MILILITR,
+                    jednostki = Jednostki .MILILITR,
                     wartosc = 400.0f,
                     kcal = 180f,
                     bialko = 6f,
@@ -168,7 +168,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 150.0f,
                     kcal = 90f,
                     bialko = 5f,
@@ -182,7 +182,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 nazwa = "Banan",producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 120.0f,
                     kcal = 105f,
                     bialko = 1f,
@@ -196,7 +196,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 nazwa = "Makaron z sosem bolońskim",producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 400.0f,
                     kcal = 520f,
                     bialko = 28f,
@@ -210,7 +210,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
                 nazwa = "Omlet z warzywami",producent = "",
                 kodKreskowy = "",
                 objetosc = Dawka(
-                    jednostka = JEDNOSTKA.GRAM,
+                    jednostki = Jednostki .GRAM,
                     wartosc = 200.0f,
                     kcal = 250f,
                     bialko = 16f,

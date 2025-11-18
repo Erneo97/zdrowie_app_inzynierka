@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/api/uzytkownicy")
 public class UzytkownikController {
     private static final Logger log = LoggerFactory.getLogger(UzytkownikController.class);
-//    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
 
     @Autowired
     private AuthenticationManager authenticationManager;

@@ -41,7 +41,8 @@ import com.example.firstcomposeap.ui.components.BlancCard
 import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.Dawka
-import com.example.firstcomposeap.ui.service.data.JEDNOSTKA
+import com.example.firstcomposeap.ui.service.data.Jednostki
+import com.example.firstcomposeap.ui.service.data.Product
 
 
 @Composable
@@ -57,13 +58,13 @@ fun NewProductScreen(productViewModel: ProductViewModel,
     var dawka by remember {
         mutableStateOf(
             Dawka(
-                jednostka = JEDNOSTKA.GRAM,
-                wartosc = 100f,
-                kcal = 230f,
-                bialko = 10f,
-                weglowodany = 30f,
-                tluszcze = 5f,
-                blonnik = 2f
+                jednostki = Jednostki .LITR,
+                wartosc = 1f,
+                kcal = 0f,
+                bialko = 0f,
+                weglowodany = 0f,
+                tluszcze = 0f,
+                blonnik = 0f
             )
         )
     }
@@ -79,7 +80,15 @@ fun NewProductScreen(productViewModel: ProductViewModel,
                 onClick = { onClose( )  }
             ) {  Text("Anuluj") }
             Button(modifier = Modifier.weight(3f),
-                onClick = { TODO()  }
+                onClick = { productViewModel.addNewProduct(
+                    Product(
+                        nazwa = nazwa,
+                        kodKreskowy = kodkreskowy,
+                        producent = producent,
+                        id = -1,
+                        objetosc = unitList,
+                    )
+                )  }
             ) {  Text("Zapisz produkt") }
         }
 
@@ -110,45 +119,50 @@ fun NewProductScreen(productViewModel: ProductViewModel,
 
 
         Text("Dodane jednostki", fontSize = 25.sp)
-        unitList.forEachIndexed { index, dawka ->
-            BlancCard {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(modifier = Modifier
-                        .weight(2f)
-                        .padding(5.dp)) {
-                        Text("${index + 1}", fontSize = 30.sp)
-                    }
-                    Box(modifier = Modifier.weight(8f)) {
-                        DawkaForm(
-                            dawka = dawka,
-                            onDawkaChange = { newDawka ->
-                                unitList[index] = newDawka
-                            },
-                        )
-                    }
-                    Box(modifier = Modifier.weight(2f)) {
-                        FloatingActionButton(
-                            onClick = {  unitList.removeAt(index)  },
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(start = 8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Delete,
-                                contentDescription = "Usuń",
-                                tint = Color.White
+        Spacer(Modifier.height(11.dp))
+        if(unitList.isEmpty() ) {
+            Text("Nie dodano wartości odżywczych", fontSize = 20.sp)
+        }
+        else
+            unitList.forEachIndexed { index, dawka ->
+                BlancCard {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(modifier = Modifier
+                            .weight(2f)
+                            .padding(5.dp)) {
+                            Text("${index + 1}", fontSize = 30.sp)
+                        }
+                        Box(modifier = Modifier.weight(8f)) {
+                            DawkaForm(
+                                dawka = dawka,
+                                onDawkaChange = { newDawka ->
+                                    unitList[index] = newDawka
+                                },
                             )
+                        }
+                        Box(modifier = Modifier.weight(2f)) {
+                            FloatingActionButton(
+                                onClick = {  unitList.removeAt(index)  },
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Delete,
+                                    contentDescription = "Usuń",
+                                    tint = Color.White
+                                )
+                            }
                         }
                     }
                 }
+
             }
-
-        }
-
+        Spacer(Modifier.height(25.dp))
     }
 
 }
@@ -186,18 +200,18 @@ fun DawkaForm(
                     onClick = { expanded = true },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(dawka.jednostka.displayName)
+                    Text(dawka.jednostki.displayName)
                 }
 
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    JEDNOSTKA.values().forEach { unit ->
+                    Jednostki .values().forEach { unit ->
                         DropdownMenuItem(
                             text = { Text(unit.displayName) },
                             onClick = {
-                                updateField { it.copy(jednostka = unit) }
+                                updateField { it.copy(jednostki = unit) }
                                 expanded = false
                             }
                         )
