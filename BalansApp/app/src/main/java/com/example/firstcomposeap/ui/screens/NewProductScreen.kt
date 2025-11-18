@@ -1,17 +1,25 @@
 package com.example.firstcomposeap.ui.screens
 
+
+import android.widget.Space
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -23,21 +31,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.FullSizeButton
+import com.example.balansapp.ui.components.input.InputField
+import com.example.firstcomposeap.ui.components.BlancCard
+import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.Dawka
 import com.example.firstcomposeap.ui.service.data.JEDNOSTKA
-import java.nio.file.WatchEvent
+
 
 @Composable
 fun NewProductScreen(productViewModel: ProductViewModel,
                      onClose: () -> Unit
 ) {
-    var amount by remember { mutableStateOf("") }
-    var unit by remember { mutableStateOf(JEDNOSTKA.GRAM) }
     var unitList = remember { mutableStateListOf<Dawka>() }
+    var nazwa by remember { mutableStateOf("") }
+    var producent by remember { mutableStateOf("") }
+    var kodkreskowy by remember { mutableStateOf("") }
+
 
     var dawka by remember {
         mutableStateOf(
@@ -53,53 +68,85 @@ fun NewProductScreen(productViewModel: ProductViewModel,
         )
     }
 
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())){
-        Text("NewProductScreen")
-        Button(
-            onClick = { onClose( )  }
-        ) {  Text("Anuluj") }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+        ){
+        Spacer(modifier = Modifier.height(25.dp))
+        Row {
+            Button(modifier = Modifier.weight(1f),
+                onClick = { onClose( )  }
+            ) {  Text("Anuluj") }
+            Button(modifier = Modifier.weight(3f),
+                onClick = { TODO()  }
+            ) {  Text("Zapisz produkt") }
+        }
 
 
-        Text("Wybierz jednostkę:")
+        BlancCard {
+            Text("Wybierz jednostkę:")
+
+            InputField(value = nazwa, onValueChange = {nazwa = it}, label = "Nazwa produktu" )
+            Spacer(Modifier.height(8.dp))
+            InputField(value = producent, onValueChange = {producent = it}, label = "Producent produktu" )
+            Spacer(Modifier.height(8.dp))
+            InputField(value = kodkreskowy, onValueChange = {kodkreskowy = it}, label = "Kod kreskowy" )
+
+            Spacer(Modifier.height(20.dp))
+            Text("Dodaj wartość odżywczą produktu", fontSize = 20.sp)
+            Spacer(Modifier.height(20.dp))
+
+            DawkaForm(
+                dawka = dawka,
+                onDawkaChange = { dawka = it }
+            )
+            FullSizeButton("Dodaj wartość",
+                onClick = {
+                    unitList.add(dawka)
+                })
+        }
 
 
-        DawkaForm(
-            dawka = dawka,
-            onDawkaChange = { dawka = it }
-        )
-        FullSizeButton("Dodaj jednostkę",
-            onClick = {
-                unitList.add(dawka)
-            })
 
-        Text("Dodane jednostki")
+        Text("Dodane jednostki", fontSize = 25.sp)
         unitList.forEachIndexed { index, dawka ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(modifier = Modifier.weight(2f).padding(5.dp)) {
-                    Text("${index}")
-                }
-                Box(modifier = Modifier.weight(8f)) {
-                    DawkaForm(
-                        dawka = dawka,
-                        onDawkaChange = { newDawka ->
-                            unitList[index] = newDawka
-                        },
-                    )
-                }
-                Box(modifier = Modifier.weight(2f)) {
-                    Button(
-                        onClick = { unitList.removeAt(index) },
-                        modifier = Modifier.padding(start = 8.dp)
-                    ) {
-                        Text("Usuń")
+            BlancCard {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(modifier = Modifier
+                        .weight(2f)
+                        .padding(5.dp)) {
+                        Text("${index + 1}", fontSize = 30.sp)
+                    }
+                    Box(modifier = Modifier.weight(8f)) {
+                        DawkaForm(
+                            dawka = dawka,
+                            onDawkaChange = { newDawka ->
+                                unitList[index] = newDawka
+                            },
+                        )
+                    }
+                    Box(modifier = Modifier.weight(2f)) {
+                        FloatingActionButton(
+                            onClick = {  unitList.removeAt(index)  },
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(start = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Delete,
+                                contentDescription = "Usuń",
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }
+
         }
 
     }

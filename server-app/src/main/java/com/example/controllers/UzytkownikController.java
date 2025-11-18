@@ -2,11 +2,8 @@ package com.example.controllers;
 
 import com.example.auth.jwt.JwtUtils;
 import com.example.kolekcje.PrzyjacieleInfo;
-import com.example.kolekcje.Zaproszenie;
 import com.example.kolekcje.ZaproszenieInfo;
-import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
-import com.example.kolekcje.uzytkownik.Przyjaciele;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.repositories.LoginResponse;
 import com.example.requests.ChangePassword;
@@ -20,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
