@@ -16,10 +16,10 @@ public enum Jednostki {
         this.displayName = displayName;
     }
 
-    @JsonValue
-    public String getDisplayName() {
-        return displayName;
-    }
+//    @JsonValue
+//    public String getDisplayName() {
+//        return displayName;
+//    }
 
     @JsonCreator
     public static Jednostki fromName(String name) {
