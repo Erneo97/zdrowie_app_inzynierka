@@ -81,9 +81,5 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         resultsList = listOf(suggestion)
     }
 
-    fun clearSearch() {
-        searchQuery = ""
-        suggestionsList = emptyList()
-    }
 
 }

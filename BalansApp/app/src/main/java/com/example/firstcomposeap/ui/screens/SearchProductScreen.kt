@@ -15,18 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import com.example.balansapp.R
 import androidx.compose.material3.Tab
@@ -36,6 +32,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -105,7 +102,10 @@ fun SearchProductScreen(
 
             NavigationButtonsRetAdd(
                 onClose = onClose,
-                onAdd = { onAdd(mainText) },
+                onAdd = {
+//  TODO:                   Lista wybranych produktów z parametrami
+                    onAdd(mainText)
+                        },
                 searchViewModel = searchViewModel,
                 mainText = mainText
             )
@@ -175,31 +175,52 @@ fun SearchProductScreen(
                 }
             }
         }
+        var selectedProducts = remember { mutableStateListOf<Produkt>() }
 
-        if(!isFocused)
-        LazyColumn(
-            modifier = Modifier
-                .weight(9f)
-                .fillMaxWidth()
-                .heightIn(max = 650.dp)
-                .background(Color.White)
-        ) {
-            items(productsList) { item ->
-                SearchedItem(product = item)
-                Divider()
+        if(!isFocused) {
+            LazyColumn(
+                modifier = Modifier
+                    .weight(9f)
+                    .fillMaxWidth()
+                    .heightIn(max = 650.dp)
+                    .background(Color.White)
+            ) {
+                items(productsList) { item ->
+
+                    val isChecked = selectedProducts.contains(item)
+                    SearchedItem(
+                        product = item,
+                        isChecked = isChecked,
+                        onCheckedChange = { prod, checked ->
+                            if (checked) {
+                                if (checked) {
+                                    selectedProducts.add(prod)
+                                }
+                            } else {
+                                selectedProducts.remove(prod)
+                            }
+                        },
+                        onClick = {
+//                            TODO: Zmiana zawartośći
+                        }
+                    )
+                    Divider()
+                }
             }
         }
         else
             Text("Brak pasujących wyników wyszukiwania")
 
         Spacer(Modifier.height(16.dp))
+
+        Text("${selectedProducts.size}")
     }
 }
 
 @Composable
 fun NavigationButtonsRetAdd(
     onClose: () -> Unit,
-    onAdd: (String) -> Unit,
+    onAdd: () -> Unit,
     searchViewModel: SearchViewModel,
     mainText: String
 ) {
@@ -219,7 +240,7 @@ fun NavigationButtonsRetAdd(
         Box(Modifier.weight(1f)) {
             FullSizeButton(
                 text = "Dodaj $mainText",
-                onClick = { onAdd(mainText) }
+                onClick = onAdd
             )
         }
     }
@@ -229,12 +250,18 @@ fun NavigationButtonsRetAdd(
  * Komponent do wyświetlania produktu / dania w wyszukiwarce
  */
 @Composable
-fun SearchedItem( product: Produkt) {
+fun SearchedItem(product: Produkt,
+                 isChecked: Boolean,
+                 onCheckedChange: (Produkt, Boolean) -> Unit,
+                 onClick: (Boolean) -> Unit
+) {
     var shadowColor = MaterialTheme.colorScheme.primary
+    var innerisChecked by remember {   mutableStateOf(isChecked) }
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .clickable { onClick(innerisChecked) }
             .drawBehind {
                 val shadowOffsetX = 8f
                 val shadowOffsetY = 8f
@@ -291,17 +318,14 @@ fun SearchedItem( product: Produkt) {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                FloatingActionButton(
-                    onClick = {},
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(42.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Menu",
-                        tint = Color.White
-                    )
-                }
+                Checkbox(
+                    checked = innerisChecked,
+                    onCheckedChange = { checked ->
+                        innerisChecked = !innerisChecked
+                        onCheckedChange(product, innerisChecked)
+
+                    }
+                )
             }
         }
     }
