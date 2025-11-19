@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -46,34 +47,53 @@ public class SerachControler {
             return List.of();
         }
 
+        Criteria nameCriteria = Criteria.where("nazwa").regex(Pattern.quote(nazwa), "i");
+        Criteria producerCriteria = Criteria.where("producent").regex(Pattern.quote(nazwa), "i");
 
         Query query = new Query();
-        query.addCriteria(
-                Criteria.where("nazwa")
-                        .regex("^" + Pattern.quote(nazwa), "i") 
-        );
-        query.limit(10);
-        query.fields().include("nazwa");
+        query.addCriteria(new Criteria().orOperator(nameCriteria, producerCriteria));
+        query.limit(15);
+        query.fields().include("nazwa").include("producent");
 
         List<Produkt> produkty = mongoTemplate.find(query, Produkt.class, "Produkty");
 
         List<String> nazwy = produkty.stream()
-                .map(Produkt::getNazwa)
+                .map(p -> p.getProducent() + " - " + p.getNazwa())
                 .toList();
 
         log.info(nazwy.toString());
         return nazwy;
     }
-//    @GetMapping("/produkts/{nazwa}")
-//    public List<Produkt> getAllProduct(@PathVariable String nazwa) {
-//        log.info("getAllProduct: {}", nazwa);
-//        List<String> nazwy = getAllMatchesProduktNames(nazwa).stream().distinct().collect(Collectors.toList());
-//        List<Produkt> produkty = new ArrayList<>();
-//        for( String nazwaSzukanegoProduktu: nazwy) {
-//            produkty.addAll(produktService.findByNazwa(nazwaSzukanegoProduktu));
-//        }
-//
-//        return produkty;
-//    }
+
+    @GetMapping("/produkts/{nazwa}")
+    public List<Produkt> getAllProduct(@PathVariable String nazwa) {
+        log.info("getAllProduct: {}", nazwa);
+
+        if (nazwa == null || nazwa.isBlank()) {
+            return List.of();
+        }
+
+        String[] fragments = nazwa.split("-");
+        List<Criteria> criteriaList = new ArrayList<>();
+
+        for (String fragment : fragments) {
+            fragment = fragment.trim();
+            if (!fragment.isEmpty()) {
+                Criteria nameCriteria = Criteria.where("nazwa").regex(Pattern.quote(fragment), "i");
+                Criteria producerCriteria = Criteria.where("producent").regex(Pattern.quote(fragment), "i");
+                criteriaList.add(new Criteria().orOperator(nameCriteria, producerCriteria));
+            }
+        }
+
+        Query query = new Query();
+        if (!criteriaList.isEmpty()) {
+            query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
+        }
+
+        List<Produkt> produkty = mongoTemplate.find(query, Produkt.class, "Produkty");
+
+        log.info("Znaleziono produkty: {}", produkty.size());
+        return produkty;
+    }
 
 }

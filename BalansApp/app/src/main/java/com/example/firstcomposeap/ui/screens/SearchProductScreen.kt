@@ -164,8 +164,8 @@ fun SearchProductScreen(
                             modifier = Modifier
                                 .clickable {
                                     searchViewModel.selectSuggestion(item)
-                                    focusManager.clearFocus()
                                     searchViewModel.downloadSearcheProducts()
+                                    focusManager.clearFocus()
                                     isFocused = false
                                 }
                                 .padding(12.dp)
@@ -175,7 +175,7 @@ fun SearchProductScreen(
                 }
             }
         }
-        Text("${productsList}")
+
         if(!isFocused)
         LazyColumn(
             modifier = Modifier
