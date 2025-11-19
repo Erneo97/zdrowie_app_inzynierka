@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
+import com.example.firstcomposeap.ui.service.data.Produkt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     var resultsList by mutableStateOf<List<String>>(emptyList())
         private set
 
+    var searchedProducts by mutableStateOf<List<Produkt>> (emptyList())
 
     fun onSearchQueryChange(value: String) {
         searchQuery = value
@@ -40,7 +42,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
 
     fun downloadSuggestions() {
-        Log.e("downloadSuggestions", " ${searchQuery}")
+//        Log.e("downloadSuggestions", " ${searchQuery}")
         viewModelScope.launch {
             try {
                 val response = ApiClient.api.getAllMatchesProduktNames(searchQuery)
@@ -48,6 +50,23 @@ class SearchViewModel @Inject constructor() : ViewModel() {
                     suggestionsList = response.body() ?: emptyList()
                 } else {
                     errorMessage = "Błąd pobierania sugestii: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+    fun downloadSearcheProducts() {
+        Log.e("downloadSearcheProducts", " ${searchQuery}")
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.getAllMatchesProduct(searchQuery)
+                if (response.isSuccessful) {
+                    val produkty = response.body() ?: emptyList()
+                    searchedProducts = produkty
+                } else {
+                    errorMessage = "Błąd pobierania produktów: ${response.code()}"
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage

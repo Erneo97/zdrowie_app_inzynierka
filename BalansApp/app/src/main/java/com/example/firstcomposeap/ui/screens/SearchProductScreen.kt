@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.firstcomposeap.ui.service.SearchViewModel
+import com.example.firstcomposeap.ui.service.data.Produkt
 
 @Composable
 fun SearchProductScreen(
@@ -65,8 +66,10 @@ fun SearchProductScreen(
     val context = LocalContext.current
     val query = searchViewModel.searchQuery
     val suggestions = searchViewModel.suggestionsList
+    val productsList = searchViewModel.searchedProducts
 
     var selectedTabIndex by remember { mutableStateOf(0) }
+
     var mainText by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -90,12 +93,13 @@ fun SearchProductScreen(
             ) {
                 focusManager.clearFocus()
                 isFocused = false
-            }
+                searchViewModel.downloadSearcheProducts()
+            },
+        verticalArrangement = Arrangement.Top
     ) {
 
         Column(
             modifier = Modifier
-                .weight(3f)
                 .fillMaxWidth()
         ) {
 
@@ -161,6 +165,7 @@ fun SearchProductScreen(
                                 .clickable {
                                     searchViewModel.selectSuggestion(item)
                                     focusManager.clearFocus()
+                                    searchViewModel.downloadSearcheProducts()
                                     isFocused = false
                                 }
                                 .padding(12.dp)
@@ -170,7 +175,8 @@ fun SearchProductScreen(
                 }
             }
         }
-
+        Text("${productsList}")
+        if(!isFocused)
         LazyColumn(
             modifier = Modifier
                 .weight(9f)
@@ -178,11 +184,13 @@ fun SearchProductScreen(
                 .heightIn(max = 650.dp)
                 .background(Color.White)
         ) {
-            items(suggestions) { item ->
-                SearchedItem(nazwa = item)
+            items(productsList) { item ->
+                SearchedItem(product = item)
                 Divider()
             }
         }
+        else
+            Text("Brak pasujących wyników wyszukiwania")
 
         Spacer(Modifier.height(16.dp))
     }
@@ -221,7 +229,7 @@ fun NavigationButtonsRetAdd(
  * Komponent do wyświetlania produktu / dania w wyszukiwarce
  */
 @Composable
-fun SearchedItem( nazwa: String) {
+fun SearchedItem( product: Produkt) {
     var shadowColor = MaterialTheme.colorScheme.primary
     Box(
         modifier = Modifier
@@ -262,7 +270,13 @@ fun SearchedItem( nazwa: String) {
             ) {
 
                 Text(
-                    text = nazwa,
+                    text = product.nazwa,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Text(
+                    text = product.producent,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.secondary
