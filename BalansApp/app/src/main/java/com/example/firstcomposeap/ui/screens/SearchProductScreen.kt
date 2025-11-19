@@ -185,7 +185,7 @@ fun SearchProductScreen(
                     .heightIn(max = 650.dp)
                     .background(Color.White)
             ) {
-                items(productsList) { item ->
+                items(productsList, key = {it.id}) { item ->
 
                     val isChecked = selectedProducts.contains(item)
                     SearchedItem(
@@ -213,7 +213,8 @@ fun SearchProductScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        Text("${selectedProducts.size}")
+        if( selectedProducts.isNotEmpty())
+            Text("${selectedProducts.get(0)}")
     }
 }
 
