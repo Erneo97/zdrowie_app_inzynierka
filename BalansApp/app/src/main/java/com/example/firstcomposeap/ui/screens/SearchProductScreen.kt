@@ -1,6 +1,5 @@
 package com.example.firstcomposeap.ui.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -57,7 +56,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.firstcomposeap.ui.service.SearchViewModel
 
-@SuppressLint("ViewModelConstructorInComposable")
 @Composable
 fun SearchProductScreen(
     onClose: () -> Unit,
@@ -65,32 +63,22 @@ fun SearchProductScreen(
     onAdd: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val tabs = listOf(context.getString(R.string.products),
-        context.getString(R.string.mealHead)
-    )
-    var mainText by remember { mutableStateOf("") }
-    var selectedTabIndex by remember { mutableStateOf(0) }
-
-    LaunchedEffect(selectedTabIndex) {
-        when (selectedTabIndex) {
-            0 -> searchViewModel.setSearcProducts()
-            1 -> searchViewModel.setSearcMeal()
-        }
-        when (selectedTabIndex) {
-            0 -> mainText = context.getString(R.string.product)
-            1 -> mainText = context.getString(R.string.meal)
-        }
-    }
-
-
-    searchViewModel.productList = listOf("Masło", "Masło 1", "Masło 2 ", "Masło 33", "Mleko", "Mąka", "Cukier", "Chleb")
-    searchViewModel.mealList = listOf("Sphagettin", "Mielony", "Schabowy", "Galaretka", "Budyń")
-
     val query = searchViewModel.searchQuery
-    val suggestions = searchViewModel.suggestions()
+    val suggestions = searchViewModel.suggestionsList
 
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    var mainText by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+
+
+    LaunchedEffect(selectedTabIndex) {
+        mainText = when (selectedTabIndex) {
+            0 -> context.getString(R.string.product)
+            1 -> context.getString(R.string.meal)
+            else -> ""
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -105,25 +93,30 @@ fun SearchProductScreen(
             }
     ) {
 
-
-        Column( modifier = Modifier
-            .weight(3f)
-            .fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .weight(3f)
+                .fillMaxWidth()
         ) {
+
             NavigationButtonsRetAdd(
                 onClose = onClose,
-                onAdd = { onAdd(mainText) }  ,
+                onAdd = { onAdd(mainText) },
                 searchViewModel = searchViewModel,
                 mainText = mainText
             )
 
-            Text("${context.getString(R.string.search)} ${ mainText }", style = MaterialTheme.typography.titleLarge)
+            Text(
+                "${context.getString(R.string.search)} $mainText",
+                style = MaterialTheme.typography.titleLarge
+            )
 
             Spacer(Modifier.height(12.dp))
 
+
             TextField(
                 value = query,
-                onValueChange = { searchViewModel.searchQuery = it },
+                onValueChange = { searchViewModel.onSearchQueryChange(it) },
                 placeholder = { Text("Nazwa produktu...") },
                 singleLine = true,
                 modifier = Modifier
@@ -134,15 +127,19 @@ fun SearchProductScreen(
             )
 
             TabRow(selectedTabIndex = selectedTabIndex) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(selected = selectedTabIndex == index,
-                        onClick = {selectedTabIndex = index},
-                        text =  {Text(title, fontSize = 22.sp)}
+                listOf(
+                    context.getString(R.string.products),
+                    context.getString(R.string.mealHead)
+                ).forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(title, fontSize = 22.sp) }
                     )
-
                 }
             }
         }
+
         AnimatedVisibility(visible = suggestions.isNotEmpty() && isFocused) {
             Card(
                 modifier = Modifier
@@ -151,7 +148,6 @@ fun SearchProductScreen(
                 shape = RoundedCornerShape(8.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-
 
                 LazyColumn(
                     modifier = Modifier
@@ -163,7 +159,9 @@ fun SearchProductScreen(
                             text = item,
                             modifier = Modifier
                                 .clickable {
-                                    searchViewModel.searchQuery = item
+                                    searchViewModel.selectSuggestion(item)
+                                    focusManager.clearFocus()
+                                    isFocused = false
                                 }
                                 .padding(12.dp)
                         )
@@ -173,7 +171,6 @@ fun SearchProductScreen(
             }
         }
 
-        // lista znalezionych produktów
         LazyColumn(
             modifier = Modifier
                 .weight(9f)
@@ -182,35 +179,39 @@ fun SearchProductScreen(
                 .background(Color.White)
         ) {
             items(suggestions) { item ->
-                SearchedItem(
-                    nazwa = item,
-                )
+                SearchedItem(nazwa = item)
                 Divider()
             }
         }
+
         Spacer(Modifier.height(16.dp))
-
-
     }
 }
 
 @Composable
-fun NavigationButtonsRetAdd(onClose: () -> Unit,
-                            onAdd: (String) -> Unit,
-                            searchViewModel: SearchViewModel,
-                            mainText: String
-                            ) {
-    Row( modifier = Modifier.fillMaxWidth()) {
+fun NavigationButtonsRetAdd(
+    onClose: () -> Unit,
+    onAdd: (String) -> Unit,
+    searchViewModel: SearchViewModel,
+    mainText: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Button(
-            onClick = { onClose( )
-                searchViewModel.searchQuery = ""
+            onClick = {
+                searchViewModel.onSearchQueryChange("")
+                onClose()
             },
-            modifier = Modifier
-                .weight(1f)
-        ) {  Text("Anuluj") }
+            modifier = Modifier.weight(1f)
+        ) {
+            Text("Anuluj")
+        }
+
         Box(Modifier.weight(1f)) {
-            FullSizeButton(text = "Dodaj ${mainText}",
-                onClick = {onAdd(mainText)}
+            FullSizeButton(
+                text = "Dodaj $mainText",
+                onClick = { onAdd(mainText) }
             )
         }
     }

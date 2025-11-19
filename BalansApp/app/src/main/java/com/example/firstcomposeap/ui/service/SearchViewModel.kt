@@ -1,43 +1,70 @@
 package com.example.firstcomposeap.ui.service
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.balansapp.ui.service.ApiClient
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+@HiltViewModel
+class SearchViewModel @Inject constructor() : ViewModel() {
 
-class SearchViewModel @Inject constructor(): ViewModel() {
     var searchQuery by mutableStateOf("")
-    var token by mutableStateOf<String?>(null)
+        private set
 
     var errorMessage by mutableStateOf<String?>(null)
-    var message by mutableStateOf<String?>(null)
+        private set
 
-    var productList by mutableStateOf(listOf<String>())
-    var mealList by mutableStateOf(listOf<String>())
-    var searchItemsList by mutableStateOf(mealList)
+    // Lista sugestii z backendu
+    var suggestionsList by mutableStateOf<List<String>>(emptyList())
+        private set
 
-    fun setSearcMeal( ) {
-        searchQuery = ""
-        searchItemsList = mealList
+    // Finalne wybrane produkty lub posiłki
+    var resultsList by mutableStateOf<List<String>>(emptyList())
+        private set
+
+
+    fun onSearchQueryChange(value: String) {
+        searchQuery = value
+
+        if (value.isBlank()) {
+            suggestionsList = emptyList()
+            return
+        }
+        downloadSuggestions()
     }
 
-    fun setSearcProducts( ) {
-        searchQuery = ""
-        searchItemsList = productList
-    }
 
-    fun suggestions(): List<String> {
-        if (searchQuery.isBlank()) return emptyList()
-
-        // Jeśli wpisana nazwa jest dokładnym dopasowaniem – nie pokazujemy sugestii
-        val exactMatch = searchItemsList.any { it.equals(searchQuery, ignoreCase = true) }
-        if (exactMatch) return emptyList()
-
-        return searchItemsList.filter {
-            it.contains(searchQuery, ignoreCase = true)
+    fun downloadSuggestions() {
+        Log.e("downloadSuggestions", " ${searchQuery}")
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.getAllMatchesProduktNames(searchQuery)
+                if (response.isSuccessful) {
+                    suggestionsList = response.body() ?: emptyList()
+                } else {
+                    errorMessage = "Błąd pobierania sugestii: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
         }
     }
 
+
+    fun selectSuggestion(suggestion: String) {
+        searchQuery = suggestion
+        suggestionsList = emptyList()
+        resultsList = listOf(suggestion)
+    }
+
+    fun clearSearch() {
+        searchQuery = ""
+        suggestionsList = emptyList()
+    }
 
 }

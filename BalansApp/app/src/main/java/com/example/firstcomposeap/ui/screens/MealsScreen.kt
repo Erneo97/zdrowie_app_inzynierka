@@ -58,7 +58,6 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
 
     var showSearchSheet by remember { mutableStateOf(false) }
     val searchViewModel: SearchViewModel = viewModel ()
-    searchViewModel.token = loginViewModel.token
 
     val tabs = listOf(context.getString(R.string.menu_profil),
         context.getString(R.string.friends)
