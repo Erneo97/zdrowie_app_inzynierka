@@ -42,7 +42,7 @@ import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.Dawka
 import com.example.firstcomposeap.ui.service.data.Jednostki
-import com.example.firstcomposeap.ui.service.data.Product
+import com.example.firstcomposeap.ui.service.data.Produkt
 
 
 @Composable
@@ -81,7 +81,7 @@ fun NewProductScreen(productViewModel: ProductViewModel,
             ) {  Text("Anuluj") }
             Button(modifier = Modifier.weight(3f),
                 onClick = { productViewModel.addNewProduct(
-                    Product(
+                    Produkt(
                         nazwa = nazwa,
                         kodKreskowy = kodkreskowy,
                         producent = producent,

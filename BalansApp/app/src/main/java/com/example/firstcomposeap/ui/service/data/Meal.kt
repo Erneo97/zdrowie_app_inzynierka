@@ -16,7 +16,7 @@ data class MealInfo (
     var objetosc: Dawka
 )
 
-data class Product (
+data class Produkt (
     val id: Long,    // id produktu w bazie danych
     val nazwa: String,
     val producent: String,

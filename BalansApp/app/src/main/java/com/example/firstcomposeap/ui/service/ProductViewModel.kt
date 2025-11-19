@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
-import com.example.firstcomposeap.ui.service.data.Product
+import com.example.firstcomposeap.ui.service.data.Produkt
 import kotlinx.coroutines.launch
 
 class ProductViewModel : ViewModel() {
@@ -17,7 +17,7 @@ class ProductViewModel : ViewModel() {
 
 
 
-    fun addNewProduct(product: Product) {
+    fun addNewProduct(product: Produkt) {
         viewModelScope.launch {
             try {
                 Log.d("token", "addNewProduct ${token}")

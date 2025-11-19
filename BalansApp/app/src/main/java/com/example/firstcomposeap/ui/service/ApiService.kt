@@ -10,7 +10,7 @@ import com.example.balansapp.ui.service.data.RegisterResponse
 import com.example.balansapp.ui.service.data.SimpleMessage
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
-import com.example.firstcomposeap.ui.service.data.Product
+import com.example.firstcomposeap.ui.service.data.Produkt
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -19,6 +19,7 @@ import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -77,11 +78,16 @@ interface ApiService {
 
 
     @POST("produkty/produkt")
-    suspend fun addProductToDb(@Body body: Product) : Response<Product>
+    suspend fun addProductToDb(@Body body: Produkt) : Response<Produkt>
 
     @GET("search/produkty")
     suspend fun getAllMatchesProduktNames(
         @Query("nazwa") nazwa: String
     ): Response<List<String>>
+
+    @GET("search/produkts/{nazwa}")
+    suspend fun getAllMatchesProduct(
+        @Path("nazwa") nazwa: String
+    ): Response<List<Produkt>>
 
 }
