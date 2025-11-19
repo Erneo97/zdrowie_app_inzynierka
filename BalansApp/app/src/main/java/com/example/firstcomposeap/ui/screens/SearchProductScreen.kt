@@ -101,13 +101,14 @@ fun SearchProductScreen(
         ) {
 
             NavigationButtonsRetAdd(
-                onClose = onClose,
+                onClose = {onClose()
+                    searchViewModel.onSearchQueryChange("")
+                          },
                 onAdd = {
 //  TODO:                   Lista wybranych produktów z parametrami
                     onAdd(mainText)
                         },
-                searchViewModel = searchViewModel,
-                mainText = mainText
+                mainText = "Dodaj $mainText"
             )
 
             Text(
@@ -144,6 +145,7 @@ fun SearchProductScreen(
             }
         }
 
+        //  Lista z podpowiedziami do wyszukiwanej frazy
         AnimatedVisibility(visible = suggestions.isNotEmpty() && isFocused) {
             Card(
                 modifier = Modifier
@@ -178,6 +180,7 @@ fun SearchProductScreen(
         var selectedProducts = remember { mutableStateListOf<Produkt>() }
 
         if(!isFocused) {
+            // lista produktów wyszukanych, możliwych do dodania
             LazyColumn(
                 modifier = Modifier
                     .weight(9f)
@@ -218,21 +221,20 @@ fun SearchProductScreen(
     }
 }
 
+/**
+ *  Górny pasek nawigacyjny na podstrinach, powrót oraz przycisk akcji (dodaj, zapisz, etc)
+ */
 @Composable
 fun NavigationButtonsRetAdd(
     onClose: () -> Unit,
     onAdd: () -> Unit,
-    searchViewModel: SearchViewModel,
     mainText: String
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
         Button(
-            onClick = {
-                searchViewModel.onSearchQueryChange("")
-                onClose()
-            },
+            onClick = { onClose() },
             modifier = Modifier.weight(1f)
         ) {
             Text("Anuluj")
@@ -240,7 +242,7 @@ fun NavigationButtonsRetAdd(
 
         Box(Modifier.weight(1f)) {
             FullSizeButton(
-                text = "Dodaj $mainText",
+                text = mainText,
                 onClick = onAdd
             )
         }
@@ -298,15 +300,15 @@ fun SearchedItem(product: Produkt,
             ) {
 
                 Text(
-                    text = product.nazwa,
+                    text =" ${product.producent} - ${product.nazwa}",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Text(
-                    text = product.producent,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = "${product.objetosc.get(0).wartosc.toInt()} ${product.objetosc.get(0).jednostki.displayName} - ${product.objetosc.get(0).kcal} kcal",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.secondary
                 )
 
