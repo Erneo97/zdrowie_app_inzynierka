@@ -50,15 +50,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.balansapp.ui.components.FullSizeButton
+import com.example.balansapp.ui.navigation.main.Screen
+import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.data.Produkt
 
 @Composable
 fun SearchProductScreen(
+    navController: NavController,
     onClose: () -> Unit,
     searchViewModel: SearchViewModel = viewModel(),
-    onAdd: (String) -> Unit
+    productViewModel: ProductViewModel
 ) {
     val context = LocalContext.current
     val query = searchViewModel.searchQuery
@@ -105,9 +109,13 @@ fun SearchProductScreen(
                     searchViewModel.onSearchQueryChange("")
                           },
                 onAdd = {
-//  TODO:                   Lista wybranych produktów z parametrami
-                    onAdd(mainText)
-                        },
+                    if(mainText == context.getString(R.string.product)) {
+                        navController.navigate(Screen.NewProduct.route)
+                    }
+                    else {
+//                        TODO: Nowe danie ekran
+                    }
+                },
                 mainText = "Dodaj $mainText"
             )
 
@@ -206,7 +214,9 @@ fun SearchProductScreen(
                             }
                         },
                         onClick = {
-//                            TODO: Zmiana zawartośći
+                            productViewModel.getProductById(item.id.toInt())
+                            // TODO: przejscie na strone edycji dodawanej wartości
+                            navController.navigate(Screen.ProductConsumedDetails.route)
                         }
                     )
                     Divider()

@@ -20,6 +20,7 @@ import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.RegisterViewModel
 import com.example.balansapp.ui.theme.balansappTheme
 import com.example.firstcomposeap.ui.screens.NewProductScreen
+import com.example.firstcomposeap.ui.screens.ProductConsumedDetails
 import com.example.firstcomposeap.ui.screens.SearchProductScreen
 import com.example.firstcomposeap.ui.service.ProductViewModel
 
@@ -50,18 +51,13 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
 
                     composable(Screen.NewProduct.route) { NewProductScreen(productViewModel, onClose = {navController.popBackStack()}) }
+                    composable(Screen.ProductConsumedDetails.route) { ProductConsumedDetails(
+                        productViewModel = productViewModel, onClose = {navController.popBackStack()}) }
 
-                    composable(Screen.ProductSearch.route) { SearchProductScreen(
+                    composable(Screen.ProductSearch.route, ) { SearchProductScreen(
+                        navController = navController,
                         onClose = {navController.popBackStack()},
-                        onAdd = { selectedType ->
-
-                            if(selectedType == context.getString(R.string.product)) {
-                                navController.navigate(Screen.NewProduct.route)
-                            }
-                            else {
-
-                            }
-                        }
+                        productViewModel = productViewModel
                         ) }
                 }
             }
