@@ -39,6 +39,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -202,8 +203,7 @@ fun SearchProductScreen(
                     .heightIn(max = 650.dp)
                     .background(Color.White)
             ) {
-                items(productsList, key = {it.id}) { item ->
-
+                items(searchViewModel.searchedProducts, key = {it.id}) { item ->
                     val isChecked = selectedProducts.contains(item)
                     SearchedItem(
                         product = item,
@@ -219,7 +219,7 @@ fun SearchProductScreen(
                         },
                         onClick = {
                             productViewModel.getProductById(item.id.toInt())
-                            // TODO: przejscie na strone edycji dodawanej wartości
+
                             navController.navigate(Screen.ProductConsumedDetails.route)
                         }
                     )
@@ -276,15 +276,18 @@ fun NavigationButtonsRetAdd(
 fun SearchedItem(product: Produkt,
                  isChecked: Boolean,
                  onCheckedChange: (Produkt, Boolean) -> Unit,
-                 onClick: (Boolean) -> Unit
+                 onClick: ()  -> Unit
 ) {
     var shadowColor = MaterialTheme.colorScheme.primary
     var innerisChecked by remember {   mutableStateOf(isChecked) }
+
+    var changeProduct by remember { mutableStateOf(product) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable { onClick(innerisChecked) }
+            .clickable { onClick()  }
             .drawBehind {
                 val shadowOffsetX = 8f
                 val shadowOffsetY = 8f
@@ -320,13 +323,13 @@ fun SearchedItem(product: Produkt,
             ) {
 
                 Text(
-                    text =" ${product.producent} - ${product.nazwa}",
+                    text =" ${changeProduct.producent} - ${changeProduct.nazwa}",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Text(
-                    text = "${product.objetosc.get(0).wartosc.toInt()} ${product.objetosc.get(0).jednostki.displayName} - ${product.objetosc.get(0).kcal} kcal",
+                    text = "${changeProduct.objetosc.get(0).wartosc.toInt()} ${changeProduct.objetosc.get(0).jednostki.displayName} - ${product.objetosc.get(0).kcal} kcal",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.secondary

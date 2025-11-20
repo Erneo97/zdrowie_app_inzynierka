@@ -34,6 +34,9 @@ class ProductViewModel : ViewModel() {
     }
 
     var foundProduct by mutableStateOf<Produkt?>(null)
+    var consumedProduct by mutableStateOf<Produkt?>(null)
+
+
 
     fun getProductById(id: Int) {
         Log.e("getProductById", "${id}")

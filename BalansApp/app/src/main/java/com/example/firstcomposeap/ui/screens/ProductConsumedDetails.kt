@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.firstcomposeap.ui.service.ProductViewModel
+import com.example.firstcomposeap.ui.service.data.Dawka
+import com.example.firstcomposeap.ui.service.data.Produkt
 
 @Composable
 fun ProductConsumedDetails(
@@ -81,7 +83,27 @@ fun ProductConsumedDetails(
         ) {
             NavigationButtonsRetAdd(
                 onClose = onClose,
-                onAdd = {},
+                onAdd = {
+
+                    val dawkaNowa = Dawka(
+                        jednostki = selectedDawka.jednostki,
+                        wartosc = userValuer,
+                        kcal = currentKcal,
+                        bialko = currentProtein,
+                        weglowodany = currentCarbs,
+                        tluszcze = currentFat,
+                        blonnik = selectedDawka.blonnik * factor
+                    )
+                    productViewModel.consumedProduct =
+                        Produkt(
+                            id = produkt.id,
+                            nazwa = produkt.nazwa,
+                            producent = produkt.producent,
+                            kodKreskowy = produkt.kodKreskowy,
+                            objetosc = listOf(dawkaNowa)
+                        )
+                    onClose()
+                },
                 mainText = "Zapisz zmiany"
             )
             Spacer(Modifier.height(10.dp))
