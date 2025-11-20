@@ -138,7 +138,9 @@ fun SearchProductScreen(
                 ).forEachIndexed { index, title ->
                     Tab(
                         selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
+                        onClick = { selectedTabIndex = index
+                                  searchViewModel.searchedProducts = emptyList()
+                                  },
                         text = { Text(title, fontSize = 22.sp) }
                     )
                 }
