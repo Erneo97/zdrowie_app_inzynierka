@@ -80,10 +80,16 @@ interface ApiService {
     @POST("produkty/produkt")
     suspend fun addProductToDb(@Body body: Produkt) : Response<Produkt>
 
+    @GET("produkty/produkt/{id}")
+    suspend fun findProductById(
+        @Path("id") id: Int
+    ): Response<Produkt>
+
     @GET("search/produkty")
     suspend fun getAllMatchesProduktNames(
         @Query("nazwa") nazwa: String
     ): Response<List<String>>
+
 
     @GET("search/produkts/{nazwa}")
     suspend fun getAllMatchesProduct(

@@ -32,4 +32,30 @@ class ProductViewModel : ViewModel() {
             }
         }
     }
+
+    var foundProduct by mutableStateOf<Produkt?>(null)
+
+    fun getProductById(id: Int) {
+        Log.e("getProductById", "${id}")
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.findProductById(id)
+
+                if (response.isSuccessful) {
+
+                    foundProduct = response.body()
+                    Log.e("getProductById", "${foundProduct}")
+                    errorMessage = null
+                } else {
+                    errorMessage = "Błąd pobierania produktu: ${response.code()}"
+                    foundProduct = null
+                }
+
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+                foundProduct = null
+            }
+        }
+    }
+
 }
