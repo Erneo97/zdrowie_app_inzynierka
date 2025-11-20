@@ -18,13 +18,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.firstcomposeap.ui.service.ProductViewModel
 
@@ -33,7 +41,28 @@ fun ProductConsumedDetails(
     productViewModel: ProductViewModel,
     onClose: () -> Unit // TODO: zwracanie produktu poprawionego
 ) {
-    var produkt = productViewModel.foundProduct
+    val produkt = productViewModel.foundProduct ?: return
+    var expanded by remember { mutableStateOf(false) }
+    var userValuer by remember { mutableStateOf(produkt!!.objetosc.get(0).wartosc ) }
+
+
+    val availableUnits = remember(produkt) {
+        produkt.objetosc.map { it.jednostki }.distinct()
+    }
+    var selectedUnit by remember { mutableStateOf(produkt.objetosc.first().jednostki) }
+    val selectedDawka = remember(selectedUnit) {
+        produkt.objetosc.firstOrNull { it.jednostki == selectedUnit }
+            ?: produkt.objetosc.first()
+    }
+
+
+
+    val factor = userValuer / selectedDawka.wartosc
+
+    val currentFat = selectedDawka.tluszcze * factor
+    val currentKcal = selectedDawka.kcal * factor
+    val currentCarbs = selectedDawka.weglowodany * factor
+    val currentProtein = selectedDawka.bialko * factor
 
      Box(
 
@@ -42,6 +71,7 @@ fun ProductConsumedDetails(
         contentAlignment = Alignment.Center  )
     {
         LogoBackGround()
+        Spacer(Modifier.height(15.dp))
         Column (
             modifier = Modifier
                 .fillMaxSize()
@@ -57,20 +87,61 @@ fun ProductConsumedDetails(
             Spacer(Modifier.height(10.dp))
 
             if( produkt != null ) {
+                Text("${produkt.producent} - ${produkt.nazwa}", fontWeight = FontWeight.Bold,
+                    fontSize =  35.sp)
+                Spacer(Modifier.height(10.dp))
                 NutritionBox(
                     carbsLabel = "Węglowodany",
-                    carbsValue = produkt.objetosc.get(0).weglowodany,
+                    carbsValue = currentCarbs,
                     caloriesLabel = "Kalorie",
-                    caloriesValue = produkt.objetosc.get(0).kcal,
+                    caloriesValue = currentKcal,
                     fatLabel = "Tłuszcze",
-                    fatValue = produkt.objetosc.get(0).tluszcze,
+                    fatValue = currentFat,
                     proteinLabel = "Białko",
-                    proteinValue = produkt.objetosc.get(0).bialko,
+                    proteinValue = currentProtein,
                     modifier = Modifier.padding(16.dp)
                 )
 
-                Text(produkt.nazwa)
-                Text(produkt.producent)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                        NumericInput(
+                            label = "Ilość",
+                            value = userValuer,
+                            onChange = {userValuer = it},
+                            modifier = Modifier
+                                .weight(2f)
+                                .padding(end = 8.dp)
+                        )
+
+                        Box (modifier = Modifier.weight(1f)){
+                            OutlinedButton(onClick = { expanded = true }) {
+                                Text(selectedUnit.displayName)
+                            }
+
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                availableUnits.forEach { unit ->
+                                    DropdownMenuItem(
+                                        text = { Text(unit.displayName) },
+                                        onClick = {
+                                            selectedUnit = unit
+                                            expanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+
                 Text("${produkt.objetosc.get(0).jednostki}")
             }
             else {
@@ -110,7 +181,7 @@ fun NutritionBox(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(carbsLabel, fontWeight = FontWeight.Bold)
-                    Text("$carbsValue")
+                    Text("${carbsValue} g.")
                 }
 
                 Divider(
@@ -127,7 +198,7 @@ fun NutritionBox(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(caloriesLabel, fontWeight = FontWeight.Bold)
-                    Text("${caloriesValue}")
+                    Text("${caloriesValue} kcal")
                 }
             }
 
@@ -146,7 +217,7 @@ fun NutritionBox(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(fatLabel, fontWeight = FontWeight.Bold)
-                    Text("${ fatValue }")
+                    Text("${ fatValue } g.")
                 }
 
                 Divider(
@@ -163,7 +234,7 @@ fun NutritionBox(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(proteinLabel, fontWeight = FontWeight.Bold)
-                    Text("${proteinValue}")
+                    Text("${proteinValue} g.")
                 }
             }
         }
