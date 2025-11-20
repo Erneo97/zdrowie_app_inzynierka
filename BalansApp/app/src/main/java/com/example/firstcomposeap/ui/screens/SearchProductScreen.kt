@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +24,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import com.example.balansapp.R
 import androidx.compose.material3.Tab
@@ -53,6 +56,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.navigation.main.Screen
+import com.example.firstcomposeap.ui.components.icon.Arrow_back_ios_new
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.data.Produkt
@@ -245,13 +249,17 @@ fun NavigationButtonsRetAdd(
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Button(
-            onClick = { onClose() },
-            modifier = Modifier.weight(1f)
+        FloatingActionButton(
+            onClick = onClose,
+            containerColor = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(42.dp).weight(1f)
         ) {
-            Text("Anuluj")
+            Icon(
+                imageVector = Arrow_back_ios_new,
+                contentDescription = "Anuluj",
+                tint = Color.White
+            )
         }
-
         Box(Modifier.weight(1f)) {
             FullSizeButton(
                 text = mainText,
