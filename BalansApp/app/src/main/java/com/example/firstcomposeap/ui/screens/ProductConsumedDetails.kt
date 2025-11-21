@@ -24,6 +24,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,19 +45,33 @@ fun ProductConsumedDetails(
     productViewModel: ProductViewModel,
     onClose: () -> Unit
 ) {
-    val produkt = productViewModel.foundProduct ?: return
+    val produkt = productViewModel.foundProduct ?: run {
+        Box { CircularProgressIndicator() }
+        return
+    }
+
+
     var expanded by remember { mutableStateOf(false) }
-    var userValuer by remember { mutableStateOf(produkt.objetosc.get(0).wartosc ) }
+    var userValuer by remember(produkt.id) {
+        mutableStateOf(produkt.objetosc.first().wartosc)
+    }
 
 
-    val availableUnits = remember(produkt) {
-        produkt.objetosc.map { it.jednostki }.distinct()
+    val availableUnits by remember(produkt.id) {
+        mutableStateOf(produkt.objetosc.map { it.jednostki }.distinct())
     }
-    var selectedUnit by remember { mutableStateOf(produkt.objetosc.first().jednostki) }
-    val selectedDawka = remember(selectedUnit) {
-        produkt.objetosc.firstOrNull { it.jednostki == selectedUnit }
-            ?: produkt.objetosc.first()
+
+    var selectedUnit by remember(produkt.id) {
+        mutableStateOf(produkt.objetosc.first().jednostki)
     }
+
+    val selectedDawka by remember(produkt.id, selectedUnit) {
+        mutableStateOf(
+            produkt.objetosc.firstOrNull { it.jednostki == selectedUnit }
+                ?: produkt.objetosc.first()
+        )
+    }
+
 
 
     val factor = userValuer / selectedDawka.wartosc
@@ -66,7 +81,7 @@ fun ProductConsumedDetails(
     val currentCarbs = selectedDawka.weglowodany * factor
     val currentProtein = selectedDawka.bialko * factor
 
-     Box(
+    Box(
 
         modifier = Modifier
             .padding(2.dp),
@@ -82,7 +97,10 @@ fun ProductConsumedDetails(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             NavigationButtonsRetAdd(
-                onClose = onClose,
+                onClose = {
+                    productViewModel.foundProduct = null // wymusza załadowanie detali od w tym widoku
+                    onClose()
+                          },
                 onAdd = {
 
                     val dawkaNowa = Dawka(
@@ -105,7 +123,7 @@ fun ProductConsumedDetails(
                     Log.e("ProductConsumedDetails", "${productViewModel.consumedProduct!!.nazwa} ," +
                             "${productViewModel.consumedProduct!!.objetosc.get(0).kcal}kcal - ${productViewModel.consumedProduct!!.objetosc.get(0).wartosc} ${productViewModel.consumedProduct!!.objetosc.get(0).jednostki}")
                     onClose()
-
+                    productViewModel.foundProduct = null // wymusza załadowanie detali od w tym widoku  po kliknięciu innego elementu
                 },
                 mainText = "Zapisz zmiany"
             )
@@ -135,36 +153,36 @@ fun ProductConsumedDetails(
                         .padding(vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                        NumericInput(
-                            label = "Ilość",
-                            value = userValuer,
-                            onChange = {userValuer = it},
-                            modifier = Modifier
-                                .weight(2f)
-                                .padding(end = 8.dp)
-                        )
+                    NumericInput(
+                        label = "Ilość",
+                        value = userValuer,
+                        onChange = {userValuer = it},
+                        modifier = Modifier
+                            .weight(2f)
+                            .padding(end = 8.dp)
+                    )
 
-                        Box (modifier = Modifier.weight(1f)){
-                            OutlinedButton(onClick = { expanded = true }) {
-                                Text(selectedUnit.displayName)
-                            }
+                    Box (modifier = Modifier.weight(1f)){
+                        OutlinedButton(onClick = { expanded = true }) {
+                            Text(selectedUnit.displayName)
+                        }
 
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                availableUnits.forEach { unit ->
-                                    DropdownMenuItem(
-                                        text = { Text(unit.displayName) },
-                                        onClick = {
-                                            selectedUnit = unit
-                                            expanded = false
-                                        }
-                                    )
-                                }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            availableUnits.forEach { unit ->
+                                DropdownMenuItem(
+                                    text = { Text(unit.displayName) },
+                                    onClick = {
+                                        selectedUnit = unit
+                                        expanded = false
+                                    }
+                                )
                             }
                         }
                     }
+                }
 
 
                 Text("${produkt.objetosc.get(0).jednostki}")
@@ -177,6 +195,8 @@ fun ProductConsumedDetails(
 
         }
     }
+
+
 }
 
 @Composable

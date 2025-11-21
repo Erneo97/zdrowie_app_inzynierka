@@ -18,7 +18,7 @@ class ProductViewModel : ViewModel() {
     var message by mutableStateOf<String?>(null)
 
 
-    var selectedProducts =   mutableStateListOf<Produkt>()
+    var selectedProducts =   mutableStateListOf<Produkt>() // wypełniany w widoku szukania produktów (SearchProductScreen za  pośrednictwem zmiennej consumeProduct) przekazywany do widoku posiłków w ciuągu dnia i tam czyszczony
 
 
     fun addNewProduct(product: Produkt) {
