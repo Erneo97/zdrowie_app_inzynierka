@@ -107,7 +107,13 @@ fun SearchProductScreen(
             if (index != -1) {
                 Log.e("SearchProductScreen", "${newProd.nazwa} ${newProd.objetosc.get(0).kcal} kcal - ${newProd.objetosc.get(0).wartosc} ${newProd.objetosc.get(0).jednostki}")
                 productsList[index] = newProd
-                productViewModel.selectedProducts.add(newProd)
+                index = productViewModel.selectedProducts.indexOfFirst { it.id == newProd.id }
+                if( index !=- 1) {
+                    productViewModel.selectedProducts[index] = newProd
+                }
+                else {
+                    productViewModel.selectedProducts.add(newProd)
+                }
             }
             productViewModel.consumedProduct = null
         }
