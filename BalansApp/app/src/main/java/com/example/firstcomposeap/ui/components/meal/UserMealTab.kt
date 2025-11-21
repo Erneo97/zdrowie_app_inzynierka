@@ -29,6 +29,7 @@ import com.example.firstcomposeap.ui.components.profile.StatystykiTab.ToolTipDia
 import com.example.firstcomposeap.ui.service.data.Dawka
 import com.example.firstcomposeap.ui.service.data.Jednostki
 import com.example.firstcomposeap.ui.service.data.MealInfo
+import com.example.firstcomposeap.ui.service.data.PoraDnia
 
 @Composable
 fun userMealTab(loginViewModel: LoginViewModel,
@@ -69,7 +70,7 @@ fun userMealTab(loginViewModel: LoginViewModel,
 
 
 
-        val sampleMeals =remember { mutableStateListOf(
+        val sampleMeals = remember { mutableStateListOf(
             MealInfo(
                 id = 1,
                 nazwa = "Owsianka z mlekiem",
@@ -221,13 +222,19 @@ fun userMealTab(loginViewModel: LoginViewModel,
             )
         ) }
 
-        val timeOfDays = listOf( "Śniadanie", "Lunch", "Obiad", "Kolacja", "Przekąska")
+
+
+        val timeOfDays = PoraDnia.entries
+            .filter { it != PoraDnia.CLEAR }
+            .map { it.displayName }
 
         timeOfDays.forEach { timeOfDays ->
             TimeOfDayMealCard(title = timeOfDays,
                             meals = sampleMeals,
                 onAddClick = onAddClick,
-                onRemoveClick = {  meal -> sampleMeals.remove(meal)}
+                onRemoveClick = {
+                    meal -> sampleMeals.remove(meal)
+                }
                 )
 
         }
