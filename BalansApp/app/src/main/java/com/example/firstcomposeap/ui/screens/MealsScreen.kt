@@ -48,11 +48,15 @@ import com.example.firstcomposeap.ui.components.icon.Today
 import com.example.firstcomposeap.ui.components.meal.WeeakDaysSelector
 import com.example.firstcomposeap.ui.components.meal.friendsMealTab
 import com.example.firstcomposeap.ui.components.meal.userMealTab
+import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel) {
+fun MealScreen(navController: NavHostController,
+               loginViewModel: LoginViewModel,
+               productViewModel: ProductViewModel
+) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_meal)) }
 
@@ -119,7 +123,7 @@ fun MealScreen(navController: NavHostController, loginViewModel: LoginViewModel)
                     when (selectedTabIndex) {
                         0 -> userMealTab(loginViewModel,
                             onAddClick = {showSearchSheet = true},
-                            addProduct = { }, // TODO: zwracanie z wyszukiwania
+                            productViewModel = productViewModel,
                             date = wybranaData)
                         1 -> friendsMealTab(loginViewModel, wybranaData)
                     }

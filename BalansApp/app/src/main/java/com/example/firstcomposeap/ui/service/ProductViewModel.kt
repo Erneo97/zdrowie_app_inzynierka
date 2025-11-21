@@ -19,7 +19,7 @@ class ProductViewModel : ViewModel() {
 
 
     var selectedProducts =   mutableStateListOf<Produkt>() // wypełniany w widoku szukania produktów (SearchProductScreen za  pośrednictwem zmiennej consumeProduct) przekazywany do widoku posiłków w ciuągu dnia i tam czyszczony
-    var isDoneToSend = mutableStateOf(false)
+    var isReadyToSend = mutableStateOf(false)
     var selectedDayTime = mutableStateOf(PoraDnia.CLEAR)
 
 

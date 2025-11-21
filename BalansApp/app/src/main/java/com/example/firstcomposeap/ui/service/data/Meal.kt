@@ -1,6 +1,5 @@
 package com.example.firstcomposeap.ui.service.data
 
-
 data class MealInfo (
     val id: Long,    // id produktu w bazie danych
     val nazwa: String,
@@ -51,6 +50,14 @@ enum class PoraDnia(val displayName: String) {
     KOLACJA("Kolacja"),
     PRZEKASKA("Przekąska"),
     CLEAR("");
+
+    companion object {
+        fun fromDisplayName(name: String): PoraDnia =
+            entries.firstOrNull { it.displayName == name } ?: CLEAR
+
+        fun fromName(name: String): PoraDnia =
+            entries.firstOrNull { it.name == name } ?: CLEAR
+    }
 }
 
 
