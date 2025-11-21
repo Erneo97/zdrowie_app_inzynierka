@@ -4,11 +4,15 @@ import com.example.controllers.ProduktNazwa;
 import com.example.kolekcje.enumy.Jednostki;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.posilki.Dawka;
+import com.example.kolekcje.posilki.Posilki;
 import com.example.kolekcje.posilki.Produkt;
+import com.example.kolekcje.posilki.SpozyteProdukty;
 import com.example.repositories.MealRepository;
 import com.example.repositories.ProduktRepository;
+import com.example.requests.MealUpdate;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,8 +93,65 @@ public class ProduktService {
     public Optional<Produkt> findByKodKreskowy(String kodKreskowy ) {return produktyRepository.findByKodKreskowy(kodKreskowy);}
 
 
+    public boolean createUserMeal(int userId, MealUpdate meal) {
+        Optional<Posilki> optpos =  mealRepository.findByIdUzytkownikaAndDataAndPoradnia(
+                userId,
+                new Date( meal.getData()),
+                meal.getPoraDnia());
+
+        if(optpos.isPresent()) {
+            return false;
+        }
+
+        Posilki posilekNowy = new Posilki();
+        posilekNowy.setId(sequenceGenerator.getNextSequence(LicznikiDB.POSILKI.getNazwa()));
+        posilekNowy.setId_uzytkownika(userId);
+        posilekNowy.setData(new Date(meal.getData()));
+        posilekNowy.setPoradnia(meal.getPoraDnia());
+
+        List<SpozyteProdukty> sp = meal.getMeal().stream().map(item -> {SpozyteProdukty nowy = new SpozyteProdukty();
+            nowy.setWartosc(item.getObjetosc().getFirst());
+            nowy.setId_produktu((int)item.getId());
+            return nowy;
+        }).toList();
+
+        posilekNowy.setProdukty(sp);
+
+        mealRepository.save(posilekNowy);
+
+        return true;
+    }
+
+    public boolean updateUserMeal(int userId, MealUpdate meal) {
+        Optional<Posilki> optpos = mealRepository
+                .findByIdUzytkownikaAndDataAndPoradnia(
+                        userId,
+                        new Date(meal.getData()),
+                        meal.getPoraDnia()
+                );
+
+        if (optpos.isEmpty()) {
+            // nie ma takiego posiłku — nie można modyfikować
+            return false;
+        }
+
+        Posilki istniejacyPosilek = optpos.get();
+
+        List<SpozyteProdukty> noweProdukty = meal.getMeal().stream()
+                .map(item -> {
+                    SpozyteProdukty nowy = new SpozyteProdukty();
+                    nowy.setWartosc(item.getObjetosc().getFirst());
+                    nowy.setId_produktu((int) item.getId());
+                    return nowy;
+                })
+                .toList();
 
 
+        istniejacyPosilek.setProdukty(noweProdukty);
+        mealRepository.save(istniejacyPosilek);
+
+        return true;
+    }
 
 
 
