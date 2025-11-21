@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.TextCriteria;
-import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,15 +22,12 @@ public class SerachControler {
 
     public SerachControler(ProduktService produktService, MongoTemplate mongoTemplate) {
         this.produktService = produktService;
-        aktualizujListeProduktow();
         this.mongoTemplate = mongoTemplate;
     }
 
     List<String> listaProduktow;
 
-    private void aktualizujListeProduktow() {
-        this.listaProduktow = produktService.findAllNames().stream().toList();
-    }
+
 
     /**
      * Zwraca wszystkie nazwy produktów których odległość levenstein od szukanego stringa jest <= 2
