@@ -49,7 +49,8 @@ enum class PoraDnia(val displayName: String) {
     LUNCH("Lunch"),
     OBIAD("Obiad"),
     KOLACJA("Kolacja"),
-    PRZEKASKA("Przekąska")
+    PRZEKASKA("Przekąska"),
+    CLEAR("");
 }
 
 
