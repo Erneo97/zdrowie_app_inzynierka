@@ -1,5 +1,6 @@
 package com.example.firstcomposeap.ui.screens
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -39,7 +39,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -72,7 +71,8 @@ fun SearchProductScreen(
     val context = LocalContext.current
     val query = searchViewModel.searchQuery
     val suggestions = searchViewModel.suggestionsList
-    val productsList = searchViewModel.searchedProducts
+    val productsList = remember { mutableStateListOf<Produkt>() }
+
 
     var selectedTabIndex by remember { mutableStateOf(0) }
 
@@ -80,6 +80,29 @@ fun SearchProductScreen(
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
+
+    var selectedProducts = remember { mutableStateListOf<Produkt>() }
+
+    LaunchedEffect(searchViewModel.searchedProducts) {  // aktualizacja przy zmianie wyszukiwania
+        productsList.clear()
+        productsList.addAll(searchViewModel.searchedProducts)
+    }
+
+    LaunchedEffect(productViewModel.consumedProduct) {  // aktualizacja listy przez jeden produkt
+        if( productViewModel.consumedProduct != null) {
+            val newProd = productViewModel.consumedProduct!!
+
+            var index = productsList.indexOfFirst { it.id == newProd.id }
+            Log.e("SearchProductScreen", "${index}")
+            if (index != -1) {
+                Log.e("SearchProductScreen", "${newProd.nazwa} ${newProd.objetosc.get(0).kcal} kcal - ${newProd.objetosc.get(0).wartosc} ${newProd.objetosc.get(0).jednostki}")
+                productsList[index] = newProd
+                selectedProducts.add(newProd)
+            }
+            productViewModel.consumedProduct = null
+        }
+
+    }
 
     LaunchedEffect(selectedTabIndex) {
         mainText = when (selectedTabIndex) {
@@ -192,7 +215,7 @@ fun SearchProductScreen(
                 }
             }
         }
-        var selectedProducts = remember { mutableStateListOf<Produkt>() }
+
 
         if(!isFocused) {
             // lista produktów wyszukanych, możliwych do dodania
@@ -203,23 +226,21 @@ fun SearchProductScreen(
                     .heightIn(max = 650.dp)
                     .background(Color.White)
             ) {
-                items(searchViewModel.searchedProducts, key = {it.id}) { item ->
+                items(productsList) { item ->
                     val isChecked = selectedProducts.contains(item)
+
                     SearchedItem(
                         product = item,
                         isChecked = isChecked,
-                        onCheckedChange = { prod, checked ->
+                        onCheckedChange = { prod, checked ->    // wybralismy select box dodając / odejmując produkt z naszel listy spożytych produktóww
                             if (checked) {
-                                if (checked) {
-                                    selectedProducts.add(prod)
-                                }
+                                selectedProducts.add(prod)
                             } else {
                                 selectedProducts.remove(prod)
                             }
                         },
-                        onClick = {
+                        onClick = { // komponent naciśnięty czyli wyświetlamy szczegłuy produktu z makro
                             productViewModel.getProductById(item.id.toInt())
-
                             navController.navigate(Screen.ProductConsumedDetails.route)
                         }
                     )
@@ -252,7 +273,9 @@ fun NavigationButtonsRetAdd(
         FloatingActionButton(
             onClick = onClose,
             containerColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(42.dp).weight(1f)
+            modifier = Modifier
+                .size(42.dp)
+                .weight(1f)
         ) {
             Icon(
                 imageVector = Arrow_back_ios_new,
@@ -287,7 +310,7 @@ fun SearchedItem(product: Produkt,
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable { onClick()  }
+            .clickable { onClick() }
             .drawBehind {
                 val shadowOffsetX = 8f
                 val shadowOffsetY = 8f
@@ -329,7 +352,7 @@ fun SearchedItem(product: Produkt,
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Text(
-                    text = "${changeProduct.objetosc.get(0).wartosc.toInt()} ${changeProduct.objetosc.get(0).jednostki.displayName} - ${product.objetosc.get(0).kcal} kcal",
+                    text = "${changeProduct.objetosc.get(0).wartosc} ${changeProduct.objetosc.get(0).jednostki.displayName} - ${product.objetosc.get(0).kcal} kcal",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.secondary

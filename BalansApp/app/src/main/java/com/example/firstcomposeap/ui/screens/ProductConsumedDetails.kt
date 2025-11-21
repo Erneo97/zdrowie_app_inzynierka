@@ -1,5 +1,6 @@
 package com.example.firstcomposeap.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -41,11 +42,11 @@ import com.example.firstcomposeap.ui.service.data.Produkt
 @Composable
 fun ProductConsumedDetails(
     productViewModel: ProductViewModel,
-    onClose: () -> Unit // TODO: zwracanie produktu poprawionego
+    onClose: () -> Unit
 ) {
     val produkt = productViewModel.foundProduct ?: return
     var expanded by remember { mutableStateOf(false) }
-    var userValuer by remember { mutableStateOf(produkt!!.objetosc.get(0).wartosc ) }
+    var userValuer by remember { mutableStateOf(produkt.objetosc.get(0).wartosc ) }
 
 
     val availableUnits = remember(produkt) {
@@ -56,7 +57,6 @@ fun ProductConsumedDetails(
         produkt.objetosc.firstOrNull { it.jednostki == selectedUnit }
             ?: produkt.objetosc.first()
     }
-
 
 
     val factor = userValuer / selectedDawka.wartosc
@@ -102,7 +102,10 @@ fun ProductConsumedDetails(
                             kodKreskowy = produkt.kodKreskowy,
                             objetosc = listOf(dawkaNowa)
                         )
+                    Log.e("ProductConsumedDetails", "${productViewModel.consumedProduct!!.nazwa} ," +
+                            "${productViewModel.consumedProduct!!.objetosc.get(0).kcal}kcal - ${productViewModel.consumedProduct!!.objetosc.get(0).wartosc} ${productViewModel.consumedProduct!!.objetosc.get(0).jednostki}")
                     onClose()
+
                 },
                 mainText = "Zapisz zmiany"
             )
