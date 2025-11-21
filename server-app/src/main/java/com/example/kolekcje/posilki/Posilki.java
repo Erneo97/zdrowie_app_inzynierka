@@ -11,7 +11,7 @@ import java.util.List;
 public class Posilki {
     @Id
     private int id;
-    private int id_uzytkownika;
+    private int idUzytkownika;
     Date data;
     private PoraDnia poradnia;
     private List<SpozyteProdukty> produkty;
@@ -22,8 +22,8 @@ public class Posilki {
     }
     public void setId(int id) {this.id = id;}
 
-    public int getId_uzytkownika() {return id_uzytkownika;}
-    public void setId_uzytkownika(int id_uzytkownika) {this.id_uzytkownika = id_uzytkownika;}
+    public int getId_uzytkownika() {return idUzytkownika;}
+    public void setId_uzytkownika(int id_uzytkownika) {this.idUzytkownika = id_uzytkownika;}
 
     public Date getData() {return data;}
     public void setData(Date data) {this.data = data;}
