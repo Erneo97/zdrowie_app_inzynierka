@@ -276,8 +276,6 @@ fun SearchProductScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        if( productViewModel.selectedProducts.isNotEmpty())
-            Text("${productViewModel.selectedProducts.get(0)}")
     }
 }
 
