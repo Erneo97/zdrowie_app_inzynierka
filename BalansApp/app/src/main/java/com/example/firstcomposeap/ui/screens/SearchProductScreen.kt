@@ -81,11 +81,21 @@ fun SearchProductScreen(
     val focusManager = LocalFocusManager.current
 
 
-    var selectedProducts = remember { mutableStateListOf<Produkt>() }
+
 
     LaunchedEffect(searchViewModel.searchedProducts) {  // aktualizacja przy zmianie wyszukiwania
         productsList.clear()
         productsList.addAll(searchViewModel.searchedProducts)
+
+        val updated = productViewModel.selectedProducts
+
+        for (sel in updated) {
+            for (i in productsList.indices) {
+                if (productsList[i].id == sel.id) {
+                    productsList[i] = sel
+                }
+            }
+        }
     }
 
     LaunchedEffect(productViewModel.consumedProduct) {  // aktualizacja listy przez jeden produkt
@@ -97,7 +107,7 @@ fun SearchProductScreen(
             if (index != -1) {
                 Log.e("SearchProductScreen", "${newProd.nazwa} ${newProd.objetosc.get(0).kcal} kcal - ${newProd.objetosc.get(0).wartosc} ${newProd.objetosc.get(0).jednostki}")
                 productsList[index] = newProd
-                selectedProducts.add(newProd)
+                productViewModel.selectedProducts.add(newProd)
             }
             productViewModel.consumedProduct = null
         }
@@ -226,22 +236,29 @@ fun SearchProductScreen(
                     .heightIn(max = 650.dp)
                     .background(Color.White)
             ) {
-                items(productsList) { item ->
-                    val isChecked = selectedProducts.contains(item)
+                items(productsList, key = { it.id }) { item ->
+                    val isChecked = productViewModel.selectedProducts.contains(item)
 
                     SearchedItem(
                         product = item,
                         isChecked = isChecked,
                         onCheckedChange = { prod, checked ->    // wybralismy select box dodając / odejmując produkt z naszel listy spożytych produktóww
                             if (checked) {
-                                selectedProducts.add(prod)
+                                productViewModel.selectedProducts.add(prod)
                             } else {
-                                selectedProducts.remove(prod)
+                                productViewModel.selectedProducts.remove(prod)
                             }
                         },
                         onClick = { // komponent naciśnięty czyli wyświetlamy szczegłuy produktu z makro
                             productViewModel.getProductById(item.id.toInt())
-                            navController.navigate(Screen.ProductConsumedDetails.route)
+                            navController.navigate(Screen.ProductConsumedDetails.route) {
+                                launchSingleTop = true
+                                restoreState = true
+
+                                popUpTo(Screen.ProductSearch.route) {
+                                    saveState = true
+                                }
+                            }
                         }
                     )
                     Divider()
@@ -253,8 +270,8 @@ fun SearchProductScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        if( selectedProducts.isNotEmpty())
-            Text("${selectedProducts.get(0)}")
+        if( productViewModel.selectedProducts.isNotEmpty())
+            Text("${productViewModel.selectedProducts.get(0)}")
     }
 }
 
