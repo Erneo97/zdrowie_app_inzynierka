@@ -13,7 +13,7 @@ public class Posilki {
     private int id;
     private int id_uzytkownika;
     Date data;
-    private PoraDnia porodnik;
+    private PoraDnia poradnia;
     private List<SpozyteProdukty> produkty;
 
 
@@ -28,9 +28,9 @@ public class Posilki {
     public Date getData() {return data;}
     public void setData(Date data) {this.data = data;}
 
-    public PoraDnia getPorodnik() {return porodnik;}
-    public void setPorodnik(PoraDnia porodnik) {
-        this.porodnik = porodnik;
+    public PoraDnia getPoradnia() {return poradnia;}
+    public void setPoradnia(PoraDnia poradnia) {
+        this.poradnia = poradnia;
     }
 
     public List<SpozyteProdukty> getProdukty() {return produkty;}
