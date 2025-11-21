@@ -160,7 +160,7 @@ fun SearchProductScreen(
 //                        TODO: Nowe danie ekran
                     }
                 },
-                mainText = "Dodaj $mainText"
+                mainText = "Dodaj nowy $mainText"
             )
 
             Text(
@@ -304,7 +304,7 @@ fun NavigationButtonsRetAdd(
                 tint = Color.White
             )
         }
-        Box(Modifier.weight(1f)) {
+        Box(Modifier.weight(3f)) {
             FullSizeButton(
                 text = mainText,
                 onClick = onAdd
