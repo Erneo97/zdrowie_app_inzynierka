@@ -1,12 +1,5 @@
 package com.example.firstcomposeap.ui.service.data
 
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
-import com.google.gson.JsonPrimitive
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
-import java.lang.reflect.Type
 
 data class MealInfo (
     val id: Long,    // id produktu w bazie danych
@@ -45,28 +38,24 @@ enum class Jednostki  (val displayName: String) {
 
     companion object {
         fun fromDisplayName(name: String): Jednostki ? {
-            return values().firstOrNull { it.displayName == name }
+            return Jednostki.entries.firstOrNull { it.displayName == name }
         }
     }
 
 }
 
-class JednostkiAdapter : JsonSerializer<Jednostki>, JsonDeserializer<Jednostki> {
-
-    override fun serialize(
-        src: Jednostki?,
-        typeOfSrc: Type?,
-        context: JsonSerializationContext?
-    ): JsonElement {
-        return JsonPrimitive(src?.name) // wysyłamy "GRAM"
-    }
-
-    override fun deserialize(
-        json: JsonElement?,
-        typeOfT: Type?,
-        context: JsonDeserializationContext?
-    ): Jednostki {
-        val name = json?.asString
-        return Jednostki.valueOf(name!!) // przyjmujemy "GRAM" → enum
-    }
+enum class PoraDnia(val displayName: String) {
+    SNIADANIE("Śniadanie"),
+    LUNCH("Lunch"),
+    OBIAD("Obiad"),
+    KOLACJA("Kolacja"),
+    PRZEKASKA("Przekąska")
 }
+
+
+// WSZYSTKIE DANE jakie znajdują się w danym dniu i porze w posiłku użytkownika
+data class MealUpdate (
+    val meal: List<Produkt>,
+    val data: String,
+    val poraDnia: PoraDnia
+)
