@@ -25,9 +25,6 @@ public class SerachControler {
         this.mongoTemplate = mongoTemplate;
     }
 
-    List<String> listaProduktow;
-
-
 
     /**
      * Zwraca wszystkie nazwy produktów których odległość levenstein od szukanego stringa jest <= 2
