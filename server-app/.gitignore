@@ -39,3 +39,5 @@ build/
 
 
 /src/main/resource/application.yml
+/src/main/resources/balans.p12
+/src/test/api.http
