@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
+import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.Produkt
 import kotlinx.coroutines.launch
 
@@ -19,6 +19,8 @@ class ProductViewModel : ViewModel() {
 
 
     var selectedProducts =   mutableStateListOf<Produkt>() // wypełniany w widoku szukania produktów (SearchProductScreen za  pośrednictwem zmiennej consumeProduct) przekazywany do widoku posiłków w ciuągu dnia i tam czyszczony
+    var isDoneToSend = mutableStateOf(false)
+    var selectedDayTime = mutableStateOf(PoraDnia.CLEAR)
 
 
     fun addNewProduct(product: Produkt) {
