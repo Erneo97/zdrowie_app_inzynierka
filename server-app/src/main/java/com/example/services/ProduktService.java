@@ -5,6 +5,7 @@ import com.example.kolekcje.enumy.Jednostki;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.posilki.Dawka;
 import com.example.kolekcje.posilki.Produkt;
+import com.example.repositories.MealRepository;
 import com.example.repositories.ProduktRepository;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +16,14 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProduktService {
-    private ProduktRepository produktyRepository;
+    private final ProduktRepository produktyRepository;
     private final SequenceGeneratorService sequenceGenerator;
+    private final MealRepository mealRepository;
 
-    public ProduktService(ProduktRepository produktyRepository, SequenceGeneratorService sequenceGenerator) {
+    public ProduktService(ProduktRepository produktyRepository, SequenceGeneratorService sequenceGenerator, MealRepository mealRepository) {
         this.produktyRepository = produktyRepository;
         this.sequenceGenerator = sequenceGenerator;
+        this.mealRepository = mealRepository;
     }
 
     public Produkt createProducts(String producent, String nazwa, String kodkreskowy, List<Dawka> objetosc) {
@@ -85,16 +88,9 @@ public class ProduktService {
      */
     public Optional<Produkt> findByKodKreskowy(String kodKreskowy ) {return produktyRepository.findByKodKreskowy(kodKreskowy);}
 
-//    FUNKCJE WYKORZYSTANE PRZEZ WYSZUKIWARKE
 
-    public List<Produkt> findAllByProducent(String producent) {
-        return produktyRepository.findByProducent(producent);
-    }
 
-    public List<String> findAllNames() {
-        List<ProduktNazwa> nazwy = produktyRepository.findAllBy();
-        return nazwy.stream().map(ProduktNazwa::getNazwa).toList();
-    }
+
 
 
 
