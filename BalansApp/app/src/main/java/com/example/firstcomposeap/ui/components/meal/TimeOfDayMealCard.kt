@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -37,10 +38,10 @@ import com.example.firstcomposeap.ui.components.icon.Keyboard_arrow_down
 import com.example.firstcomposeap.ui.components.icon.Keyboard_arrow_up
 import com.example.firstcomposeap.ui.service.data.MealInfo
 
-@SuppressLint("UnrememberedMutableState")
+@SuppressLint("UnrememberedMutableState", "DefaultLocale")
 @Composable
 fun TimeOfDayMealCard(title: String,
-                      meals: List<MealInfo>,
+                      meals: SnapshotStateList<MealInfo>,
                       onAddClick: () -> Unit,
                       onRemoveClick: (MealInfo) -> Unit
 ) {
@@ -78,7 +79,7 @@ fun TimeOfDayMealCard(title: String,
                     fontWeight = FontWeight.Bold,
                     fontSize = 32.sp
                 )
-                Text("${sumCalories}kcal  (${countMeal})")
+                Text("${String.format("%.0f", sumCalories)}kcal  (${countMeal})")
 
                 Row {
                     IconButton(onClick = { onAddClick()}, modifier = Modifier.background(MaterialTheme.colorScheme.primary,
