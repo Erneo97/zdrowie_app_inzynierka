@@ -1,6 +1,8 @@
 package com.example.firstcomposeap.ui.screens
 
+import android.content.Context
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -61,6 +63,16 @@ import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.data.Produkt
 
+fun setFlagToSendData(mainText: String, productViewModel: ProductViewModel, context: Context) {
+
+    if(mainText == context.getString(R.string.product)) {
+        productViewModel.isSelectedProductsReadyToSend.value = true
+    }
+    else {
+        productViewModel.isSelectedRecipesReadyToSend.value = true
+    }
+}
+
 @Composable
 fun SearchProductScreen(
     navController: NavController,
@@ -80,6 +92,12 @@ fun SearchProductScreen(
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
+    BackHandler {
+        setFlagToSendData(mainText, productViewModel, context)
+
+        productViewModel.foundProduct =  null
+        onClose()
+    }
 
 
 
@@ -151,6 +169,7 @@ fun SearchProductScreen(
             NavigationButtonsRetAdd(
                 onClose = {onClose()
                     searchViewModel.onSearchQueryChange("")
+                    setFlagToSendData(mainText, productViewModel, context)
                           },
                 onAdd = {
                     if(mainText == context.getString(R.string.product)) {
