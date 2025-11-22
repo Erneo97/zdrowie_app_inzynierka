@@ -28,6 +28,14 @@ class ProductViewModel : ViewModel() {
         PoraDnia.PRZEKASKA to MealGroup(PoraDnia.PRZEKASKA, mutableStateListOf())
     )
 
+    fun clearListMealsMap( ) {
+        mealsMap[PoraDnia.SNIADANIE]!!.produkty.clear()
+        mealsMap[PoraDnia.LUNCH]!!.produkty.clear()
+        mealsMap[PoraDnia.OBIAD]!!.produkty.clear()
+        mealsMap[PoraDnia.KOLACJA]!!.produkty.clear()
+        mealsMap[PoraDnia.PRZEKASKA]!!.produkty.clear()
+    }
+
     var selectedProducts =   mutableStateListOf<Produkt>() // wypełniany w widoku szukania produktów (SearchProductScreen za  pośrednictwem zmiennej consumeProduct) przekazywany do widoku posiłków w ciuągu dnia i tam czyszczony dane do dodania usuwanie przez przycisk w oknie
     var isSelectedProductsReadyToSend = mutableStateOf(false)
     var selectedDayTime = mutableStateOf(PoraDnia.CLEAR)

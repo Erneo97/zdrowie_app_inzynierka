@@ -45,6 +45,11 @@ fun UserMealTab(loginViewModel: LoginViewModel,
 
     val mealsMap = productViewModel.mealsMap
 
+    LaunchedEffect(date) {  // pobieranie danych na serwer
+        Log.e("UserMealTab", " ${date}")
+        productViewModel.clearListMealsMap()
+        // TODO: pobranie właściwych danych z serwera dla daniego dnia
+    }
 
     LaunchedEffect(productViewModel.isSelectedRecipesReadyToSend) { // wysyłanie na serwer nowego przepisu
 

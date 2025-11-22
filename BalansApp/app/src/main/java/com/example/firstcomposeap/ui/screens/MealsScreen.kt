@@ -124,7 +124,8 @@ fun MealScreen(navController: NavHostController,
                         0 -> UserMealTab(loginViewModel,
                             onAddClick = {showSearchSheet = true},
                             productViewModel = productViewModel,
-                            date = wybranaData)
+                            date = wybranaData
+                        )
                         1 -> friendsMealTab(loginViewModel, wybranaData)
                     }
 
