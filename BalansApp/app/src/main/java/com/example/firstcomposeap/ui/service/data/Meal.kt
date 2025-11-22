@@ -1,11 +1,18 @@
 package com.example.firstcomposeap.ui.service.data
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
+
 data class MealInfo (
     val id: Long,    // id produktu w bazie danych
     val nazwa: String,
     val producent: String,
     val kodKreskowy: String,
     var objetosc: Dawka
+)
+
+data class MealGroup(
+    val poraDnia: PoraDnia,
+    val produkty: SnapshotStateList<MealInfo>
 )
 
 fun Produkt.toMealInfo(): MealInfo {
