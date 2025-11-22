@@ -8,6 +8,21 @@ data class MealInfo (
     var objetosc: Dawka
 )
 
+fun Produkt.toMealInfo(): MealInfo {
+    return MealInfo(
+        id = this.id,
+        nazwa = this.nazwa,
+        producent = this.producent,
+        kodKreskowy = this.kodKreskowy,
+        objetosc = this.objetosc.first()
+    )
+}
+
+fun List<Produkt>.toMealInfoList(): List<MealInfo> {
+    return this.map { it.toMealInfo() }
+}
+
+
 data class Produkt (
     val id: Long,    // id produktu w bazie danych
     val nazwa: String,
