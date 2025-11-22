@@ -5,10 +5,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
+import com.example.firstcomposeap.ui.components.getCurrentDate
+import com.example.firstcomposeap.ui.components.getFormOnlyDate
 import com.example.firstcomposeap.ui.service.data.MealGroup
 import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.Produkt
@@ -19,6 +22,7 @@ class ProductViewModel : ViewModel() {
     var token by mutableStateOf<String?>(null)
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
+    var wybranaData by  mutableStateOf(getFormOnlyDate(getCurrentDate()))
 
 
     val mealsMap = mutableStateMapOf<PoraDnia, MealGroup>(

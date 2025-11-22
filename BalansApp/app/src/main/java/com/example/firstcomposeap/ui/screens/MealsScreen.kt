@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.input.LogoBackGround
@@ -49,7 +48,6 @@ import com.example.firstcomposeap.ui.components.meal.WeeakDaysSelector
 import com.example.firstcomposeap.ui.components.meal.friendsMealTab
 import com.example.firstcomposeap.ui.components.meal.UserMealTab
 import com.example.firstcomposeap.ui.service.ProductViewModel
-import com.example.firstcomposeap.ui.service.SearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,7 +59,6 @@ fun MealScreen(navController: NavHostController,
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_meal)) }
 
     var showSearchSheet by remember { mutableStateOf(false) }
-    val searchViewModel: SearchViewModel = viewModel ()
 
     val tabs = listOf(context.getString(R.string.menu_profil),
         context.getString(R.string.friends)
@@ -70,13 +67,13 @@ fun MealScreen(navController: NavHostController,
 
 
 
-    var wybranaData by remember { mutableStateOf(getFormOnlyDate(getCurrentDate())) }
+
     var showDatePicker by remember { mutableStateOf(false) }
     
     CalendarDialoge(
-        baseDate = wybranaData,
+        baseDate = productViewModel.wybranaData,
         showDialog = showDatePicker,
-        onDateSelected = { wybranaData = it },
+        onDateSelected = { productViewModel.wybranaData = it },
         onDismiss = { showDatePicker = false },
         todayOnly = false
     )
@@ -89,11 +86,11 @@ fun MealScreen(navController: NavHostController,
     ) { innerPadding ->
         Column {
             RowDataInformation(
-                baseDate = wybranaData,
-                onToday = { wybranaData = getFormOnlyDate(getCurrentDate()) },
+                baseDate = productViewModel.wybranaData,
+                onToday = { productViewModel.wybranaData = getFormOnlyDate(getCurrentDate()) },
                 onDataPicker = { showDatePicker = it },
             )
-            WeeakDaysSelector(onClick = { wybranaData = it }, baseDate = wybranaData)
+            WeeakDaysSelector(onClick = { productViewModel.wybranaData = it }, baseDate = productViewModel.wybranaData)
 
 
             Box(modifier = Modifier
@@ -124,9 +121,9 @@ fun MealScreen(navController: NavHostController,
                         0 -> UserMealTab(loginViewModel,
                             onAddClick = {showSearchSheet = true},
                             productViewModel = productViewModel,
-                            date = wybranaData
+                            date = productViewModel.wybranaData
                         )
-                        1 -> friendsMealTab(loginViewModel, wybranaData)
+                        1 -> friendsMealTab(loginViewModel, productViewModel.wybranaData)
                     }
 
 
