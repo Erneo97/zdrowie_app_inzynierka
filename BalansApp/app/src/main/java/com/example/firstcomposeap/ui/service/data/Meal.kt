@@ -10,6 +10,13 @@ data class MealInfo (
     var objetosc: Dawka
 )
 
+fun calculateCaloriesInMeal(meals: List<MealInfo>) : Double {
+    var sum = 0.0
+    meals.forEach { meal -> sum = sum + meal.objetosc.kcal }
+
+    return sum
+}
+
 data class MealGroup(
     val poraDnia: PoraDnia,
     val produkty: SnapshotStateList<MealInfo>

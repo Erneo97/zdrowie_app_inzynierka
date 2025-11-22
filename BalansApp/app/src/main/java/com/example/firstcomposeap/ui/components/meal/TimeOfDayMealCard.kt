@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.example.firstcomposeap.ui.components.icon.Keyboard_arrow_down
 import com.example.firstcomposeap.ui.components.icon.Keyboard_arrow_up
 import com.example.firstcomposeap.ui.service.data.MealInfo
+import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
 
 @SuppressLint("UnrememberedMutableState", "DefaultLocale")
 @Composable
@@ -129,10 +130,3 @@ fun TimeOfDayMealCard(title: String,
     }
 }
 
-private fun calculateCaloriesInMeal(meals: List<MealInfo>) : Double {
-    var sum = 0.0
-
-    meals.forEach { meal -> sum = sum + meal.objetosc.kcal }
-
-    return sum
-}

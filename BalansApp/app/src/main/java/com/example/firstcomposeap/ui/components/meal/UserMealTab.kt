@@ -32,6 +32,8 @@ import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.toMealInfoList
 
+
+
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun UserMealTab(loginViewModel: LoginViewModel,
@@ -44,11 +46,15 @@ fun UserMealTab(loginViewModel: LoginViewModel,
     var textToolTip by remember { mutableStateOf("") }
 
     val mealsMap = productViewModel.mealsMap
+    var oldDate by remember { mutableStateOf(date) }
 
-    LaunchedEffect(date) {  // pobieranie danych na serwer
-        Log.e("UserMealTab", " ${date}")
-        productViewModel.clearListMealsMap()
-        // TODO: pobranie właściwych danych z serwera dla daniego dnia
+    LaunchedEffect(date) {  // pobieranie danych na serwer przy zmianie daty
+        if( oldDate != date ) {
+            Log.e("UserMealTab", " ${date}")
+            productViewModel.clearListMealsMap()
+            // TODO: pobranie właściwych danych z serwera dla daniego dnia
+            productViewModel.calculateCalorienOnThisDay()
+        }
     }
 
     LaunchedEffect(productViewModel.isSelectedRecipesReadyToSend) { // wysyłanie na serwer nowego przepisu
@@ -57,21 +63,16 @@ fun UserMealTab(loginViewModel: LoginViewModel,
 
 
     LaunchedEffect(productViewModel.isSelectedProductsReadyToSend) { // wysyłanie do bazy danych użytkownika posiłku
-        Log.e("UserMealTab", "${productViewModel.selectedDayTime.value}")
-        Log.e("UserMealTab", "${mealsMap[PoraDnia.SNIADANIE]!!.produkty.size} - ${mealsMap[PoraDnia.LUNCH]!!.produkty.size} - ${mealsMap[PoraDnia.OBIAD]!!.produkty.size} - ${mealsMap[PoraDnia.KOLACJA]!!.produkty.size} - ${mealsMap[PoraDnia.PRZEKASKA]!!.produkty.size}")
         if( productViewModel.selectedDayTime.value != PoraDnia.CLEAR) {
 //            TODO: wysyłamy zmiany na serwer
-            Log.e("UserMealTab", "\t${productViewModel.selectedProducts.size}")
-            Log.e("UserMealTab", "\t${mealsMap[productViewModel.selectedDayTime.value]!!.produkty.size}")
-            mealsMap[productViewModel.selectedDayTime.value]!!.produkty.addAll(
+             mealsMap[productViewModel.selectedDayTime.value]!!.produkty.addAll(
                 productViewModel.selectedProducts.toMealInfoList()
             )
-            Log.e("UserMealTab", "\t${mealsMap[productViewModel.selectedDayTime.value]!!.produkty.size}\n")
             productViewModel.selectedProducts.clear()
-            Log.e("UserMealTab", "\t${mealsMap[productViewModel.selectedDayTime.value]!!.produkty.size}")
 
             productViewModel.selectedDayTime.value = PoraDnia.CLEAR
             productViewModel.isSelectedProductsReadyToSend.value = false
+            productViewModel.calculateCalorienOnThisDay()
         }
     }
 
@@ -86,7 +87,9 @@ fun UserMealTab(loginViewModel: LoginViewModel,
             Box(modifier = Modifier
                 .weight(9f)
                 .padding(4.dp)) {
-                CalorieProgressBar(loginViewModel.ppm, 2050.0, loginViewModel.user!!.zapotrzebowanieKcal.toDouble() )
+                CalorieProgressBar(loginViewModel.ppm,
+                    productViewModel.consumedCalloriesThisDay.value,
+                    loginViewModel.user!!.zapotrzebowanieKcal.toDouble() )
             }
 
             FloatingActionButton(

@@ -12,6 +12,7 @@ import com.example.balansapp.ui.service.ApiClient
 import com.example.firstcomposeap.ui.service.data.MealGroup
 import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.Produkt
+import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
 import kotlinx.coroutines.launch
 
 class ProductViewModel : ViewModel() {
@@ -27,6 +28,18 @@ class ProductViewModel : ViewModel() {
         PoraDnia.KOLACJA to MealGroup(PoraDnia.KOLACJA, mutableStateListOf()),
         PoraDnia.PRZEKASKA to MealGroup(PoraDnia.PRZEKASKA, mutableStateListOf())
     )
+    var consumedCalloriesThisDay = mutableStateOf(0.0)
+
+    fun calculateCalorienOnThisDay() {
+        consumedCalloriesThisDay.value = 0.0
+
+        PoraDnia.entries.forEach { it ->
+            if( it != PoraDnia.CLEAR) {
+                consumedCalloriesThisDay.value +=  calculateCaloriesInMeal(mealsMap[it]!!.produkty)
+            }
+        }
+
+    }
 
     fun clearListMealsMap( ) {
         mealsMap[PoraDnia.SNIADANIE]!!.produkty.clear()
