@@ -55,7 +55,7 @@ fun UserMealTab(loginViewModel: LoginViewModel,
         Log.e("UserMealTab", "${productViewModel.selectedDayTime.value}")
         Log.e("UserMealTab", "${mealsMap[PoraDnia.SNIADANIE]!!.produkty.size} - ${mealsMap[PoraDnia.LUNCH]!!.produkty.size} - ${mealsMap[PoraDnia.OBIAD]!!.produkty.size} - ${mealsMap[PoraDnia.KOLACJA]!!.produkty.size} - ${mealsMap[PoraDnia.PRZEKASKA]!!.produkty.size}")
         if( productViewModel.selectedDayTime.value != PoraDnia.CLEAR) {
-//            TODO: wysyłamy zmiany
+//            TODO: wysyłamy zmiany na serwer
             Log.e("UserMealTab", "\t${productViewModel.selectedProducts.size}")
             Log.e("UserMealTab", "\t${mealsMap[productViewModel.selectedDayTime.value]!!.produkty.size}")
             mealsMap[productViewModel.selectedDayTime.value]!!.produkty.addAll(

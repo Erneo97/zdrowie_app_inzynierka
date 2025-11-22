@@ -90,7 +90,7 @@ fun MealScreen(navController: NavHostController,
         Column {
             RowDataInformation(
                 baseDate = wybranaData,
-                onToday = { wybranaData = it },
+                onToday = { wybranaData = getFormOnlyDate(getCurrentDate()) },
                 onDataPicker = { showDatePicker = it },
             )
             WeeakDaysSelector(onClick = { wybranaData = it }, baseDate = wybranaData)
@@ -146,7 +146,7 @@ fun RowDataInformation(baseDate: String,
                        onDataPicker: (Boolean) -> Unit,
                        onToday: (String) -> Unit
                        ) {
-    var wybranaData by remember { mutableStateOf(baseDate) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -155,7 +155,7 @@ fun RowDataInformation(baseDate: String,
     ) {
 
         Text(
-            wybranaData,
+            baseDate,
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 4.dp)
@@ -184,9 +184,7 @@ fun RowDataInformation(baseDate: String,
         }
 
         IconButton(
-            onClick = { wybranaData = getFormOnlyDate(getCurrentDate())
-                            onToday(wybranaData)
-                      },
+            onClick = { onToday(baseDate) },
             modifier = Modifier
                 .weight(1f)
                 .shadow(10.dp, RectangleShape)
