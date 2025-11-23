@@ -131,7 +131,10 @@ fun UserMealTab(loginViewModel: LoginViewModel,
                 onRemoveClick = {meal ->
                     productViewModel.mealsMap[PoraDnia.fromDisplayName(timeOfDays)]!!.produkty.remove(meal)
 //                    TODO: Zmiana wartosci na serwerze po  aktualizacja
-
+                    productViewModel.selectedDayTime.value = PoraDnia.fromDisplayName(timeOfDays)
+                    productViewModel.updateUserMeal()
+                    productViewModel.selectedDayTime.value = PoraDnia.CLEAR
+                    productViewModel.calculateCalorienOnThisDay()
                 }
             )
 
