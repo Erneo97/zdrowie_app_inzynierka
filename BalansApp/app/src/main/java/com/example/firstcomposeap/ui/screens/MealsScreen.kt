@@ -45,7 +45,7 @@ import com.example.firstcomposeap.ui.components.getFormOnlyDate
 import com.example.firstcomposeap.ui.components.icon.Edit_calendar
 import com.example.firstcomposeap.ui.components.icon.Today
 import com.example.firstcomposeap.ui.components.meal.WeeakDaysSelector
-import com.example.firstcomposeap.ui.components.meal.friendsMealTab
+import com.example.firstcomposeap.ui.components.meal.FriendsMealTab
 import com.example.firstcomposeap.ui.components.meal.UserMealTab
 import com.example.firstcomposeap.ui.service.ProductViewModel
 
@@ -123,7 +123,11 @@ fun MealScreen(navController: NavHostController,
                             productViewModel = productViewModel,
                             date = productViewModel.wybranaData
                         )
-                        1 -> friendsMealTab(loginViewModel, productViewModel.wybranaData)
+                        1 -> FriendsMealTab(loginViewModel,
+                            onAddClick = {showSearchSheet = true},
+                            productViewModel = productViewModel,
+                            date = productViewModel.wybranaData
+                        )
                     }
 
 
