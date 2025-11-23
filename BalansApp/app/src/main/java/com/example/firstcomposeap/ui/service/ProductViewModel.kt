@@ -12,6 +12,8 @@ import com.example.balansapp.ui.service.ApiClient
 import com.example.firstcomposeap.ui.components.getCurrentDate
 import com.example.firstcomposeap.ui.components.getFormOnlyDate
 import com.example.firstcomposeap.ui.service.data.AllMealsInDay
+import com.example.firstcomposeap.ui.service.data.Dawka
+import com.example.firstcomposeap.ui.service.data.Jednostki
 import com.example.firstcomposeap.ui.service.data.MealGroup
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.PoraDnia
@@ -35,15 +37,7 @@ class ProductViewModel : ViewModel() {
     )
     var consumedCalloriesThisDay by mutableStateOf<Double>(0.0)
 
-    fun calculateCalorienOnThisDay() {
-        consumedCalloriesThisDay = 0.0
 
-        PoraDnia.entries.forEach { it ->
-            if( it != PoraDnia.CLEAR) {
-                consumedCalloriesThisDay +=  calculateCaloriesInMeal(mealsMap[it]!!.produkty)
-            }
-        }
-    }
 
     fun clearListMealsMap( ) {
         mealsMap[PoraDnia.SNIADANIE]!!.produkty.clear()
@@ -77,7 +71,6 @@ class ProductViewModel : ViewModel() {
 
     var isLoadedMeals by mutableStateOf(false)
     suspend fun downloadMealUserDay() {
-        Log.e("downloadMealUserDay", "start")
         isLoadedMeals = false
         try {
             val response = ApiClient.getApi(token ?: "").getUserMealDay(wybranaData)
@@ -98,9 +91,61 @@ class ProductViewModel : ViewModel() {
             errorMessage = "Błąd sieci: ${e.localizedMessage}"
         }
         finally {
+            calculateAllStatistic()
             isLoadedMeals = true
         }
 
+    }
+
+    var makroMeal = mutableStateOf(Dawka(
+        jednostki = Jednostki.SZTUKI,
+        wartosc = 0.0f,
+        kcal = 0.0f,
+        bialko = 0.0f,
+        weglowodany = 0.0f,
+        tluszcze = 0.0f,
+        blonnik = 0.0f
+    ))
+
+
+    fun calculateAllStatistic() {
+        calculateCalorienOnThisDay()
+        calculateMakroMeals()
+    }
+
+    /**
+     * Liczy spożycie kcal użytkownika w posiłach w danym dniu
+     */
+    private fun calculateCalorienOnThisDay() {
+        consumedCalloriesThisDay = 0.0
+
+        PoraDnia.entries.forEach { it ->
+            if( it != PoraDnia.CLEAR) {
+                consumedCalloriesThisDay +=  calculateCaloriesInMeal(mealsMap[it]!!.produkty)
+            }
+        }
+    }
+
+    /**
+     * Liczy makro (białko, weglowodany, błonnik, tłuszcze) dla całego posiłku użytkownika w danym dniu
+     */
+    private fun calculateMakroMeals() {
+        makroMeal.value.bialko = 0.0f
+        makroMeal.value.weglowodany = 0.0f
+        makroMeal.value.tluszcze = 0.0f
+        makroMeal.value.blonnik = 0.0f
+
+        PoraDnia.entries.forEach { it ->
+            if( it != PoraDnia.CLEAR) {
+                mealsMap[it]!!.produkty.forEach { meal ->
+                    makroMeal.value.bialko += meal.objetosc.bialko
+                    makroMeal.value.weglowodany += meal.objetosc.weglowodany
+                    makroMeal.value.tluszcze += meal.objetosc.tluszcze
+                    makroMeal.value.blonnik += meal.objetosc.blonnik
+                }
+
+            }
+        }
     }
 
     fun updateUserMeal() {
@@ -150,6 +195,7 @@ class ProductViewModel : ViewModel() {
             errorMessage = "Błąd sieci: ${e.localizedMessage}"
         }
         finally {
+            calculateAllStatistic()
             isLoadedMeals = true
         }
 
