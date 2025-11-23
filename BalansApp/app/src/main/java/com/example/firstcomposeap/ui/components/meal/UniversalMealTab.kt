@@ -1,6 +1,7 @@
 package com.example.firstcomposeap.ui.components.meal
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +32,6 @@ import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.toMealInfoList
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun UniversalMealTab(loginViewModel: LoginViewModel,
                 onAddClick: () -> Unit,
@@ -46,12 +46,10 @@ fun UniversalMealTab(loginViewModel: LoginViewModel,
     var textToolTip by remember { mutableStateOf("") }
 
     val mealsMap = productViewModel.mealsMap
-    var oldDate by remember { mutableStateOf("") }
 
-    LaunchedEffect(oldDate, Unit) {  // pobieranie danych na serwer przy zmianie daty
+    LaunchedEffect(Unit, date) {  // pobieranie danych na serwer przy zmianie daty
         downloadMealUserDay()
         productViewModel.calculateCalorienOnThisDay()
-        oldDate = date
     }
 
     LaunchedEffect(productViewModel.isSelectedRecipesReadyToSend) { // wysyłanie na serwer nowego przepisu
