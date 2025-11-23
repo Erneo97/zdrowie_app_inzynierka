@@ -59,16 +59,13 @@ fun MealScreen(navController: NavHostController,
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_meal)) }
 
     var showSearchSheet by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     val tabs = listOf(context.getString(R.string.menu_profil),
         context.getString(R.string.friends)
         )
 
 
-
-
-
-    var showDatePicker by remember { mutableStateOf(false) }
     
     CalendarDialoge(
         baseDate = productViewModel.wybranaData,
@@ -77,7 +74,6 @@ fun MealScreen(navController: NavHostController,
         onDismiss = { showDatePicker = false },
         todayOnly = false
     )
-
 
     MainLayout(
         navController = navController,

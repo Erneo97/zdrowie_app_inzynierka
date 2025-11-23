@@ -56,11 +56,11 @@ data class Produkt (
 data class Dawka (
     val jednostki: Jednostki ,
     val wartosc: Float,
-    val kcal: Float,
-    val bialko: Float,
-    val weglowodany: Float,
-    val tluszcze : Float,
-    val blonnik: Float
+    var kcal: Float,
+    var bialko: Float,
+    var weglowodany: Float,
+    var tluszcze : Float,
+    var blonnik: Float
 )
 
 enum class Jednostki  (val displayName: String) {
