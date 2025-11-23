@@ -35,11 +35,11 @@ fun FriendsMealTab(
                    productViewModel: ProductViewModel,
                    date: String
 ) {
-
+    productViewModel.clearListMealsMap()
     var friends by remember { mutableStateOf<List<PrzyjacieleInfo>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        friends = loginViewModel.downloadFrendsInformationList()
+        friends = loginViewModel.downloadFrendsListICanModife()
     }
 
     if( !loginViewModel.isListFrendsLoaded ) {
@@ -49,13 +49,11 @@ fun FriendsMealTab(
     Log.e("FriendsMealTab ", " FriendsMealTab ${friends.size}")
     val userList = remember { mutableStateListOf<String>() }
     userList.clear()
-    friends.filter {
-        it.czyDozwolony
-    }.forEach { friend ->
+    friends.forEach { friend ->
         userList.add("${friend.email} - ${friend.imie} ${friend.nazwisko}")
-    } // TODO: zmienic z mojego czyDozwolony na właściciela
+    }
 
-    var selected by remember { mutableStateOf(userList.get(0)) }
+    var selected by remember { mutableStateOf("") }
 
     Column {
 
@@ -71,7 +69,9 @@ fun FriendsMealTab(
             onAddClick = onAddClick,
             productViewModel = productViewModel,
             date = date,
-            downloadMealUserDay = { productViewModel.downloadMealUserDay() },
+            downloadMealUserDay = {
+//                productViewModel.downloadMealUserDay()
+                                  },
             updataMealUser = { productViewModel.updateUserMeal() }
         )
 

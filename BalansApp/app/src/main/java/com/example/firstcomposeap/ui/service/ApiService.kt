@@ -70,6 +70,10 @@ interface ApiService {
     suspend fun getUserFrends(@Header("Authorization") authorization: String)
             : Response<List<PrzyjacieleInfo>>
 
+    @GET("uzytkownicy/friends/accesed")
+    suspend fun getUserFrendsICanModife(@Header("Authorization") authorization: String)
+            : Response<List<PrzyjacieleInfo>>
+
     @HTTP(method = "DELETE", path = "uzytkownicy/friends", hasBody = true)
     suspend fun deleteUserFrend(@Body body: PrzyjacieleInfo, @Header("Authorization") authorization: String)
             : Response<List<SimpleMessage>>

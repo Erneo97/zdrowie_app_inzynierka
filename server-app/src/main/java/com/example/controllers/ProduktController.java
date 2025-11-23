@@ -1,8 +1,9 @@
 package com.example.controllers;
 
-import com.example.kolekcje.enumy.PoraDnia;
+
 import com.example.kolekcje.posilki.AllMealsInDay;
 import com.example.kolekcje.posilki.Produkt;
+import com.example.kolekcje.uzytkownik.Przyjaciele;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.requests.MealUpdate;
 import com.example.services.ProduktService;
@@ -14,10 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/api/produkty")
@@ -70,19 +71,37 @@ public class ProduktController {
 
 
 
-    @GetMapping("/posilek")
-    public ResponseEntity<?> getMeal( @RequestBody MealUpdate update, Authentication authentication ) {
+    @GetMapping("/posilek/another/all")
+    public ResponseEntity<?> getMealAnotherUser( @RequestParam String date, @RequestParam String userEmail, Authentication authentication ) {
+        log.info("getMealAnotherUser " + date);
         if( authentication == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
 
-        if( update.getPoraDnia() == null) {
+        String usrNname =  authentication.getName();
+        Optional<Uzytkownik> optUsrSearch = uzytkownikService.getUserByEmail(userEmail);
+        Optional<Uzytkownik> optUsrRes = uzytkownikService.getUserByEmail(usrNname);
+        if( optUsrSearch.isEmpty() ||  optUsrRes.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        Uzytkownik usrSearch = optUsrSearch.get();
+        Uzytkownik usrResp = optUsrRes.get();
 
+        List<Przyjaciele> przyjacieles = usrSearch.getPrzyjaciele();
+        AtomicBoolean isAccess = new AtomicBoolean(false);
+        przyjacieles.forEach(przyjacie -> {
+            if( przyjacie.getId() == usrResp.getId() && przyjacie.isCzyDozwolony() ) {
+                isAccess.set(true);
+            }
+        });
+
+        if( !isAccess.get() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
 
-        Arrays.stream(PoraDnia.values()).forEach(poraDnia -> {} );
+        AllMealsInDay userMealDay = produktService.getAllUserMealsInDay(date, usrSearch.getId(), produktService);
 
-        return ResponseEntity.ok(update); // TODO: zmiana
+        return ResponseEntity.ok(userMealDay);
     }
 
     @GetMapping("/posilek/all")
