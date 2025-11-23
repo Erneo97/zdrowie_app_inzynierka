@@ -1,7 +1,6 @@
 package com.example.firstcomposeap.ui.screens
 
 import android.content.Context
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -121,9 +120,7 @@ fun SearchProductScreen(
             val newProd = productViewModel.consumedProduct!!
 
             var index = productsList.indexOfFirst { it.id == newProd.id }
-            Log.e("SearchProductScreen", "${index}")
             if (index != -1) {
-                Log.e("SearchProductScreen", "${newProd.nazwa} ${newProd.objetosc.get(0).kcal} kcal - ${newProd.objetosc.get(0).wartosc} ${newProd.objetosc.get(0).jednostki}")
                 productsList[index] = newProd
                 index = productViewModel.selectedProducts.indexOfFirst { it.id == newProd.id }
                 if( index !=- 1) {

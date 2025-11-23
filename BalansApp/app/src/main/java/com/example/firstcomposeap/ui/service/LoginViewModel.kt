@@ -1,7 +1,6 @@
 package com.example.balansapp.ui.service
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -188,7 +187,6 @@ fun calculatePPM( ) {
             try {
                 val response = ApiClient.api.inviteFriend(email, "Bearer $token")
                 if( response.isSuccessful) {
-                    Log.d("Invite", "isSuccessful: ${response.isSuccessful}, body: ${response.body()?.message}, code: ${response.code()}")
                     invitationResult = InvitationResult.Success( "Wysłano zaproszenie")
                 }
                 else {
@@ -223,7 +221,6 @@ fun calculatePPM( ) {
             try {
                 val response = ApiClient.api.akceptInvitation(zaproszenie, "Bearer $token")
                 if( response.isSuccessful) {
-                    Log.d("Invite", "isSuccessful: ${response.isSuccessful}, body: ${response.body()?.message}, code: ${response.code()}")
                     invitationResult = InvitationResult.Success( "Zaakceptowano zaproszenie")
                 }
                 else {
@@ -243,7 +240,6 @@ fun calculatePPM( ) {
             try {
                 val response = ApiClient.api.cancelInvitation(zaproszenie, "Bearer $token")
                 if( response.isSuccessful) {
-                    Log.d("Invite", "isSuccessful: ${response.isSuccessful}, body: ${response.body()?.message}, code: ${response.code()}")
                     invitationResult = InvitationResult.Success( "Zaakceptowano zaproszenie")
                 }
                 else {

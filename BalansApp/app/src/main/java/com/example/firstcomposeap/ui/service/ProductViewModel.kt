@@ -1,6 +1,5 @@
 package com.example.firstcomposeap.ui.service
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -62,11 +61,6 @@ class ProductViewModel : ViewModel() {
         mealsMap[PoraDnia.OBIAD]!!.produkty.addAll(meals.obiad)
         mealsMap[PoraDnia.KOLACJA]!!.produkty.addAll(meals.kolacja)
         mealsMap[PoraDnia.PRZEKASKA]!!.produkty.addAll(meals.inne)
-
-        Log.e("mapAllMealsInDayOnMealsMap", "${mealsMap[PoraDnia.SNIADANIE]!!.produkty.size} - " +
-                "${mealsMap[PoraDnia.LUNCH]!!.produkty.size} - ${mealsMap[PoraDnia.OBIAD]!!.produkty.size}" +
-            "${mealsMap[PoraDnia.KOLACJA]!!.produkty.size} - ${mealsMap[PoraDnia.PRZEKASKA]!!.produkty.size}")
-
     }
 
     var isLoadedMeals by mutableStateOf(false)
@@ -78,7 +72,6 @@ class ProductViewModel : ViewModel() {
                 val meals = response.body()
                 if (meals != null) {
                     message = "Pobrano listę posiłków"
-                    Log.e("downloadMealUserDay", meals.toString())
                     mapAllMealsInDayOnMealsMap(meals)
                 } else {
                     errorMessage = "Błąd: odpowiedź pusta"
@@ -156,7 +149,6 @@ class ProductViewModel : ViewModel() {
         )
         viewModelScope.launch {
             try {
-                Log.d("token", "addNewProduct ${token}")
                 val response = ApiClient.getApi(token ?: "").createOrUpdateMeal(update)
                 if (response.isSuccessful) {
                     message = "Aktualizacja twoich posiłków"
@@ -173,7 +165,6 @@ class ProductViewModel : ViewModel() {
     var selectedUserToEditMeal by   mutableStateOf("")
 
     suspend fun downloadMealAnotherUserDay() {
-        Log.e("downloadMealUserDay", "start")
         isLoadedMeals = false
         val email = selectedUserToEditMeal.substringBefore(" - ").trim()
         try {
@@ -182,7 +173,6 @@ class ProductViewModel : ViewModel() {
                 val meals = response.body()
                 if (meals != null) {
                     message = "Pobrano listę posiłków"
-                    Log.e("downloadMealUserDay", meals.toString())
                     mapAllMealsInDayOnMealsMap(meals)
                 } else {
                     errorMessage = "Błąd: odpowiedź pusta"
@@ -210,7 +200,6 @@ class ProductViewModel : ViewModel() {
         val email = selectedUserToEditMeal.substringBefore(" - ").trim()
         viewModelScope.launch {
             try {
-                Log.d("token", "addNewProduct ${token}")
                 val response = ApiClient.getApi(token ?: "").createOrUpdateAnotherUserMeal(update, email)
                 if (response.isSuccessful) {
                     message = "Aktualizacja twoich posiłków"
@@ -227,7 +216,6 @@ class ProductViewModel : ViewModel() {
     fun addNewProduct(product: Produkt) {
         viewModelScope.launch {
             try {
-                Log.d("token", "addNewProduct ${token}")
                 val response = ApiClient.api.addProductToDb(product)
                 if (response.isSuccessful) {
                     message = "Dodano produkt do bazy danych"
@@ -246,7 +234,6 @@ class ProductViewModel : ViewModel() {
 
 
     fun getProductById(id: Int) {
-        Log.e("getProductById", "${id}")
         viewModelScope.launch {
             try {
                 val response = ApiClient.api.findProductById(id)
@@ -254,7 +241,6 @@ class ProductViewModel : ViewModel() {
                 if (response.isSuccessful) {
 
                     foundProduct = response.body()
-                    Log.e("getProductById", "${foundProduct}")
                     errorMessage = null
                 } else {
                     errorMessage = "Błąd pobierania produktu: ${response.code()}"
