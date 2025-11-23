@@ -3,6 +3,7 @@ package com.example.services;
 import com.example.controllers.ProduktNazwa;
 import com.example.kolekcje.enumy.Jednostki;
 import com.example.kolekcje.enumy.LicznikiDB;
+import com.example.kolekcje.enumy.PoraDnia;
 import com.example.kolekcje.posilki.*;
 import com.example.repositories.MealRepository;
 import com.example.repositories.ProduktRepository;
@@ -11,10 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -145,6 +143,102 @@ public class ProduktService {
         return true;
     }
 
+    public AllMealsInDay getAllUserMealsInDay(String input, int userId, ProduktService produktService) {
+        LocalDate localDate = LocalDate.parse(input);
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
+        AllMealsInDay userMeal = new AllMealsInDay();
+
+
+        // --- ŚNIADANIE ---
+        Optional<Posilki> sniadanieOpt =
+                mealRepository.findByIdUzytkownikaAndDataAndPoradnia(
+                        userId, date, PoraDnia.SNIADANIE);
+
+        if (sniadanieOpt.isPresent()) {
+            List<MealInfo> sniadanie =
+                    mapSpozyteProduktyToMealInfoList(sniadanieOpt.get().getProdukty(), produktService);
+            userMeal.setSniadanie(sniadanie);
+        } else {
+            userMeal.setSniadanie(Collections.emptyList());
+        }
+
+        // --- LUNCH ---
+        Optional<Posilki> lunchOpt =
+                mealRepository.findByIdUzytkownikaAndDataAndPoradnia(
+                        userId, date, PoraDnia.LUNCH);
+
+        if (lunchOpt.isPresent()) {
+            List<MealInfo> lunch =
+                    mapSpozyteProduktyToMealInfoList(lunchOpt.get().getProdukty(), produktService);
+            userMeal.setLunch(lunch);
+        } else {
+            userMeal.setLunch(Collections.emptyList());
+        }
+
+        // --- OBIAD ---
+        Optional<Posilki> obiadOpt =
+                mealRepository.findByIdUzytkownikaAndDataAndPoradnia(
+                        userId, date, PoraDnia.OBIAD);
+
+        if (obiadOpt.isPresent()) {
+            List<MealInfo> obiad =
+                    mapSpozyteProduktyToMealInfoList(obiadOpt.get().getProdukty(), produktService);
+            userMeal.setObiad(obiad);
+        } else {
+            userMeal.setObiad(Collections.emptyList());
+        }
+
+        // --- KOLACJA ---
+        Optional<Posilki> kolacjaOpt =
+                mealRepository.findByIdUzytkownikaAndDataAndPoradnia(
+                        userId, date, PoraDnia.KOLACJA);
+
+        if (kolacjaOpt.isPresent()) {
+            List<MealInfo> kolacja =
+                    mapSpozyteProduktyToMealInfoList(kolacjaOpt.get().getProdukty(), produktService);
+            userMeal.setKolacja(kolacja);
+        } else {
+            userMeal.setKolacja(Collections.emptyList());
+        }
+
+        // --- INNE ---
+        Optional<Posilki> inneOpt =
+                mealRepository.findByIdUzytkownikaAndDataAndPoradnia(
+                        userId, date, PoraDnia.PRZEKASKA);
+
+        if (inneOpt.isPresent()) {
+            List<MealInfo> inne =
+                    mapSpozyteProduktyToMealInfoList(inneOpt.get().getProdukty(), produktService);
+            userMeal.setInne(inne);
+        } else {
+            userMeal.setInne(Collections.emptyList());
+        }
+
+
+
+        return userMeal;
+    }
+
+    private List<MealInfo> mapSpozyteProduktyToMealInfoList(List<SpozyteProdukty> produkty, ProduktService produktService) {
+        MealUpdate mealUpdate = new MealUpdate();
+
+        return produkty.stream()
+                .map(p -> {
+                    Produkt produkt = produktService.findById(p.getIdProduktu())
+                            .orElseThrow(() -> new RuntimeException(
+                                    "Produkt o id=" + p.getIdProduktu() + " nie istnieje"));
+
+                    MealInfo item = new MealInfo();
+                    item.setId((long)p.getIdProduktu());
+                    item.setObjetosc(p.getWartosc());
+                    item.setNazwa(produkt.getNazwa());
+                    item.setProducent(produkt.getProducent());
+                    item.setKodKreskowy(produkt.getKodKreskowy());
+
+                    return item;
+                })
+                .toList();
+    }
 
 }

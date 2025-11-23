@@ -1,6 +1,7 @@
 package com.example.controllers;
 
 import com.example.kolekcje.enumy.PoraDnia;
+import com.example.kolekcje.posilki.AllMealsInDay;
 import com.example.kolekcje.posilki.Produkt;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.requests.MealUpdate;
@@ -83,6 +84,27 @@ public class ProduktController {
 
         return ResponseEntity.ok(update); // TODO: zmiana
     }
+
+    @GetMapping("/posilek/all")
+    public ResponseEntity<?> getMealOnDay( @RequestParam String date, Authentication authentication ) {
+        log.info("getMealOnDay " + date);
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String usrNname =  authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(usrNname);
+        if( optUsr.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        Uzytkownik usr = optUsr.get();
+
+
+        AllMealsInDay userMealDay = produktService.getAllUserMealsInDay(date, usr.getId(), produktService);
+
+        return ResponseEntity.ok(userMealDay);
+    }
+
 
     @PostMapping("/posilek")
     public ResponseEntity<?> updateMeal(@RequestBody MealUpdate update, Authentication authentication) {
