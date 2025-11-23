@@ -2,6 +2,7 @@ package com.example.firstcomposeap.ui.service
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
 import com.example.firstcomposeap.ui.components.getCurrentDate
 import com.example.firstcomposeap.ui.components.getFormOnlyDate
+import com.example.firstcomposeap.ui.service.data.AllMealsInDay
 import com.example.firstcomposeap.ui.service.data.MealGroup
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.PoraDnia
@@ -32,17 +34,16 @@ class ProductViewModel : ViewModel() {
         PoraDnia.KOLACJA to MealGroup(PoraDnia.KOLACJA, mutableStateListOf()),
         PoraDnia.PRZEKASKA to MealGroup(PoraDnia.PRZEKASKA, mutableStateListOf())
     )
-    var consumedCalloriesThisDay = mutableStateOf(0.0)
+    var consumedCalloriesThisDay by mutableStateOf<Double>(0.0)
 
     fun calculateCalorienOnThisDay() {
-        consumedCalloriesThisDay.value = 0.0
+        consumedCalloriesThisDay = 0.0
 
         PoraDnia.entries.forEach { it ->
             if( it != PoraDnia.CLEAR) {
-                consumedCalloriesThisDay.value +=  calculateCaloriesInMeal(mealsMap[it]!!.produkty)
+                consumedCalloriesThisDay +=  calculateCaloriesInMeal(mealsMap[it]!!.produkty)
             }
         }
-
     }
 
     fun clearListMealsMap( ) {
@@ -60,6 +61,48 @@ class ProductViewModel : ViewModel() {
     var selectedRecipes =   mutableStateListOf<List<Produkt>>()
     var isSelectedRecipesReadyToSend = mutableStateOf(false)
 
+    private fun mapAllMealsInDayOnMealsMap(meals : AllMealsInDay) {
+        clearListMealsMap ()
+
+        mealsMap[PoraDnia.SNIADANIE]!!.produkty.addAll(meals.sniadanie)
+        mealsMap[PoraDnia.LUNCH]!!.produkty.addAll(meals.lunch)
+        mealsMap[PoraDnia.OBIAD]!!.produkty.addAll(meals.obiad)
+        mealsMap[PoraDnia.KOLACJA]!!.produkty.addAll(meals.kolacja)
+        mealsMap[PoraDnia.PRZEKASKA]!!.produkty.addAll(meals.inne)
+
+        Log.e("mapAllMealsInDayOnMealsMap", "${mealsMap[PoraDnia.SNIADANIE]!!.produkty.size} - " +
+                "${mealsMap[PoraDnia.LUNCH]!!.produkty.size} - ${mealsMap[PoraDnia.OBIAD]!!.produkty.size}" +
+            "${mealsMap[PoraDnia.KOLACJA]!!.produkty.size} - ${mealsMap[PoraDnia.PRZEKASKA]!!.produkty.size}")
+
+    }
+
+    var isLoadedMeals by mutableStateOf(false)
+    suspend fun downloadMealUserDay() {
+        Log.e("downloadMealUserDay", "start")
+        isLoadedMeals = false
+        try {
+            val response = ApiClient.getApi(token ?: "").getUserMealDay(wybranaData)
+            if (response.isSuccessful) {
+                val meals = response.body()
+                if (meals != null) {
+                    message = "Pobrano listę posiłków"
+                    Log.e("downloadMealUserDay", meals.toString())
+                    mapAllMealsInDayOnMealsMap(meals)
+                } else {
+                    errorMessage = "Błąd: odpowiedź pusta"
+                }
+            } else {
+                errorMessage = "Pobranie posiłków nie powiodło się: ${response.code()}"
+            }
+
+        } catch (e: Exception) {
+            errorMessage = "Błąd sieci: ${e.localizedMessage}"
+        }
+        finally {
+            isLoadedMeals = true
+        }
+
+    }
 
     fun updateUserMeal() {
         val update = MealUpdate(

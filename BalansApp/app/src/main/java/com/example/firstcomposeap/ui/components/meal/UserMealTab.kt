@@ -46,20 +46,17 @@ fun UserMealTab(loginViewModel: LoginViewModel,
     var textToolTip by remember { mutableStateOf("") }
 
     val mealsMap = productViewModel.mealsMap
-    var oldDate by remember { mutableStateOf(date) }
-
-    LaunchedEffect(date) {  // pobieranie danych na serwer przy zmianie daty
-        if( oldDate != date ) {
-            Log.e("UserMealTab", " ${date}")
-            productViewModel.clearListMealsMap()
-            // TODO: pobranie właściwych danych z serwera dla daniego dnia
-            productViewModel.calculateCalorienOnThisDay()
-        }
+    var oldDate by remember { mutableStateOf("") }
+    oldDate = date
+    LaunchedEffect(oldDate) {  // pobieranie danych na serwer przy zmianie daty
+        productViewModel.downloadMealUserDay()
+        productViewModel.calculateCalorienOnThisDay()
     }
 
     LaunchedEffect(productViewModel.isSelectedRecipesReadyToSend) { // wysyłanie na serwer nowego przepisu
 
     }
+
 
 
     LaunchedEffect(productViewModel.isSelectedProductsReadyToSend) { // wysyłanie do bazy danych użytkownika posiłku
@@ -76,6 +73,14 @@ fun UserMealTab(loginViewModel: LoginViewModel,
         }
     }
 
+    if( !productViewModel.isLoadedMeals) {
+        Box(Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return ;
+    }
+
     Spacer(Modifier.height(10.dp))
     if( loginViewModel.isLoadedUserData ) {
         loginViewModel.calculatePPM()
@@ -88,7 +93,7 @@ fun UserMealTab(loginViewModel: LoginViewModel,
                 .weight(9f)
                 .padding(4.dp)) {
                 CalorieProgressBar(loginViewModel.ppm,
-                    productViewModel.consumedCalloriesThisDay.value,
+                    productViewModel.consumedCalloriesThisDay,
                     loginViewModel.user!!.zapotrzebowanieKcal.toDouble() )
             }
 
@@ -125,7 +130,8 @@ fun UserMealTab(loginViewModel: LoginViewModel,
                              },
                 onRemoveClick = {meal ->
                     productViewModel.mealsMap[PoraDnia.fromDisplayName(timeOfDays)]!!.produkty.remove(meal)
-//                    TODO: Zmiana wartosci na serwerze po usunieciu / aktualizacja
+//                    TODO: Zmiana wartosci na serwerze po  aktualizacja
+
                 }
             )
 

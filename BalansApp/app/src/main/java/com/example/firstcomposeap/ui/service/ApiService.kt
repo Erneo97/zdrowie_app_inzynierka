@@ -10,6 +10,7 @@ import com.example.balansapp.ui.service.data.RegisterResponse
 import com.example.balansapp.ui.service.data.SimpleMessage
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
+import com.example.firstcomposeap.ui.service.data.AllMealsInDay
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.Produkt
 import okhttp3.ResponseBody
@@ -94,6 +95,13 @@ interface ApiService {
     suspend fun createOrUpdateMeal(
         @Body body: MealUpdate
     ): Response<SimpleMessage>
+
+
+    @GET("produkty/posilek/all")
+    suspend fun getUserMealDay(
+        @Query("date") date: String
+    ): Response<AllMealsInDay>
+
 
 
     @GET("search/produkty")

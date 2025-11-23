@@ -17,6 +17,14 @@ fun calculateCaloriesInMeal(meals: List<MealInfo>) : Double {
     return sum
 }
 
+data class AllMealsInDay(
+    var sniadanie: List<MealInfo> = emptyList(),
+    var lunch: List<MealInfo> = emptyList(),
+    var obiad: List<MealInfo> = emptyList(),
+    var kolacja: List<MealInfo> = emptyList(),
+    var inne: List<MealInfo> = emptyList()
+)
+
 data class MealGroup(
     val poraDnia: PoraDnia,
     val produkty: SnapshotStateList<MealInfo>
