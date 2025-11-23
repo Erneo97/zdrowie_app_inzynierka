@@ -256,7 +256,10 @@ fun calculatePPM( ) {
         }
     }
 
+
+    var isListFrendsLoaded by mutableStateOf(false)
     suspend  fun downloadFrendsInformationList() : List<PrzyjacieleInfo> {
+        isListFrendsLoaded = false
         return try {
             val response = ApiClient.api.getUserFrends("Bearer $token")
             if (response.isSuccessful) {
@@ -267,6 +270,9 @@ fun calculatePPM( ) {
         } catch (e: Exception) {
             errorMessage = e.localizedMessage
             emptyList()
+        }
+        finally {
+            isListFrendsLoaded = true
         }
     }
 
