@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +12,7 @@ import com.example.balansapp.ui.service.ApiClient
 import com.example.firstcomposeap.ui.components.getCurrentDate
 import com.example.firstcomposeap.ui.components.getFormOnlyDate
 import com.example.firstcomposeap.ui.service.data.MealGroup
+import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.Produkt
 import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
@@ -60,6 +60,28 @@ class ProductViewModel : ViewModel() {
     var selectedRecipes =   mutableStateListOf<List<Produkt>>()
     var isSelectedRecipesReadyToSend = mutableStateOf(false)
 
+
+    fun updateUserMeal() {
+        val update = MealUpdate(
+            meal = mealsMap[selectedDayTime.value]!!.produkty,
+            data = wybranaData,
+            poraDnia = selectedDayTime.value
+        )
+        viewModelScope.launch {
+            try {
+                Log.d("token", "addNewProduct ${token}")
+                val response = ApiClient.getApi(token ?: "").createOrUpdateMeal(update)
+                if (response.isSuccessful) {
+                    message = "Aktualizacja twoich posiłków"
+                } else {
+                    errorMessage = "Błąd aktualizacji posiłku: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+
+    }
 
     fun addNewProduct(product: Produkt) {
         viewModelScope.launch {

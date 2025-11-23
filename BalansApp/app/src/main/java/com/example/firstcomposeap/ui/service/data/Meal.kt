@@ -92,7 +92,7 @@ enum class PoraDnia(val displayName: String) {
 
 // WSZYSTKIE DANE jakie znajdują się w danym dniu i porze w posiłku użytkownika
 data class MealUpdate (
-    val meal: List<Produkt>,
+    val meal: List<MealInfo>,
     val data: String,
     val poraDnia: PoraDnia
 )

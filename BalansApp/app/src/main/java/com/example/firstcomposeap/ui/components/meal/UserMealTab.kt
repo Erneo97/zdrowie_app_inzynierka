@@ -64,11 +64,11 @@ fun UserMealTab(loginViewModel: LoginViewModel,
 
     LaunchedEffect(productViewModel.isSelectedProductsReadyToSend) { // wysyłanie do bazy danych użytkownika posiłku
         if( productViewModel.selectedDayTime.value != PoraDnia.CLEAR) {
-//            TODO: wysyłamy zmiany na serwer
              mealsMap[productViewModel.selectedDayTime.value]!!.produkty.addAll(
                 productViewModel.selectedProducts.toMealInfoList()
             )
             productViewModel.selectedProducts.clear()
+            productViewModel.updateUserMeal()
 
             productViewModel.selectedDayTime.value = PoraDnia.CLEAR
             productViewModel.isSelectedProductsReadyToSend.value = false

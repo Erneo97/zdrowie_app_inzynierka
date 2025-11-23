@@ -10,6 +10,7 @@ import com.example.balansapp.ui.service.data.RegisterResponse
 import com.example.balansapp.ui.service.data.SimpleMessage
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
+import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.Produkt
 import okhttp3.ResponseBody
 import retrofit2.http.Body
@@ -84,6 +85,16 @@ interface ApiService {
     suspend fun findProductById(
         @Path("id") id: Int
     ): Response<Produkt>
+
+
+    /**
+     *  Tworzenie albo modyfikacja posiłku użytkownika wymaga autoryzacji (token)
+     */
+    @POST("produkty/posilek")
+    suspend fun createOrUpdateMeal(
+        @Body body: MealUpdate
+    ): Response<SimpleMessage>
+
 
     @GET("search/produkty")
     suspend fun getAllMatchesProduktNames(
