@@ -60,6 +60,7 @@ fun MealScreen(navController: NavHostController,
 
     var showSearchSheet by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
+    productViewModel.token = loginViewModel.token
 
     val tabs = listOf(context.getString(R.string.menu_profil),
         context.getString(R.string.friends)
