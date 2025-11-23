@@ -1,16 +1,18 @@
 package com.example.services;
 
 import com.example.kolekcje.Zaproszenie;
+import com.example.kolekcje.ZaproszenieInfo;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.Plec;
 import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.uzytkownik.*;
 import com.example.repositories.UzytkownikRepository;
 import com.example.repositories.ZaproszeniaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,7 @@ public class UzytkownikService {
     private final SequenceGeneratorService sequenceGenerator;
     private final ZaproszeniaRepository zaproszeniaRepository;
     private final UzytkownikRepository uzytkownikRepository;
+    private static final Logger log = LoggerFactory.getLogger(UzytkownikService.class);
 
     public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator, ZaproszeniaRepository zaproszeniaRepository, UzytkownikRepository uzytkownikRepository) {
         this.repository = repository;
@@ -61,6 +64,10 @@ public class UzytkownikService {
         return repository.save(user);
     }
 
+    public Optional<Uzytkownik> getUserByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
     public Optional<Uzytkownik> getUserById(int id) {
         return repository.findById(id);
     }
@@ -69,59 +76,61 @@ public class UzytkownikService {
         return repository.findByEmail(email);
     }
 
-    public Optional<Uzytkownik> updateUser(int id, Uzytkownik updatedUser) {
-        return repository.findById(id).map(existingUser -> {
+    public Optional<Uzytkownik> updateUser(String email, Uzytkownik updatedUser) {
+        return repository.findByEmail(email).map(existingUser -> {
             existingUser.setImie(updatedUser.getImie());
             existingUser.setNazwisko(updatedUser.getNazwisko());
+            existingUser.setZapotrzebowanieKcal(updatedUser.getZapotrzebowanieKcal());
+            existingUser.setDataUrodzenia(updatedUser.getDataUrodzenia());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setWzrost(updatedUser.getWzrost());
             return repository.save(existingUser);
         });
     }
 
-    public boolean deleteUser(int id) {
-        if( repository.existsById(id)) {
-            repository.deleteById(id);
-            return true;
-        }
-        return false;
+//    public boolean deleteUser(int id) {
+//        if( repository.existsById(id)) {
+//            repository.deleteById(id);
+//            return true;
+//        }
+//        return false;
+//    }
+
+
+    public boolean addUserWeights(String email, PommiarWagii noweDane) {
+       Optional<Uzytkownik> userOpt = repository.findByEmail(email);
+       if( userOpt.isPresent()) {
+           Uzytkownik user = userOpt.get();
+           List<PommiarWagii> wagii = user.getWaga();
+
+           if(wagii == null || wagii.isEmpty()) {
+               wagii = new ArrayList<>();
+           }
+
+           wagii.add(noweDane);
+           user.setWaga(wagii);
+
+           repository.save(user);
+           return true;
+       }
+       return false;
     }
 
-    /**
-     * Pobieranie listy ze wszystkimi pomiarami użytkownika jakie ten wykonał w czasie używania aplikacji
-     * @param id
-     * @return
-     */
-    public List<PommiarWagii> getUsersWeights(int id) {
-        return repository.findProjectedById(id)
-                .map(PomiarWagiiProjection::getDane)
-                .orElse(Collections.emptyList());
-    }
 
-    /**
-     * Aktualizacja listy ze wszystkimi wagami użytkownika
-     * @param id
-     * @param noweDane
-     */
-    public void updateUserWeights(int id, List<PommiarWagii> noweDane) {
-       repository.findById(id).ifPresent(u -> {
-           u.setWaga(noweDane);
-           repository.save(u);
-       });
-    }
-
-    /**
-     * Aktualizacja hasla uzytkownika
-     * @param id
-     * @param password
-     */
-    public void updateUserPassword(int id, String password) {
-        // TODO: hash hasła
-        repository.findById(id).ifPresent(u -> {
+    public void updateUserPassword(String email, String password) {
+        repository.findByEmail(email).ifPresent(u -> {
             u.setHaslo(password);
             repository.save(u);
         });
     }
+
+    private void addFriendToUser(Przyjaciele friend, Uzytkownik user) {
+        List<Przyjaciele> list = user.getPrzyjaciele();
+        list.add(friend);
+        user.setPrzyjaciele(list);
+        repository.save(user);
+    }
+
 
     /**
      * Zmiana aktualnego planu treniongowego
@@ -167,21 +176,151 @@ public class UzytkownikService {
         return zaproszeniaRepository.findById(id);
     }
 
+
     public boolean sendInvitation(int userId, String emailFriend) {
-        Optional<Uzytkownik> firend = uzytkownikRepository.findByEmail(emailFriend);
-        if(firend.isEmpty()) {
-            return false;
+        Optional<Uzytkownik> firend = getUserByEmail(emailFriend);
+
+        if(firend.isPresent()) {
+            Optional<Zaproszenie> optZap = zaproszeniaRepository.findByIdZapraszanegoAndIdZapraszajacego(firend.get().getId(), userId);
+            if( optZap.isPresent()) {
+                log.info("Powtóka {} {}", optZap.get().getidZapraszajacego(), optZap.get().getidZapraszanego());
+                return false;
+            }
+            if( userId == firend.get().getId())
+                return false;
+
+            Zaproszenie zaproszenie = new Zaproszenie();
+
+            zaproszenie.setId(sequenceGenerator.getNextSequence(LicznikiDB.ZAPROSZENIA.getNazwa()));
+            zaproszenie.setidZapraszajacego(userId);
+            zaproszenie.setidZapraszanego(firend.get().getId());
+            log.info("Udało się {} {}", zaproszenie, zaproszenie.getId());
+            zaproszeniaRepository.save(zaproszenie);
+            return true;
         }
 
-        Zaproszenie zaproszenie = new Zaproszenie();
+        return false;
+    }
 
-        zaproszenie.setId(sequenceGenerator.getNextSequence(LicznikiDB.ZAPROSZENIA.getNazwa()));
-        zaproszenie.setidZapraszajacego(userId);
-        zaproszenie.setidZapraszajacego(firend.get().getId());
 
-        zaproszeniaRepository.save(zaproszenie);
+    public List<ZaproszenieInfo> getAllZaproszenies(String email) {
+        Optional<Uzytkownik> optUser = getUserByEmail(email);
+        if(optUser.isPresent()) {
+            Uzytkownik user = optUser.get();
 
-        return true;
+            List<Zaproszenie> zaproszenia = zaproszeniaRepository.findByIdZapraszanegoOrIdZapraszajacego(user.getId(), user.getId());
+            List<ZaproszenieInfo> zaproszenieInfo = new ArrayList<>();
+            zaproszenia.forEach(zaproszenie -> {
+                Optional<Uzytkownik> optZapraszajacy = uzytkownikRepository.findById(zaproszenie.getidZapraszajacego());
+                Optional<Uzytkownik> optZapraszany = uzytkownikRepository.findById(zaproszenie.getidZapraszanego());
+                if( optZapraszajacy.isPresent() && optZapraszany.isPresent()) {
+                    Uzytkownik zap = optZapraszajacy.get();
+                    Uzytkownik zapra = optZapraszany.get();
+                    ZaproszenieInfo zapro;
+                    if(user.getId() != zaproszenie.getidZapraszajacego() ) {
+
+                         zapro = new ZaproszenieInfo(zap.getImie(),
+                                zap.getNazwisko(),
+                                zap.getEmail(),
+                                zaproszenie.getId(),
+                                false
+                        );
+                    }
+                    else {
+                        zapro = new ZaproszenieInfo(zapra.getImie(),
+                                zapra.getNazwisko(),
+                                zapra.getEmail(),
+                                zaproszenie.getId(),
+                                true
+                        );
+                    }
+
+                    zaproszenieInfo.add(zapro);
+                }
+            });
+
+            return zaproszenieInfo;
+        }
+        return null;
+    }
+
+    private void delInvitation(Zaproszenie zaproszenie) {
+        zaproszeniaRepository.delete(zaproszenie);
+    }
+
+    public boolean cancelInviotationUser(ZaproszenieInfo zaproszenieInfo) {
+        Optional<Zaproszenie> optZap = zaproszeniaRepository.findById(zaproszenieInfo.getId());
+        if(optZap.isPresent()) {
+            Zaproszenie zaproszenie = optZap.get();
+
+            delInvitation(zaproszenie);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean acceptInvitation(Uzytkownik user, ZaproszenieInfo zaproszenieInfo) {
+        Optional<Zaproszenie> optZap = zaproszeniaRepository.findById(zaproszenieInfo.getId());
+        if(optZap.isPresent()) {
+            Zaproszenie zaproszenie = optZap.get();
+
+            Optional<Uzytkownik> optUsr = uzytkownikRepository.findById(zaproszenie.getidZapraszajacego());
+            if (optUsr.isPresent()) {
+                Przyjaciele przyjaciele1 = new Przyjaciele(user.getId());
+                Przyjaciele przyjaciele = new Przyjaciele(zaproszenie.getidZapraszajacego());
+
+                Uzytkownik usr = optUsr.get();
+
+                addFriendToUser(przyjaciele, user);
+                addFriendToUser(przyjaciele1, usr);
+            }
+
+            delInvitation(zaproszenie);
+
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteFriendUser(Uzytkownik user, int id) {
+        Optional<Uzytkownik> usr = uzytkownikRepository.findById(id);
+        if( usr.isPresent() ) {
+            Uzytkownik us = usr.get();
+
+            List<Przyjaciele > lista = user.getPrzyjaciele();
+            lista.removeIf(przyjaciele -> przyjaciele.getId() == id);
+            user.setPrzyjaciele(lista);
+            uzytkownikRepository.save(user);
+
+            lista = us.getPrzyjaciele();
+            lista.removeIf(przyjaciele -> usr.get().getId() == id);
+            us.setPrzyjaciele(lista);
+            uzytkownikRepository.save(us);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean changeAccessUserFrend(Uzytkownik user, int id) {
+        Optional<Uzytkownik> usr = uzytkownikRepository.findById(id);
+        if( usr.isPresent() ) {
+            Uzytkownik us = usr.get();
+
+            List<Przyjaciele > lista = user.getPrzyjaciele();
+            lista.forEach(przyjaciel -> {
+                if( przyjaciel.getId() == id ) {
+                    przyjaciel.setCzyDozwolony( !przyjaciel.isCzyDozwolony() );
+                }
+            });
+            user.setPrzyjaciele(lista);
+            uzytkownikRepository.save(user);
+
+
+            return true;
+        }
+
+        return false;
     }
 
 }

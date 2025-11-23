@@ -10,3 +10,10 @@ data class LoginResponse(
     val email: String
 )
 
+data class ChangePassword(
+    val oldPassword: String,
+    val newPassword: String
+)
+
+
+data class SimpleMessage(val message: String)

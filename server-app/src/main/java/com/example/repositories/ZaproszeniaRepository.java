@@ -10,7 +10,11 @@ import java.util.Optional;
 
 @RepositoryRestResource(collectionResourceRel = "zaproszenie", path = "zaproszenie")
 public interface ZaproszeniaRepository extends MongoRepository<Zaproszenie, String> {
+    Optional<Zaproszenie> findByIdZapraszanegoAndIdZapraszajacego(int idZapraszanego, int idZapraszajacego);
     List<Zaproszenie> findByIdZapraszanego(int idZapraszanego);
+    List<Zaproszenie> findByIdZapraszanegoOrIdZapraszajacego(int idZapraszanego, int idZapraszajacego);
     void deleteById(int id);
     Optional<Zaproszenie> findById(int id);
+
+
 }

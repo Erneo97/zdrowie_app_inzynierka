@@ -10,6 +10,9 @@ public class Przyjaciele {
     public boolean isCzyDozwolony() {return czyDozwolony;}
     public void setCzyDozwolony(boolean czyDozwolony) {this.czyDozwolony = czyDozwolony;}
 
-
+    public Przyjaciele(int id) {
+        this.id = id;
+        this.czyDozwolony = false;
+    }
 
 }

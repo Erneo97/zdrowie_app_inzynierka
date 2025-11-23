@@ -14,7 +14,10 @@ public interface ProduktRepository extends MongoRepository<Produkt, String> {
 
     Optional<Produkt> findById(long id);
     List<Produkt> findByNazwa(String name);
+    Optional<Produkt> findByNazwaAndProducent(String nazwa, String producent);
     Optional<Produkt> findByKodKreskowy(String kodKreskowy);
+
+    List<String> findByNazwaContaining(String nazwa);
 
     List<ProduktNazwa> findAllBy();
 

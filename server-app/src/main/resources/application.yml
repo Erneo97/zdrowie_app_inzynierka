@@ -8,6 +8,9 @@ spring:
     user:
       password: test@1234
       name: noname
+  app:
+    jwtSecret: Zt6JwL3YV6mR5tKnl9qKmrq1G8tV9lJpHk3FZbWqS0R+KfWkH7LZ0sFwXwWwPj6XqF8C3TtOqEw==
+    jwtExpirationMs: 2678400000
 
 
 

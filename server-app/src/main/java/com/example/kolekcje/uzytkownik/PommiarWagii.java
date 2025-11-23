@@ -1,14 +1,18 @@
 package com.example.kolekcje.uzytkownik;
 
+import com.mongodb.DBObject;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 
 public class PommiarWagii {
-    public final int  wartosc;
+    public final Double  wartosc;
     public final Date data;
-    public final int tluszcz, miesnie, nawodnienie;
 
-    public PommiarWagii(int wartosc, Date data, int tluszcz, int miesnie, int nawodnienie) {
+    public final double tluszcz, miesnie, nawodnienie;
+
+    public PommiarWagii(Double wartosc, Date data, Double tluszcz, Double miesnie, Double nawodnienie) {
         this.wartosc = wartosc;
         this.data = data;
         this.tluszcz = tluszcz;

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -16,8 +17,9 @@ public class Uzytkownik {
     int aktualnyPlan;
     String imie, nazwisko, email, haslo;
     List<PommiarWagii> waga;
-    int wzrost;
+    int wzrost, zapotrzebowanieKcal;
     Plec plec;
+    Date dataUrodzenia;
     List<Przyjaciele> przyjaciele;
     List<Dania> dania;
 
@@ -30,6 +32,19 @@ public class Uzytkownik {
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public Date getDataUrodzenia() {
+        return dataUrodzenia;
+    }
+    public void setDataUrodzenia(Date dataUrodzenia) {this.dataUrodzenia = dataUrodzenia; }
+
+    public int getZapotrzebowanieKcal() {
+        return zapotrzebowanieKcal;
+    }
+
+    public void setZapotrzebowanieKcal(int zapotrzebowanieKcal) {
+        this.zapotrzebowanieKcal = zapotrzebowanieKcal;
+    }
 
     public String getImie() { return imie; }
     public void setImie(String imie) { this.imie = imie; }
