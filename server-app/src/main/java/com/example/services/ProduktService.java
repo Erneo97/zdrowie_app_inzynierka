@@ -3,15 +3,14 @@ package com.example.services;
 import com.example.controllers.ProduktNazwa;
 import com.example.kolekcje.enumy.Jednostki;
 import com.example.kolekcje.enumy.LicznikiDB;
-import com.example.kolekcje.posilki.Dawka;
-import com.example.kolekcje.posilki.Posilki;
-import com.example.kolekcje.posilki.Produkt;
-import com.example.kolekcje.posilki.SpozyteProdukty;
+import com.example.kolekcje.posilki.*;
 import com.example.repositories.MealRepository;
 import com.example.repositories.ProduktRepository;
 import com.example.requests.MealUpdate;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -93,40 +92,42 @@ public class ProduktService {
     public Optional<Produkt> findByKodKreskowy(String kodKreskowy ) {return produktyRepository.findByKodKreskowy(kodKreskowy);}
 
 
-    public boolean createUserMeal(int userId, MealUpdate meal) {
-        Optional<Posilki> optpos =  mealRepository.findByIdUzytkownikaAndDataAndPoradnia(
-                userId,
-                new Date( meal.getData()),
-                meal.getPoraDnia());
+    private List<SpozyteProdukty> getMapMealUpdateToSpozyteProdukty(MealUpdate meal) {
+        return meal.getMeal().stream()
+                .map(item -> {
+                    SpozyteProdukty nowy = new SpozyteProdukty();
+                    nowy.setWartosc(item.getObjetosc());
+                    nowy.setIdProduktu((int) item.getId());
+                    return nowy;
+                })
+                .toList();
+    }
 
-        if(optpos.isPresent()) {
-            return false;
-        }
+    public boolean createUserMeal(int userId, MealUpdate meal) {
+        LocalDate localDate = LocalDate.parse(meal.getData());
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         Posilki posilekNowy = new Posilki();
         posilekNowy.setId(sequenceGenerator.getNextSequence(LicznikiDB.POSILKI.getNazwa()));
         posilekNowy.setId_uzytkownika(userId);
-        posilekNowy.setData(new Date(meal.getData()));
+        posilekNowy.setData(date);
         posilekNowy.setPoradnia(meal.getPoraDnia());
 
-        List<SpozyteProdukty> sp = meal.getMeal().stream().map(item -> {SpozyteProdukty nowy = new SpozyteProdukty();
-            nowy.setWartosc(item.getObjetosc().getFirst());
-            nowy.setId_produktu((int)item.getId());
-            return nowy;
-        }).toList();
-
-        posilekNowy.setProdukty(sp);
-
+        List<SpozyteProdukty> noweProdukty = getMapMealUpdateToSpozyteProdukty(meal);
+        posilekNowy.setProdukty(noweProdukty);
         mealRepository.save(posilekNowy);
 
         return true;
     }
 
     public boolean updateUserMeal(int userId, MealUpdate meal) {
+        LocalDate localDate = LocalDate.parse(meal.getData());
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
         Optional<Posilki> optpos = mealRepository
                 .findByIdUzytkownikaAndDataAndPoradnia(
                         userId,
-                        new Date(meal.getData()),
+                        date,
                         meal.getPoraDnia()
                 );
 
@@ -137,16 +138,7 @@ public class ProduktService {
 
         Posilki istniejacyPosilek = optpos.get();
 
-        List<SpozyteProdukty> noweProdukty = meal.getMeal().stream()
-                .map(item -> {
-                    SpozyteProdukty nowy = new SpozyteProdukty();
-                    nowy.setWartosc(item.getObjetosc().getFirst());
-                    nowy.setId_produktu((int) item.getId());
-                    return nowy;
-                })
-                .toList();
-
-
+       List<SpozyteProdukty> noweProdukty = getMapMealUpdateToSpozyteProdukty(meal);
         istniejacyPosilek.setProdukty(noweProdukty);
         mealRepository.save(istniejacyPosilek);
 

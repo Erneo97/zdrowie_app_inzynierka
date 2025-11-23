@@ -1,7 +1,7 @@
 package com.example.kolekcje.posilki;
 
 public class SpozyteProdukty {
-    private int id_produktu;
+    private int idProduktu;
     private Dawka wartosc;
 
     public Dawka getWartosc() {
@@ -9,7 +9,7 @@ public class SpozyteProdukty {
     }
     public void setWartosc(Dawka wartosc) {this.wartosc = wartosc;}
 
-    public int getId_produktu() {return id_produktu;}
-    public void setId_produktu(int id_produktu) {this.id_produktu = id_produktu;}
+    public int getIdProduktu() {return idProduktu;}
+    public void setIdProduktu(int idProduktu) {this.idProduktu = idProduktu;}
 
 }

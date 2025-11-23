@@ -1,5 +1,6 @@
 package com.example.controllers;
 
+import com.example.kolekcje.enumy.PoraDnia;
 import com.example.kolekcje.posilki.Produkt;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.requests.MealUpdate;
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -65,9 +68,20 @@ public class ProduktController {
     }
 
 
+
     @GetMapping("/posilek")
-    public Optional<MealUpdate> getMeal( @RequestBody MealUpdate update ) {
-        return Optional.empty();
+    public ResponseEntity<?> getMeal( @RequestBody MealUpdate update, Authentication authentication ) {
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        if( update.getPoraDnia() == null) {
+
+        }
+
+        Arrays.stream(PoraDnia.values()).forEach(poraDnia -> {} );
+
+        return ResponseEntity.ok(update); // TODO: zmiana
     }
 
     @PostMapping("/posilek")
@@ -79,11 +93,14 @@ public class ProduktController {
         Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
         if( optUsr.isPresent() ) {
             Uzytkownik usr = optUsr.get();
+            boolean isUpdated = produktService.updateUserMeal(usr.getId(), update);
+            if( !isUpdated ) {
+                boolean isCreated = produktService.createUserMeal(usr.getId(), update);
+                return ResponseEntity.ok(Map.of("message", "Dodano nowy posiłek"));
+            }
 
 
-
-
-            return ResponseEntity.ok().body("Brak autoryzacji");
+            return ResponseEntity.ok(Map.of("message", "Posiłek zaktualizowany"));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
