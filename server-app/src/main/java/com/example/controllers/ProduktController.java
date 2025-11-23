@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/produkty")
@@ -73,7 +74,6 @@ public class ProduktController {
 
     @GetMapping("/posilek/another/all")
     public ResponseEntity<?> getMealAnotherUser( @RequestParam String date, @RequestParam String userEmail, Authentication authentication ) {
-        log.info("getMealAnotherUser " + date);
         if( authentication == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
@@ -102,6 +102,36 @@ public class ProduktController {
         AllMealsInDay userMealDay = produktService.getAllUserMealsInDay(date, usrSearch.getId(), produktService);
 
         return ResponseEntity.ok(userMealDay);
+    }
+
+    @PostMapping("/another/posilek")
+    public ResponseEntity<?> createOrUpdateAnotherUserMeal(@RequestBody MealUpdate update, @RequestParam String userEmail, Authentication authentication) {
+        log.info("createOrUpdateAnotherUserMeal " + "");
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userReqEmail = authentication.getName();
+        Optional<Uzytkownik> optReqUsr = uzytkownikService.getUserByEmail(userReqEmail);
+        Optional<Uzytkownik> optEditUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optReqUsr.isPresent() && optEditUsr.isPresent() ) {
+            Uzytkownik usrRe = optReqUsr.get();
+            Uzytkownik usrEdit = optEditUsr.get();
+
+            Optional<Przyjaciele> optMojeDanePrzyjazni = usrEdit.getPrzyjaciele().stream().filter(przyjacie -> przyjacie.getId() == usrRe.getId()).findFirst();
+            if( optMojeDanePrzyjazni.isEmpty() || (optMojeDanePrzyjazni.isPresent() && !optMojeDanePrzyjazni.get().isCzyDozwolony())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+            }
+
+            boolean isUpdated = produktService.updateUserMeal(usrEdit.getId(), update);
+            if( !isUpdated ) {
+                boolean isCreated = produktService.createUserMeal(usrEdit.getId(), update);
+                return ResponseEntity.ok(Map.of("message", "Dodano nowy posiłek"));
+            }
+
+
+            return ResponseEntity.ok(Map.of("message", "Posiłek zaktualizowany"));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
     @GetMapping("/posilek/all")
