@@ -2,7 +2,6 @@ package com.example.firstcomposeap.ui.service
 
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -114,6 +113,59 @@ class ProductViewModel : ViewModel() {
             try {
                 Log.d("token", "addNewProduct ${token}")
                 val response = ApiClient.getApi(token ?: "").createOrUpdateMeal(update)
+                if (response.isSuccessful) {
+                    message = "Aktualizacja twoich posiłków"
+                } else {
+                    errorMessage = "Błąd aktualizacji posiłku: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+
+    }
+
+    var selectedUserToEditMeal by   mutableStateOf("")
+
+    suspend fun downloadMealAnotherUserDay() {
+        Log.e("downloadMealUserDay", "start")
+        isLoadedMeals = false
+        val email = selectedUserToEditMeal.substringBefore(" - ").trim()
+        try {
+            val response = ApiClient.getApi(token ?: "").getMealAnotherUser(wybranaData, email)
+            if (response.isSuccessful) {
+                val meals = response.body()
+                if (meals != null) {
+                    message = "Pobrano listę posiłków"
+                    Log.e("downloadMealUserDay", meals.toString())
+                    mapAllMealsInDayOnMealsMap(meals)
+                } else {
+                    errorMessage = "Błąd: odpowiedź pusta"
+                }
+            } else {
+                errorMessage = "Pobranie posiłków nie powiodło się: ${response.code()}"
+            }
+
+        } catch (e: Exception) {
+            errorMessage = "Błąd sieci: ${e.localizedMessage}"
+        }
+        finally {
+            isLoadedMeals = true
+        }
+
+    }
+
+    fun updateAnotherUserMeal() {
+        val update = MealUpdate(
+            meal = mealsMap[selectedDayTime.value]!!.produkty,
+            data = wybranaData,
+            poraDnia = selectedDayTime.value
+        )
+        val email = selectedUserToEditMeal.substringBefore(" - ").trim()
+        viewModelScope.launch {
+            try {
+                Log.d("token", "addNewProduct ${token}")
+                val response = ApiClient.getApi(token ?: "").createOrUpdateAnotherUserMeal(update, email)
                 if (response.isSuccessful) {
                     message = "Aktualizacja twoich posiłków"
                 } else {

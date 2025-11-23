@@ -107,6 +107,18 @@ interface ApiService {
     ): Response<AllMealsInDay>
 
 
+    @GET("produkty/posilek/another/all")
+    suspend fun getMealAnotherUser(
+        @Query("date") date: String,
+        @Query("userEmail") userEmail: String
+    ): Response<AllMealsInDay>
+
+    @POST("produkty/another/posilek")
+    suspend fun createOrUpdateAnotherUserMeal(
+        @Body body: MealUpdate,
+        @Query("userEmail") userEmail: String
+    ): Response<SimpleMessage>
+
 
     @GET("search/produkty")
     suspend fun getAllMatchesProduktNames(

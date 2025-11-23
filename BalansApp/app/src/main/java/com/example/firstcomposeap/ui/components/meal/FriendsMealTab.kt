@@ -53,7 +53,7 @@ fun FriendsMealTab(
         userList.add("${friend.email} - ${friend.imie} ${friend.nazwisko}")
     }
 
-    var selected by remember { mutableStateOf("") }
+    var selected = productViewModel.selectedUserToEditMeal
 
     Column {
 
@@ -70,9 +70,9 @@ fun FriendsMealTab(
             productViewModel = productViewModel,
             date = date,
             downloadMealUserDay = {
-//                productViewModel.downloadMealUserDay()
+                productViewModel.downloadMealAnotherUserDay()
                                   },
-            updataMealUser = { productViewModel.updateUserMeal() }
+            updataMealUser = { productViewModel.updateAnotherUserMeal() }
         )
 
     }
