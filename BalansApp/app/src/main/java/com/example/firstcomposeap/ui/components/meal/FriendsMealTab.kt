@@ -53,7 +53,9 @@ fun FriendsMealTab(
         userList.add("${friend.email} - ${friend.imie} ${friend.nazwisko}")
     }
 
-
+    LaunchedEffect(productViewModel.selectedUserToEditMeal) {
+        productViewModel.downloadMealAnotherUserDay()
+    }
 
     Column {
 
