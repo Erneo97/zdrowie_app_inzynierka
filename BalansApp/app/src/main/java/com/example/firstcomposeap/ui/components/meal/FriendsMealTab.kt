@@ -53,14 +53,14 @@ fun FriendsMealTab(
         userList.add("${friend.email} - ${friend.imie} ${friend.nazwisko}")
     }
 
-    var selected = productViewModel.selectedUserToEditMeal
+
 
     Column {
 
         SelectBox(
             options = userList,
-            selectedOption = selected,
-            onOptionSelected = { selected = it },
+            selectedOption = productViewModel.selectedUserToEditMeal,
+            onOptionSelected = { productViewModel.selectedUserToEditMeal = it },
             )
 
 

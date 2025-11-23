@@ -63,7 +63,7 @@ fun MealScreen(navController: NavHostController,
     val tabs = listOf(context.getString(R.string.menu_profil),
         context.getString(R.string.friends)
         )
-    var selectedTabIndex by remember { mutableStateOf(0) }
+
 
 
 
@@ -107,17 +107,17 @@ fun MealScreen(navController: NavHostController,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    TabRow(selectedTabIndex = selectedTabIndex) {
+                    TabRow(selectedTabIndex = productViewModel.selectedTabIndex) {
                         tabs.forEachIndexed { index, title ->
-                            Tab(selected = selectedTabIndex == index,
-                                onClick = {selectedTabIndex = index},
+                            Tab(selected = productViewModel.selectedTabIndex == index,
+                                onClick = {productViewModel.selectedTabIndex = index},
                                 text =  {Text(title, fontSize = 22.sp)}
                                 )
 
                         }
                     }
 
-                    when (selectedTabIndex) {
+                    when (productViewModel.selectedTabIndex) {
                         0 -> UserMealTab(loginViewModel,
                             onAddClick = {showSearchSheet = true},
                             productViewModel = productViewModel,

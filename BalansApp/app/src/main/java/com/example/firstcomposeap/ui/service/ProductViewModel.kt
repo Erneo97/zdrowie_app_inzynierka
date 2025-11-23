@@ -24,7 +24,7 @@ class ProductViewModel : ViewModel() {
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
     var wybranaData by  mutableStateOf(getFormOnlyDate(getCurrentDate()))
-
+    var selectedTabIndex by mutableStateOf(0) // wybieranie która zakłada użytkownik / przyjaciel
 
     val mealsMap = mutableStateMapOf<PoraDnia, MealGroup>(
         PoraDnia.SNIADANIE to MealGroup(PoraDnia.SNIADANIE, mutableStateListOf()),
