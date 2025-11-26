@@ -39,6 +39,11 @@ import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.Dawka
 import com.example.firstcomposeap.ui.service.data.Produkt
 
+/**
+ * Komponent pokazujący szczegóły produktu.
+ * Wybór jednostki jaką produkt sie posługuje, wartość.
+ * Aktualizacja makro produktu w tabeli
+ */
 @Composable
 fun ProductConsumedDetails(
     productViewModel: ProductViewModel,
