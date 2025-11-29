@@ -1,6 +1,8 @@
 package com.example.firstcomposeap.ui.service
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -25,18 +27,18 @@ class ProductViewModel : ViewModel() {
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
     var wybranaData by  mutableStateOf(getFormOnlyDate(getCurrentDate()))
-    var selectedTabIndex by mutableStateOf(0) // wybieranie która zakłada użytkownik / przyjaciel
+    var selectedTabIndex by mutableIntStateOf(0) // wybieranie która zakłada użytkownik / przyjaciel
 
-    val mealsMap = mutableStateMapOf<PoraDnia, MealGroup>(
+    val mealsMap = mutableStateMapOf(
         PoraDnia.SNIADANIE to MealGroup(PoraDnia.SNIADANIE, mutableStateListOf()),
         PoraDnia.LUNCH to MealGroup(PoraDnia.LUNCH, mutableStateListOf()),
         PoraDnia.OBIAD to MealGroup(PoraDnia.OBIAD, mutableStateListOf()),
         PoraDnia.KOLACJA to MealGroup(PoraDnia.KOLACJA, mutableStateListOf()),
         PoraDnia.PRZEKASKA to MealGroup(PoraDnia.PRZEKASKA, mutableStateListOf())
     )
-    var consumedCalloriesThisDay by mutableStateOf<Double>(0.0)
+    var consumedCalloriesThisDay by mutableDoubleStateOf(0.0)
 
-    var selectedTabIndexProductRecipe by mutableStateOf(0)  // zapamiętanie która zakładka w serach screen jest wybrana Produkty czy Danie
+    var selectedTabIndexProductRecipe by mutableIntStateOf(0)  // zapamiętanie która zakładka w serach screen jest wybrana Produkty czy Danie
 
     fun clearListMealsMap( ) {
         mealsMap[PoraDnia.SNIADANIE]!!.produkty.clear()
