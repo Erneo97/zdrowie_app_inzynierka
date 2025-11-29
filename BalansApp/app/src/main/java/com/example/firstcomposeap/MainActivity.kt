@@ -1,9 +1,7 @@
-package com.example.balansapp
-
+package com.example.firstcomposeap
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -40,7 +38,6 @@ class MainActivity : ComponentActivity() {
 
             balansappTheme {
                 val navController: NavHostController = rememberNavController()
-                val context = LocalContext.current
 
                 NavHost(
                     navController = navController,
