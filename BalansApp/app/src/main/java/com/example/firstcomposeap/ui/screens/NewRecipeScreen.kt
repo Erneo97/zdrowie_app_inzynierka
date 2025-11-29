@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.InputField
 import com.example.firstcomposeap.ui.components.icon.Keyboard_arrow_down
 import com.example.firstcomposeap.ui.components.icon.Keyboard_arrow_up
@@ -53,7 +54,8 @@ import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
  */
 @Composable
 fun NewRecipeScreen(loginViewModel: LoginViewModel,
-                    onClose: () -> Unit
+                    onClose: () -> Unit,
+                    goToSearchProduct: () -> Unit
 ) {
 
     Column(
@@ -77,6 +79,7 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         }
         var recipeName by remember { mutableStateOf("") }
 
+        Spacer(Modifier.height(20.dp))
         InputField(value = recipeName,
             onValueChange = {recipeName = it},
             modifier = Modifier.fillMaxWidth(),
@@ -84,6 +87,13 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         )
         Spacer(Modifier.height(10.dp))
 
+        Text("Podaj nazwę posiłku:", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        FullSizeButton(
+            text = "Dodaj produkty",
+            onClick = { goToSearchProduct() }
+        )
+
+        Spacer(Modifier.height(10.dp))
 
 
     }
