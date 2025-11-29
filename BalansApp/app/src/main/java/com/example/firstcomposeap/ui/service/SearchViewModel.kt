@@ -1,6 +1,5 @@
 package com.example.firstcomposeap.ui.service
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -58,7 +57,6 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     }
 
     fun downloadSearcheProducts() {
-        Log.e("downloadSearcheProducts", " ${searchQuery}")
         viewModelScope.launch {
             try {
                 val response = ApiClient.api.getAllMatchesProduct(searchQuery)
