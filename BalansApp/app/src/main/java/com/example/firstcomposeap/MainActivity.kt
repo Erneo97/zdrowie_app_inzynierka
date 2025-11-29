@@ -61,7 +61,9 @@ class MainActivity : ComponentActivity() {
                         NewRecipeScreen(
                             loginViewModel = loginViewModel,
                             productViewModel = productViewModel,
-                            onClose = {navController.popBackStack()},
+                            onClose = {navController.popBackStack()
+                                productViewModel.clearCreateProduct()
+                                      },
                             goToSearchProduct = {navController.navigate(
                                 Screen.ProductSearch.createRoute(onlyProduct = true))})
                     }
