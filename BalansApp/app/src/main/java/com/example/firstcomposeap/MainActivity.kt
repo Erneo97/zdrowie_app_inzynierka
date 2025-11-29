@@ -1,4 +1,5 @@
-package com.example.firstcomposeap
+package com.example.balansapp
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
