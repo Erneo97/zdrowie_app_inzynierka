@@ -33,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,8 +50,9 @@ import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.Dawka
 import com.example.firstcomposeap.ui.service.data.Jednostki
 import com.example.firstcomposeap.ui.service.data.MealInfo
-import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
+import com.example.firstcomposeap.ui.service.data.isSameProduct
+import com.example.firstcomposeap.ui.service.data.toMealInfo
 
 
 /**
@@ -108,13 +108,18 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
 
         Spacer(Modifier.height(25.dp))
         Text("Wybrane produkty:", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-
+        Spacer(Modifier.height(20.dp))
 //        TODO: lista wybranych produktów
         for( produkt  in productViewModel.selectedProductsFromRecipe) {
-                Text("${produkt.nazwa} - ${produkt.objetosc}")
+            MealProductAdded(
+                meal = produkt.toMealInfo(),
+                onClick = { productViewModel.selectedProductsFromRecipe.removeIf {isSameProduct(it, produkt)
+                } }
+            )
         }
     }
 }
+
 
 @SuppressLint("ComposableNaming")
 @Composable
