@@ -6,11 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import com.example.balansapp.ui.screens.LoginScreen
 import com.example.balansapp.ui.screens.RegisterScreen
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.balansapp.ui.navigation.main.Screen
 import com.example.balansapp.ui.screens.MealScreen
 import com.example.balansapp.ui.screens.ProfileScreen
@@ -57,14 +59,26 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screen.NewRecipe.route) {
                         NewRecipeScreen(
-                            loginViewModel = loginViewModel, onClose = {navController.popBackStack()})
+                            loginViewModel = loginViewModel, onClose = {navController.popBackStack()}, goToSearchProduct = {navController.navigate(
+                                Screen.ProductSearch.createRoute(onlyProduct = true))})
                     }
 
-                    composable(Screen.ProductSearch.route, ) { SearchProductScreen(
+                    composable(route = Screen.ProductSearch.route,
+                        arguments = listOf(
+                            navArgument("onlyProduct") {
+                                type = NavType.BoolType
+                                defaultValue = false
+                            }
+                        )
+                    ) {backStackEntry ->
+                        val onlyProduct = backStackEntry.arguments?.getBoolean("onlyProduct") ?: false
+                        SearchProductScreen(
                         navController = navController,
                         onClose = {navController.popBackStack()},
-                        productViewModel = productViewModel
+                        productViewModel = productViewModel,
+                        onlyProduct = onlyProduct
                         ) }
+
                 }
             }
         }

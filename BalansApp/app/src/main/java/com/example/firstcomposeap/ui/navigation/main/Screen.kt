@@ -8,7 +8,12 @@ sealed class Screen(val route: String) {
     object TreningPlan : Screen("treningsPlans")
     object Trenings : Screen("trenings")
 
-    object ProductSearch : Screen("productSearch")
+    object ProductSearch : Screen("product_search?onlyProduct={onlyProduct}") {
+        fun createRoute(onlyProduct: Boolean): String {
+            return "product_search?onlyProduct=$onlyProduct"
+        }
+    }
+
     object ProductConsumedDetails : Screen("productConsumedDetails")
 
     object NewProduct : Screen("newProduct")
