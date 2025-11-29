@@ -59,7 +59,10 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screen.NewRecipe.route) {
                         NewRecipeScreen(
-                            loginViewModel = loginViewModel, onClose = {navController.popBackStack()}, goToSearchProduct = {navController.navigate(
+                            loginViewModel = loginViewModel,
+                            productViewModel = productViewModel,
+                            onClose = {navController.popBackStack()},
+                            goToSearchProduct = {navController.navigate(
                                 Screen.ProductSearch.createRoute(onlyProduct = true))})
                     }
 
