@@ -77,7 +77,8 @@ fun SearchProductScreen(
     navController: NavController,
     onClose: () -> Unit,
     searchViewModel: SearchViewModel = viewModel(),
-    productViewModel: ProductViewModel
+    productViewModel: ProductViewModel,
+    onlyProduct: Boolean = false
 ) {
     val context = LocalContext.current
     val query = searchViewModel.searchQuery
@@ -199,21 +200,21 @@ fun SearchProductScreen(
                         isFocused = focusState.isFocused
                     }
             )
-
-            TabRow(selectedTabIndex = productViewModel.selectedTabIndexProductRecipe) {
-                listOf(
-                    context.getString(R.string.products),
-                    context.getString(R.string.mealHead)
-                ).forEachIndexed { index, title ->
-                    Tab(
-                        selected = productViewModel.selectedTabIndexProductRecipe == index,
-                        onClick = { productViewModel.selectedTabIndexProductRecipe = index
-                                  searchViewModel.searchedProducts = emptyList()
-                                  },
-                        text = { Text(title, fontSize = 22.sp) }
-                    )
+            if( !onlyProduct)
+                TabRow(selectedTabIndex = productViewModel.selectedTabIndexProductRecipe) {
+                    listOf(
+                        context.getString(R.string.products),
+                        context.getString(R.string.mealHead)
+                    ).forEachIndexed { index, title ->
+                        Tab(
+                            selected = productViewModel.selectedTabIndexProductRecipe == index,
+                            onClick = { productViewModel.selectedTabIndexProductRecipe = index
+                                      searchViewModel.searchedProducts = emptyList()
+                                      },
+                            text = { Text(title, fontSize = 22.sp) }
+                        )
+                    }
                 }
-            }
         }
 
         //  Lista z podpowiedziami do wyszukiwanej frazy
