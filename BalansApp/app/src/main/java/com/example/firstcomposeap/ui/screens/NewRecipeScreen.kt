@@ -20,6 +20,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -110,13 +112,20 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         Text("Wybrane produkty:", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(20.dp))
 //        TODO: lista wybranych produktów
-        for( produkt  in productViewModel.selectedProductsFromRecipe) {
-            MealProductAdded(
-                meal = produkt.toMealInfo(),
-                onClick = { productViewModel.selectedProductsFromRecipe.removeIf {isSameProduct(it, produkt)
-                } }
-            )
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(productViewModel.selectedProductsFromRecipe) { produkt ->
+                MealProductAdded(
+                    meal = produkt.toMealInfo(),
+                    onClick = {
+                        productViewModel.selectedProductsFromRecipe.removeIf { isSameProduct(it, produkt) }
+                    }
+                )
+            }
         }
+
     }
 }
 
