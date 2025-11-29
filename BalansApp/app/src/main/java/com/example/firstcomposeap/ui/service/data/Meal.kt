@@ -53,6 +53,12 @@ data class Produkt (
     var objetosc: List<Dawka>
 )
 
+public fun isSameProduct(it: Produkt, product : Produkt ) : Boolean {
+    return  it.id == product.id
+            && it.objetosc.get(0).jednostki == product.objetosc.get(0).jednostki
+            && it.objetosc.get(0).wartosc == product.objetosc.get(0).wartosc
+}
+
 data class Dawka (
     val jednostki: Jednostki ,
     val wartosc: Float,
