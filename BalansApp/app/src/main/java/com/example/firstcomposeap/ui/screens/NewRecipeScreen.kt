@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.meal.MealProductAdded
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
@@ -29,8 +30,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,7 +48,10 @@ import com.example.firstcomposeap.ui.components.icon.Keyboard_arrow_down
 import com.example.firstcomposeap.ui.components.icon.Keyboard_arrow_up
 import com.example.firstcomposeap.ui.components.meal.MacroNutrientsDisplay
 import com.example.firstcomposeap.ui.service.ProductViewModel
+import com.example.firstcomposeap.ui.service.data.Dawka
+import com.example.firstcomposeap.ui.service.data.Jednostki
 import com.example.firstcomposeap.ui.service.data.MealInfo
+import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
 
 
@@ -81,12 +87,13 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         }
 
         Spacer(Modifier.height(25.dp))
-        showMaroRecipe()
+        showMaroRecipe(productViewModel)
 
 
         var recipeName by remember { mutableStateOf("") }
 
         Spacer(Modifier.height(20.dp))
+        Text("Podaj nazwę posiłku:", fontWeight = FontWeight.Bold, fontSize = 20.sp)
         InputField(value = recipeName,
             onValueChange = {recipeName = it},
             modifier = Modifier.fillMaxWidth(),
@@ -94,32 +101,71 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         )
         Spacer(Modifier.height(10.dp))
 
-        Text("Podaj nazwę posiłku:", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-        FullSizeButton(
+       FullSizeButton(
             text = "Dodaj produkty",
             onClick = { goToSearchProduct() }
         )
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(25.dp))
+        Text("Wybrane produkty:", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
-
+//        TODO: lista wybranych produktów
+        for( produkt  in productViewModel.selectedProductsFromRecipe) {
+                Text("${produkt.nazwa} - ${produkt.objetosc}")
+        }
     }
 }
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun showMaroRecipe( ) {
+fun showMaroRecipe(productViewModel: ProductViewModel ) {
+    var data by remember { mutableStateOf(Dawka(
+        jednostki = Jednostki.SZTUKI,
+        wartosc = 0.0f,
+        kcal = 0.0f,
+        bialko = 0.0f,
+        weglowodany = 0.0f,
+        tluszcze = 0.0f,
+        blonnik = 0.0f
+    )) }
+    LaunchedEffect(productViewModel.selectedProductsFromRecipe.size) {
+        Log.e("showMaroRecipe", "${data.kcal} - ${data.bialko} -${productViewModel.selectedProductsFromRecipe.size}")
+        var newBialko = 0f
+        var newWegl = 0f
+        var newTluszcz = 0f
+        var newBlonnik = 0f
+        var newKcal = 0f
+
+        productViewModel.selectedProductsFromRecipe.forEach { meal ->
+            val m = meal.objetosc[0]
+            newBialko += m.bialko
+            newWegl += m.weglowodany
+            newTluszcz += m.tluszcze
+            newBlonnik += m.blonnik
+            newKcal += m.kcal
+        }
+
+        data = data.copy(
+            bialko = newBialko,
+            weglowodany = newWegl,
+            tluszcze = newTluszcz,
+            blonnik = newBlonnik,
+            kcal = newKcal
+        )
+    }
+
     val labels = listOf("Białko", "Węglowodany", "Tłuszcze", "Błonnik")
-    val values = listOf(123f, 555f, 90f, 34f)
+    val values = listOf(data.bialko, data.weglowodany, data.tluszcze, data.blonnik)
 
 
     Text("Makro w posiłłku: ", fontWeight = FontWeight.SemiBold)
     MacroNutrientsDisplay(
         labels = listOf("Kcal"),
-        values = listOf(1639f),
+        values = listOf(data.kcal),
         unit = "kcal",
         modifier = Modifier.fillMaxWidth()
     )
+
     MacroNutrientsDisplay(
         labels = labels,
         values = values,
