@@ -1,7 +1,6 @@
 package com.example.firstcomposeap.ui.screens
 
 import android.content.Context
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -25,8 +24,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import com.example.balansapp.R
@@ -41,7 +41,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -106,13 +105,10 @@ fun SearchProductScreen(
     LaunchedEffect(searchViewModel.searchedProducts) {  // aktualizacja przy zmianie wyszukiwania
         productsList.clear()
         productsList.addAll(searchViewModel.searchedProducts)
-        Log.e("updated", "${onlyProduct}")
-        var updated : SnapshotStateList<Produkt>
-        if( !onlyProduct) {
-            updated = productViewModel.selectedProducts
-        }
-        else {
-            updated = productViewModel.selectedProductsFromRecipe
+        val updated = if( !onlyProduct) {
+            productViewModel.selectedProducts
+        } else {
+            productViewModel.selectedProductsFromRecipe
         }
 
         for (sel in updated) {
@@ -264,7 +260,11 @@ fun SearchProductScreen(
                                 }
                                 .padding(12.dp)
                         )
-                        Divider()
+                        HorizontalDivider(
+                            Modifier,
+                            DividerDefaults.Thickness,
+                            DividerDefaults.color
+                        )
                     }
                 }
             }
@@ -281,11 +281,10 @@ fun SearchProductScreen(
                     .background(Color.White)
             ) {
                 items(productsList, key = { it.id }) { item ->
-                    var isChecked : Boolean
-                    if( onlyProduct)
-                        isChecked = productViewModel.selectedProducts.contains(item)
+                    val isChecked = if( onlyProduct)
+                        productViewModel.selectedProducts.contains(item)
                     else
-                        isChecked = productViewModel.selectedProductsFromRecipe.contains(item)
+                        productViewModel.selectedProductsFromRecipe.contains(item)
 
                     SearchedItem(
                         product = item,
@@ -321,7 +320,7 @@ fun SearchProductScreen(
                             }
                         }
                     )
-                    Divider()
+                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                 }
             }
         }
@@ -376,7 +375,7 @@ fun SearchedItem(product: Produkt,
                  onCheckedChange: (Produkt, Boolean) -> Unit,
                  onClick: ()  -> Unit
 ) {
-    var shadowColor = MaterialTheme.colorScheme.primary
+    val shadowColor = MaterialTheme.colorScheme.primary
     var innerisChecked by remember {   mutableStateOf(isChecked) }
 
     var changeProduct by remember { mutableStateOf(product) }
@@ -427,7 +426,7 @@ fun SearchedItem(product: Produkt,
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Text(
-                    text = "${changeProduct.objetosc.get(0).wartosc} ${changeProduct.objetosc.get(0).jednostki.displayName} - ${product.objetosc.get(0).kcal} kcal",
+                    text = "${changeProduct.objetosc[0].wartosc} ${changeProduct.objetosc[0].jednostki.displayName} - ${product.objetosc[0].kcal} kcal",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.secondary
