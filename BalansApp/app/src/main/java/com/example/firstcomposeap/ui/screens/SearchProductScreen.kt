@@ -1,6 +1,7 @@
 package com.example.firstcomposeap.ui.screens
 
 import android.content.Context
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -40,6 +41,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -104,8 +106,14 @@ fun SearchProductScreen(
     LaunchedEffect(searchViewModel.searchedProducts) {  // aktualizacja przy zmianie wyszukiwania
         productsList.clear()
         productsList.addAll(searchViewModel.searchedProducts)
-
-        val updated = productViewModel.selectedProducts
+        Log.e("updated", "${onlyProduct}")
+        var updated : SnapshotStateList<Produkt>
+        if( !onlyProduct) {
+            updated = productViewModel.selectedProducts
+        }
+        else {
+            updated = productViewModel.selectedProductsFromRecipe
+        }
 
         for (sel in updated) {
             for (i in productsList.indices) {
@@ -114,23 +122,35 @@ fun SearchProductScreen(
                 }
             }
         }
+
     }
 
-    LaunchedEffect(productViewModel.consumedProduct) {  // aktualizacja listy przez jeden produkt
-        if( productViewModel.consumedProduct != null) {
+    LaunchedEffect(productViewModel.consumedProduct) {  // aktualizacja listy przez jeden produkt, zmodyfikowany produkt
+        if( productViewModel.consumedProduct != null ) {
             val newProd = productViewModel.consumedProduct!!
-
+//            aktualizacja wartości
             var index = productsList.indexOfFirst { it.id == newProd.id }
             if (index != -1) {
-                productsList[index] = newProd
-                index = productViewModel.selectedProducts.indexOfFirst { it.id == newProd.id }
-                if( index !=- 1) {
-                    productViewModel.selectedProducts[index] = newProd
-                }
-                else {
+                // dodanie nowego produktu
+                productsList[index] = newProd // lokalnie
+
+                if(!onlyProduct) {
+                    index = productViewModel.selectedProducts.indexOfFirst { it.id == newProd.id }
+                    if( index !=- 1) {
+                        productViewModel.selectedProducts[index] = newProd
+                    }
                     productViewModel.selectedProducts.add(newProd)
                 }
+                else  {
+                    index = productViewModel.selectedProductsFromRecipe.indexOfFirst { it.id == newProd.id }
+                    if( index !=- 1) {
+                        productViewModel.selectedProductsFromRecipe[index] = newProd
+                    }
+                    productViewModel.selectedProductsFromRecipe.add(productViewModel.consumedProduct!!)
+                }
             }
+
+
             productViewModel.consumedProduct = null
         }
 
@@ -261,16 +281,32 @@ fun SearchProductScreen(
                     .background(Color.White)
             ) {
                 items(productsList, key = { it.id }) { item ->
-                    val isChecked = productViewModel.selectedProducts.contains(item)
+                    var isChecked : Boolean
+                    if( onlyProduct)
+                        isChecked = productViewModel.selectedProducts.contains(item)
+                    else
+                        isChecked = productViewModel.selectedProductsFromRecipe.contains(item)
 
                     SearchedItem(
                         product = item,
                         isChecked = isChecked,
                         onCheckedChange = { prod, checked ->    // wybralismy select box dodając / odejmując produkt z naszel listy spożytych produktóww
                             if (checked) {
-                                productViewModel.selectedProducts.add(prod)
+                                if(   !onlyProduct) {
+                                    productViewModel.selectedProducts.add(prod)
+                                }
+                                else { // dodanie produktu do Przepisu
+                                    productViewModel.selectedProductsFromRecipe.add(prod)
+                                    productViewModel.isChangeOnRecipe.value = !productViewModel.isChangeOnRecipe.value
+                                }
                             } else {
-                                productViewModel.selectedProducts.remove(prod)
+                                if( !onlyProduct) {
+                                    productViewModel.selectedProducts.remove(prod)
+                                    productViewModel.isChangeOnRecipe.value = !productViewModel.isChangeOnRecipe.value
+                                }
+                                else {
+                                    productViewModel.selectedProductsFromRecipe.remove(prod)
+                                }
                             }
                         },
                         onClick = { // komponent naciśnięty czyli wyświetlamy szczegłuy produktu z makro
