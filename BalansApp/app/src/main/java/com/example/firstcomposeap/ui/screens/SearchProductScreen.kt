@@ -85,7 +85,7 @@ fun SearchProductScreen(
     val productsList = remember { mutableStateListOf<Produkt>() }
 
 
-    var selectedTabIndex by remember { mutableStateOf(0) }
+
 
     var mainText by remember { mutableStateOf("") }
     var isFocused by remember { mutableStateOf(false) }
@@ -93,9 +93,9 @@ fun SearchProductScreen(
 
     BackHandler {
         setFlagToSendData(mainText, productViewModel, context)
-
         productViewModel.foundProduct =  null
         onClose()
+        productViewModel.selectedTabIndexProductRecipe = 0
     }
 
 
@@ -135,8 +135,8 @@ fun SearchProductScreen(
 
     }
 
-    LaunchedEffect(selectedTabIndex) {
-        mainText = when (selectedTabIndex) {
+    LaunchedEffect(productViewModel.selectedTabIndexProductRecipe) {
+        mainText = when (productViewModel.selectedTabIndexProductRecipe) {
             0 -> context.getString(R.string.product)
             1 -> context.getString(R.string.meal)
             else -> ""
@@ -167,13 +167,14 @@ fun SearchProductScreen(
                 onClose = {onClose()
                     searchViewModel.onSearchQueryChange("")
                     setFlagToSendData(mainText, productViewModel, context)
+                    productViewModel.selectedTabIndexProductRecipe = 0
                           },
                 onAdd = {
                     if(mainText == context.getString(R.string.product)) {
                         navController.navigate(Screen.NewProduct.route)
                     }
                     else {
-//                        TODO: Nowe danie ekran
+                        navController.navigate(Screen.NewRecipe.route)
                     }
                 },
                 mainText = "Dodaj nowy $mainText"
@@ -199,14 +200,14 @@ fun SearchProductScreen(
                     }
             )
 
-            TabRow(selectedTabIndex = selectedTabIndex) {
+            TabRow(selectedTabIndex = productViewModel.selectedTabIndexProductRecipe) {
                 listOf(
                     context.getString(R.string.products),
                     context.getString(R.string.mealHead)
                 ).forEachIndexed { index, title ->
                     Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index
+                        selected = productViewModel.selectedTabIndexProductRecipe == index,
+                        onClick = { productViewModel.selectedTabIndexProductRecipe = index
                                   searchViewModel.searchedProducts = emptyList()
                                   },
                         text = { Text(title, fontSize = 22.sp) }

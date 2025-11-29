@@ -36,7 +36,7 @@ class ProductViewModel : ViewModel() {
     )
     var consumedCalloriesThisDay by mutableStateOf<Double>(0.0)
 
-
+    var selectedTabIndexProductRecipe by mutableStateOf(0)  // zapamiętanie która zakładka w serach screen jest wybrana Produkty czy Danie
 
     fun clearListMealsMap( ) {
         mealsMap[PoraDnia.SNIADANIE]!!.produkty.clear()
