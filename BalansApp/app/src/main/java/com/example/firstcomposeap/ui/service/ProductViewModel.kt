@@ -47,10 +47,9 @@ class ProductViewModel : ViewModel() {
     }
 
     var selectedProducts =   mutableStateListOf<Produkt>() // wypełniany w widoku szukania produktów (SearchProductScreen za  pośrednictwem zmiennej consumeProduct) przekazywany do widoku posiłków w ciuągu dnia i tam czyszczony dane do dodania usuwanie przez przycisk w oknie
+
     var isSelectedProductsReadyToSend = mutableStateOf(false)
     var selectedDayTime = mutableStateOf(PoraDnia.CLEAR)
-
-    var selectedRecipes =   mutableStateListOf<List<Produkt>>()
     var isSelectedRecipesReadyToSend = mutableStateOf(false)
 
     private fun mapAllMealsInDayOnMealsMap(meals : AllMealsInDay) {
@@ -229,7 +228,7 @@ class ProductViewModel : ViewModel() {
     }
 
     var foundProduct by mutableStateOf<Produkt?>(null)
-    var consumedProduct by mutableStateOf<Produkt?>(null)
+    var consumedProduct by mutableStateOf<Produkt?>(null) // ProductConsumeDetail dodanie nowego produktu po zmiane jego wartosci
 
 
 
@@ -252,6 +251,18 @@ class ProductViewModel : ViewModel() {
                 foundProduct = null
             }
         }
+    }
+
+
+//  Dodawanie produktów do przepisu (nowego)
+
+    var selectedProductsFromRecipe =   mutableStateListOf<Produkt>() // lista produktów w nowym przepisie
+
+    var isChangeOnRecipe = mutableStateOf(false)
+
+    fun clearCreateProduct() {
+        selectedProductsFromRecipe.clear()
+        isChangeOnRecipe.value = false
     }
 
 }
