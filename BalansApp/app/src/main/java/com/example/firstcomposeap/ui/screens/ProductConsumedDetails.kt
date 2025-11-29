@@ -1,6 +1,5 @@
 package com.example.firstcomposeap.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -124,8 +123,6 @@ fun ProductConsumedDetails(
                             kodKreskowy = produkt.kodKreskowy,
                             objetosc = listOf(dawkaNowa)
                         )
-                    Log.e("ProductConsumedDetails", "${productViewModel.consumedProduct!!.nazwa} ," +
-                            "${productViewModel.consumedProduct!!.objetosc.get(0).kcal}kcal - ${productViewModel.consumedProduct!!.objetosc.get(0).wartosc} ${productViewModel.consumedProduct!!.objetosc.get(0).jednostki}")
                     onClose()
                     productViewModel.foundProduct = null // wymusza załadowanie detali od w tym widoku  po kliknięciu innego elementu
                 },
