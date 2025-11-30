@@ -20,8 +20,10 @@ import com.example.balansapp.ui.screens.TreningsScreen
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.RegisterViewModel
 import com.example.balansapp.ui.theme.balansappTheme
+import com.example.firstcomposeap.ui.screens.NewExerciseScreen
 import com.example.firstcomposeap.ui.screens.NewProductScreen
 import com.example.firstcomposeap.ui.screens.NewRecipeScreen
+import com.example.firstcomposeap.ui.screens.NewTreningPlanScreen
 import com.example.firstcomposeap.ui.screens.ProductConsumedDetails
 import com.example.firstcomposeap.ui.screens.SearchProductScreen
 import com.example.firstcomposeap.ui.service.ProductViewModel
@@ -53,6 +55,11 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController, treningViewModel) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
+
+                    composable(Screen.NewExercise.route) { NewExerciseScreen(treningViewModel) }
+                    composable(Screen.NewTreningPlan.route) { NewTreningPlanScreen(treningViewModel) }
+
+
 
                     composable(Screen.NewProduct.route) { NewProductScreen(productViewModel, onClose = {navController.popBackStack()}) }
                     composable(Screen.ProductConsumedDetails.route) { ProductConsumedDetails(
