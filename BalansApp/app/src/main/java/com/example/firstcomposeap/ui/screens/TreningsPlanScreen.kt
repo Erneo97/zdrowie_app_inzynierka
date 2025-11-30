@@ -19,17 +19,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
-import com.example.balansapp.ui.components.HeadText
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.components.treningplans.TrainingSeasonCard
 import com.example.balansapp.ui.navigation.main.MainLayout
+import com.example.firstcomposeap.ui.service.TreningViewModel
+
 
 @Composable
-fun TreningsPlanScreen(navController: NavHostController) {
+fun TreningsPlanScreen(navController: NavHostController, treningViewModel: TreningViewModel)
+{
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_plans)) }
+
+    LaunchedEffect(Unit) {
+
+    }
 
     MainLayout(
         navController = navController,
@@ -73,77 +80,21 @@ fun TreningsPlanScreen(navController: NavHostController) {
                 ) {
 
 
+                    treningViewModel.treningsPlanCard.forEach { item ->
+                        TrainingSeasonCard(
+                            onClick = { },
+                            seasonName = item.seasonName,
+                            startDate = item.startDate,
+                            endDate = item.endDate,
+                            trainingCount = item.trainingCount,
+                            isActive = item.isActive,
+                            goal = item.goal
+                        )
+                    }
 
-                    TrainingSeasonCard(
-                        onClick = { },
-                        seasonName = "Zimaq 2025",
-                        startDate = "05.05.25",
-                        endDate = "01.10.25",
-                        trainingCount = 55,
-                        isActive = true,
-                        goal = "Masa mięśniowa"
-                    )
-                    TrainingSeasonCard(
-                        onClick = { },
-                        seasonName = "Wiosna 2025",
-                        startDate = "05.05.25",
-                        endDate = "01.10.25",
-                        trainingCount = 55,
-                        goal = "Masa mięśniowa"
-                    )
-                    TrainingSeasonCard(
-                        onClick = { },
-                        seasonName = "Wiosna 2025",
-                        startDate = "05.05.25",
-                        endDate = "01.10.25",
-                        trainingCount = 55,
-                        goal = "Masa mięśniowa"
-                    )
-                    TrainingSeasonCard(
-                        onClick = { },
-                        seasonName = "Wiosna 2025",
-                        startDate = "05.05.25",
-                        endDate = "01.10.25",
-                        trainingCount = 55,
-                        goal = "Masa mięśniowa"
-                    )
-                    TrainingSeasonCard(
-                        onClick = { },
-                        seasonName = "Wiosna 2025",
-                        startDate = "05.05.25",
-                        endDate = "01.10.25",
-                        trainingCount = 55,
-                        goal = "Masa mięśniowa"
-                    )
-                    TrainingSeasonCard(
-                        onClick = { },
-                        seasonName = "Wiosna 2025",
-                        startDate = "05.05.25",
-                        endDate = "01.10.25",
-                        trainingCount = 55,
-                        goal = "Masa mięśniowa"
-                    )
-                    TrainingSeasonCard(
-                        onClick = { },
-                        seasonName = "Wiosna 2025",
-                        startDate = "05.05.25",
-                        endDate = "01.10.25",
-                        trainingCount = 55,
-                        goal = "Masa mięśniowa"
-                    )
-                    TrainingSeasonCard(
-                        onClick = { },
-                        seasonName = "Wiosna 2025",
-                        startDate = "05.05.25",
-                        endDate = "01.10.25",
-                        trainingCount = 55,
-                        goal = "Masa mięśniowa"
-                    )
 
                 }
-
             }
-
         }
     }
 }

@@ -25,6 +25,7 @@ import com.example.firstcomposeap.ui.screens.NewRecipeScreen
 import com.example.firstcomposeap.ui.screens.ProductConsumedDetails
 import com.example.firstcomposeap.ui.screens.SearchProductScreen
 import com.example.firstcomposeap.ui.service.ProductViewModel
+import com.example.firstcomposeap.ui.service.TreningViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,22 +34,24 @@ class MainActivity : ComponentActivity() {
             val loginViewModel: LoginViewModel = viewModel()
             val registerViewModel: RegisterViewModel = viewModel()
             val productViewModel: ProductViewModel = viewModel ()
+            val treningViewModel : TreningViewModel = viewModel ()
 
             loginViewModel.login("michal@michal.michal", "michal")
             productViewModel.token = loginViewModel.token
+            treningViewModel.token = loginViewModel.token
 
             balansappTheme {
                 val navController: NavHostController = rememberNavController()
 
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Home.route
+                    startDestination = Screen.TreningPlan.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
                     composable(Screen.Home.route) { MealScreen(navController, loginViewModel, productViewModel) }
                     composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
-                    composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController) }
+                    composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController, treningViewModel) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
 
                     composable(Screen.NewProduct.route) { NewProductScreen(productViewModel, onClose = {navController.popBackStack()}) }
