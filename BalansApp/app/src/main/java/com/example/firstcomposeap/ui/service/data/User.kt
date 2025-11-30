@@ -1,5 +1,6 @@
 package com.example.balansapp.ui.service.data
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.firstcomposeap.ui.service.data.MealInfo
 import com.example.firstcomposeap.ui.service.data.Produkt
 
@@ -42,6 +43,11 @@ fun DaniaDetail.toMealInfoList(): List<MealInfo> {
                 ?: throw IllegalStateException("Produkt ${produkt.nazwa} nie ma żadnych dawek!")
         )
     }
+}
+
+fun <T> SnapshotStateList<T>.replaceWith(newList: List<T>) {
+    this.clear()
+    this.addAll(newList)
 }
 
 
