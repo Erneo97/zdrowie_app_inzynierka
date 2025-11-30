@@ -56,8 +56,10 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController, treningViewModel) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
 
-                    composable(Screen.NewExercise.route) { NewExerciseScreen(treningViewModel) }
-                    composable(Screen.NewTreningPlan.route) { NewTreningPlanScreen(treningViewModel) }
+                    composable(Screen.NewExercise.route) { NewExerciseScreen(treningViewModel,
+                        onCLose = { navController.popBackStack() }) }
+                    composable(Screen.NewTreningPlan.route) { NewTreningPlanScreen(treningViewModel,
+                        onCLose = { navController.popBackStack() }) }
 
 
 

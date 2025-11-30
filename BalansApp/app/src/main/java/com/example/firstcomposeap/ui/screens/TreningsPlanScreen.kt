@@ -19,12 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.components.treningplans.TrainingSeasonCard
 import com.example.balansapp.ui.navigation.main.MainLayout
+import com.example.balansapp.ui.navigation.main.Screen
 import com.example.firstcomposeap.ui.service.TreningViewModel
 
 
@@ -57,14 +57,14 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
-                        onClick = {},// TODO: Dodaj ćwiczenie
+                        onClick = { navController.navigate(Screen.NewExercise.route) },// TODO: Dodaj ćwiczenie
                         modifier = Modifier.weight(2f)
                     ) {
                         Text("Dodaj ćwiczenie", fontSize = 15.sp)
                     }
 
                     Button(
-                        onClick = {}, // TODO: Nowy plan treningowy
+                        onClick = { navController.navigate(Screen.NewTreningPlan.route) }, // TODO: Nowy plan treningowy
                         modifier = Modifier.weight(3f)
                     ) {
                         Text("Nowy plan treningowy", fontSize = 15.sp)
