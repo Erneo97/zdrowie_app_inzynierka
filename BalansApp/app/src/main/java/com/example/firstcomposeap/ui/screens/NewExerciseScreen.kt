@@ -37,7 +37,7 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
     var spalanieStr by remember { mutableStateOf(spalanie.toString()) }
 
 
-    val grupyMiesniowe = GrupaMiesniowa.entries.toTypedArray()
+    val grupyMiesniowe = GrupaMiesniowa.entries.toList().sortedBy { it.grupaNazwa }
     val selectedGrupyMiesniowe = remember { mutableStateListOf<GrupaMiesniowa>() }
 
     Column (Modifier.fillMaxSize().padding(10.dp)){

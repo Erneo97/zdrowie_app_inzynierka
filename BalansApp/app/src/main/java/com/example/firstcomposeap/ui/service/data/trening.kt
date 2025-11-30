@@ -25,23 +25,23 @@ enum class GrupaMiesniowa(val grupaNazwa: String) {
     KAPTURY("Kaptury"),
 
     // --- NOGI – PODGRUPY ---
-    NOGI_CZWOROGLOWE("Czworogłowe uda"),
-    NOGI_DWUGLOWE("Dwugłowe uda"),
-    NOGI_POSLADKI("Pośladki"),
-    NOGI_PRZYWODZICIELE("Przywodziciele"),
-    NOGI_ODWODZICIELE("Odwodziciele"),
+    NOGI_CZWOROGLOWE("Nogi - czworogłowe uda"),
+    NOGI_DWUGLOWE("Nogi - dwugłowe uda"),
+    NOGI_POSLADKI("Nogi - pośladki"),
+    NOGI_PRZYWODZICIELE("Nogi - przywodziciele"),
+    NOGI_ODWODZICIELE("Nogi - odwodziciele"),
 
     // --- PLECY – PODGRUPY ---
-    PLECY_NAJSZERSZY("Najszeroki grzbietu"),
-    PLECY_PROSTOWNIKI("Prostowniki grzbietu"),
-    PLECY_OBLE("Mięśnie obłe"),
-    PLECY_RÓWNOLEGLOBOCZNE("Równoległoboczne"),
-    PLECY_TRAPEZ_SRODKOWY_DOLNY("Czworoboczny środkowy/dolny"),
+    PLECY_NAJSZERSZY("Plecy - najszeroki grzbietu"),
+    PLECY_PROSTOWNIKI("Plecy - prostowniki grzbietu"),
+    PLECY_OBLE("Plecy - mięśnie obłe"),
+    PLECY_RÓWNOLEGLOBOCZNE("Plecy - równoległoboczne"),
+    PLECY_TRAPEZ_SRODKOWY_DOLNY("Plecy - czworoboczny środkowy/dolny"),
 
     // --- BICEPS – PODGRUPY ---
     BICEPS_GLOWA_DLUGA("Biceps – głowa długa"),
     BICEPS_GLOWA_KROTKA("Biceps – głowa krótka"),
-    BICEPS_RAMIENNY("Mięsień ramienny"),
+    BICEPS_RAMIENNY("Biceps – mięsień ramienny"),
 
     // --- TRICEPS – PODGRUPY ---
     TRICEPS_GLOWA_DLUGA("Triceps – głowa długa"),
@@ -59,9 +59,9 @@ enum class GrupaMiesniowa(val grupaNazwa: String) {
     KLATKA_DOLNA("Klatka piersiowa – dolna"),
 
     // --- BRZUCH – PODGRUPY ---
-    BRZUCH_PROSTY("Prosty brzucha"),
-    BRZUCH_SKOSNE("Skośne brzucha"),
-    BRZUCH_POPRZECZNY("Poprzeczny brzucha"),
+    BRZUCH_PROSTY("Brzuch - prosty brzucha"),
+    BRZUCH_SKOSNE("Brzuch - skośne brzucha"),
+    BRZUCH_POPRZECZNY("Brzuch - poprzeczny brzucha"),
 
     // --- PRZEDRAMIĘ – PODGRUPY ---
     PRZEDRAMIE_ZGINACZE("Przedramię – zginacze"),
@@ -69,6 +69,6 @@ enum class GrupaMiesniowa(val grupaNazwa: String) {
     PRZEDRAMIE_ROTATORY("Przedramię – rotatory"),
 
     // --- ŁYDKI – PODGRUPY ---
-    LDYKI_BRZUCHATY("Mięsień brzuchaty łydki"),
-    LDYKI_PLASZCZKOWATY("Mięsień płaszczkowaty");
+    LDYKI_BRZUCHATY("Łydki - mięsień brzuchaty łydki"),
+    LDYKI_PLASZCZKOWATY("Łydki - mięsień płaszczkowaty");
 }
