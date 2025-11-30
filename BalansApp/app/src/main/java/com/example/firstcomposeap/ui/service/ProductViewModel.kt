@@ -261,10 +261,10 @@ class ProductViewModel : ViewModel() {
 
     var selectedProductsFromRecipe =   mutableStateListOf<Produkt>() // lista produktów w nowym przepisie
 
-    var selecteProductsFromRecipe = mutableStateListOf<DaniaDetail>()
+    var selecteProductsFromRecipe = mutableStateListOf<DaniaDetail>() // lista spożytych dań przez użytkownika w danym dniu         wykorzystywane przy edycji przepisu
 
-    var recipeName = mutableStateOf("")
-    var indexRecipe = mutableStateOf(-1)
+    var recipeName = mutableStateOf("")     //wykorzystywane przy edycji przepisu
+    var indexRecipe = mutableStateOf(-1)    //  wykorzystywane przy edycji przepisu
 
     fun initEditRecipe( recipe: DaniaDetail ) {
         selectedProductsFromRecipe.clear()
