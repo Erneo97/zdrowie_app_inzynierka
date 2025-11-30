@@ -46,7 +46,7 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
         Column(Modifier.weight(5f)) {
             NavigationButtonsRetAdd(
                 onClose = { onCLose() },
-                onAdd = { },
+                onAdd = { }, // TODO:
                 mainText = "Zapisz nowe ćwiczenie"
             )
             Spacer(Modifier.height(20.dp))
