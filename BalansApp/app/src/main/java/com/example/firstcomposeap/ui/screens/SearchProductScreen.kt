@@ -41,6 +41,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -58,9 +59,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.navigation.main.Screen
+import com.example.balansapp.ui.service.data.replaceWith
+import com.example.balansapp.ui.service.data.toMealInfoList
 import com.example.firstcomposeap.ui.components.icon.Arrow_back_ios_new
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.SearchViewModel
+import com.example.firstcomposeap.ui.service.data.MealInfo
 import com.example.firstcomposeap.ui.service.data.Produkt
 
 fun setFlagToSendData(mainText: String, productViewModel: ProductViewModel, context: Context) {
@@ -285,48 +289,70 @@ fun SearchProductScreen(
                     .heightIn(max = 650.dp)
                     .background(Color.White)
             ) {
-                items(productsList, key = { it.id }) { item ->
-                    val isChecked = if( !onlyProduct)
-                        productViewModel.selectedProducts.contains(item)
-                    else
-                        productViewModel.selectedProductsFromRecipe.contains(item)
+                if( productViewModel.selectedTabIndexProductRecipe == 0 ) {
+                    items(productsList, key = { it.id }) { item ->
+                        val isChecked = if( !onlyProduct)
+                            productViewModel.selectedProducts.contains(item)
+                        else
+                            productViewModel.selectedProductsFromRecipe.contains(item)
 
-                    SearchedItem(
-                        product = item,
-                        isChecked = isChecked,
-                        onCheckedChange = { prod, checked ->    // wybralismy select box dodając / odejmując produkt z naszel listy spożytych produktóww
-                            if (checked) {
-                                if(   !onlyProduct) {
-                                    productViewModel.selectedProducts.add(prod)
+                        SearchedItem(
+                            product = item,
+                            isChecked = isChecked,
+                            onCheckedChange = { prod, checked ->    // wybralismy select box dodając / odejmując produkt z naszel listy spożytych produktóww
+                                if (checked) {
+                                    if(   !onlyProduct) {
+                                        productViewModel.selectedProducts.add(prod)
+                                    }
+                                    else { // dodanie produktu do Przepisu
+                                        productViewModel.selectedProductsFromRecipe.add(prod)
+                                        productViewModel.isChangeOnRecipe.value = !productViewModel.isChangeOnRecipe.value
+                                    }
+                                } else {
+                                    if( !onlyProduct) {
+                                        productViewModel.selectedProducts.remove(prod)
+                                        productViewModel.isChangeOnRecipe.value = !productViewModel.isChangeOnRecipe.value
+                                    }
+                                    else {
+                                        productViewModel.selectedProductsFromRecipe.remove(prod)
+                                    }
                                 }
-                                else { // dodanie produktu do Przepisu
-                                    productViewModel.selectedProductsFromRecipe.add(prod)
-                                    productViewModel.isChangeOnRecipe.value = !productViewModel.isChangeOnRecipe.value
-                                }
-                            } else {
-                                if( !onlyProduct) {
-                                    productViewModel.selectedProducts.remove(prod)
-                                    productViewModel.isChangeOnRecipe.value = !productViewModel.isChangeOnRecipe.value
-                                }
-                                else {
-                                    productViewModel.selectedProductsFromRecipe.remove(prod)
+                            },
+                            onClick = { // komponent naciśnięty czyli wyświetlamy szczegłuy produktu z makro
+                                productViewModel.getProductById(item.id.toInt())
+                                navController.navigate(Screen.ProductConsumedDetails.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+
+                                    popUpTo(Screen.ProductSearch.route) {
+                                        saveState = true
+                                    }
                                 }
                             }
-                        },
-                        onClick = { // komponent naciśnięty czyli wyświetlamy szczegłuy produktu z makro
-                            productViewModel.getProductById(item.id.toInt())
-                            navController.navigate(Screen.ProductConsumedDetails.route) {
-                                launchSingleTop = true
-                                restoreState = true
-
-                                popUpTo(Screen.ProductSearch.route) {
-                                    saveState = true
-                                }
-                            }
-                        }
-                    )
-                    HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+                        )
+                        HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+                    }
                 }
+                else { // wyświetlenie listy przepisów użytkownika
+                    items(productViewModel.userRecipesList) {item ->
+                        var meals = SnapshotStateList<MealInfo>()
+
+                        meals.replaceWith(item.toMealInfoList())
+
+                        RecipeCard(
+                            title = item.nazwa,
+                            meals = meals,
+                            onEditClick = {
+                                productViewModel.clearEditRecipe()
+                                navController.navigate(Screen.NewRecipe.route)
+
+                            }, // TODO:
+                            onChecked = { } // TODO:
+                        )
+
+                    }
+                }
+
             }
         }
         else
