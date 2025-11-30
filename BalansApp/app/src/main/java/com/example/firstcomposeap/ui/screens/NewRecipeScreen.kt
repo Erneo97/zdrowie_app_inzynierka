@@ -214,7 +214,8 @@ fun RecipeCard(title: String,
 
     OutlinedCard(
         modifier = Modifier
-            .fillMaxWidth().shadow(3.dp, RoundedCornerShape(6.dp))
+            .fillMaxWidth()
+            .shadow(3.dp, RoundedCornerShape(6.dp))
             .padding(15.dp)
             .animateContentSize(),
         colors = CardDefaults.cardColors(
@@ -238,11 +239,13 @@ fun RecipeCard(title: String,
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                    modifier = Modifier.weight(4f)
                 )
-                Text("${String.format("%.0f", sumCalories)}kcal  (${countMeal})")
+                Text("${String.format("%.0f", sumCalories)}kcal  (${countMeal})",
+                    modifier = Modifier.weight(2f))
 
-                Row {
+                Row (modifier = Modifier.weight(2f)) {
                     IconButton(onClick = { onEditClick()}, modifier = Modifier.background(MaterialTheme.colorScheme.primary,
                         CircleShape
                     )) {
