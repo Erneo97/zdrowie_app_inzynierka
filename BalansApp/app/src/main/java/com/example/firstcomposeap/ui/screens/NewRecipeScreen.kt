@@ -80,8 +80,11 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         ) {
 
             NavigationButtonsRetAdd(
-                onClose = { onClose() },
+                onClose = { onClose()
+                    productViewModel.selectedTabIndexProductRecipe = 1
+                          },
                 onAdd = {
+                    productViewModel.selectedTabIndexProductRecipe = 1
 //                    TODO()
                 },
                 mainText = "Zapisz posiłek"
@@ -105,7 +108,9 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
 
        FullSizeButton(
             text = "Dodaj produkty",
-            onClick = { goToSearchProduct() }
+            onClick = {
+                productViewModel.selectedTabIndexProductRecipe = 0
+                goToSearchProduct() }
         )
 
         Spacer(Modifier.height(25.dp))
