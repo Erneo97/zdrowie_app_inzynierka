@@ -5,6 +5,9 @@ import com.example.kolekcje.ZaproszenieInfo;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.Plec;
 import com.example.kolekcje.posilki.Dania;
+import com.example.kolekcje.posilki.DaniaDetail;
+import com.example.kolekcje.posilki.Produkt;
+import com.example.kolekcje.posilki.SpozyteProdukty;
 import com.example.kolekcje.uzytkownik.*;
 import com.example.repositories.UzytkownikRepository;
 import com.example.repositories.ZaproszeniaRepository;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -24,13 +29,19 @@ public class UzytkownikService {
     private final SequenceGeneratorService sequenceGenerator;
     private final ZaproszeniaRepository zaproszeniaRepository;
     private final UzytkownikRepository uzytkownikRepository;
+    private final ProduktService produktService;
     private static final Logger log = LoggerFactory.getLogger(UzytkownikService.class);
 
-    public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator, ZaproszeniaRepository zaproszeniaRepository, UzytkownikRepository uzytkownikRepository) {
+    public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator
+            , ZaproszeniaRepository zaproszeniaRepository
+            , UzytkownikRepository uzytkownikRepository
+    , ProduktService produktService
+    ) {
         this.repository = repository;
         this.sequenceGenerator = sequenceGenerator;
         this.zaproszeniaRepository = zaproszeniaRepository;
         this.uzytkownikRepository = uzytkownikRepository;
+        this.produktService = produktService;
     }
 
     /**
@@ -322,5 +333,61 @@ public class UzytkownikService {
 
         return false;
     }
+
+
+    /**
+     *Aktualizacja przepisów użytkownika.
+     *
+     * @param user
+     * @param recipes
+     */
+    public void upgradeUserRecipes(Uzytkownik user, List<DaniaDetail> recipes) {
+        AtomicInteger index = new AtomicInteger(0);
+
+        List<Dania> updatedDania = recipes.stream().map( it -> {
+            Dania dania = new Dania();
+            dania.setId(index.getAndIncrement());
+            dania.setNazwa(it.getNazwa());
+
+            List<SpozyteProdukty> sp = new ArrayList<>();
+            List<Produkt> produtcs  = it.getListaProdukty();
+
+            produtcs.forEach(produkt -> {
+                SpozyteProdukty spozyte = new SpozyteProdukty();
+
+                spozyte.setId((int)produkt.getId());
+                spozyte.setWartosc(produkt.getObjetosc().getFirst());
+
+                sp.add(spozyte);
+            });
+
+
+            dania.setListaProdukty(sp);
+            return dania;
+        }).collect(Collectors.toList());
+
+        user.setDania(updatedDania);
+        repository.save(user);
+    }
+
+    public List<DaniaDetail> getAllUserRecipes(Uzytkownik user) {
+        List<Dania> userDania = user.getDania();
+        List<Produkt> produktyDoWyslania = new ArrayList<>();
+
+        return userDania.stream().map(it -> {
+            it.getListaProdukty().forEach(sp -> {
+                Optional<Produkt> optProd =  produktService.findById(sp.getId());
+                if( optProd.isPresent() ) {
+                    Produkt prod = optProd.get();
+                    prod.setObjetosc(List.of(sp.getWartosc()));
+                    produktyDoWyslania.add(prod);
+
+                }
+            });
+
+            return new DaniaDetail(it.getId(), it.getNazwa(), produktyDoWyslania);
+        }).collect(Collectors.toList());
+    }
+
 
 }
