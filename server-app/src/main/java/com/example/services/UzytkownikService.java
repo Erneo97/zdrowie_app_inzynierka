@@ -372,9 +372,9 @@ public class UzytkownikService {
 
     public List<DaniaDetail> getAllUserRecipes(Uzytkownik user) {
         List<Dania> userDania = user.getDania();
-        List<Produkt> produktyDoWyslania = new ArrayList<>();
-
         return userDania.stream().map(it -> {
+            List<Produkt> produktyDoWyslania = new ArrayList<>();
+
             it.getListaProdukty().forEach(sp -> {
                 Optional<Produkt> optProd =  produktService.findById(sp.getId());
                 if( optProd.isPresent() ) {
@@ -385,8 +385,10 @@ public class UzytkownikService {
                 }
             });
 
+
             return new DaniaDetail(it.getId(), it.getNazwa(), produktyDoWyslania);
         }).collect(Collectors.toList());
+
     }
 
 

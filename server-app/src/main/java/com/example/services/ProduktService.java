@@ -95,7 +95,7 @@ public class ProduktService {
                 .map(item -> {
                     SpozyteProdukty nowy = new SpozyteProdukty();
                     nowy.setWartosc(item.getObjetosc());
-                    nowy.setIdProduktu((int) item.getId());
+                    nowy.setId((int) item.getId());
                     return nowy;
                 })
                 .toList();
@@ -221,16 +221,14 @@ public class ProduktService {
     }
 
     private List<MealInfo> mapSpozyteProduktyToMealInfoList(List<SpozyteProdukty> produkty, ProduktService produktService) {
-        MealUpdate mealUpdate = new MealUpdate();
-
         return produkty.stream()
                 .map(p -> {
-                    Produkt produkt = produktService.findById(p.getIdProduktu())
+                    Produkt produkt = produktService.findById((int)p.getId())
                             .orElseThrow(() -> new RuntimeException(
-                                    "Produkt o id=" + p.getIdProduktu() + " nie istnieje"));
+                                    "Produkt o id=" + p.getId() + " nie istnieje"));
 
                     MealInfo item = new MealInfo();
-                    item.setId((long)p.getIdProduktu());
+                    item.setId((long)p.getId());
                     item.setObjetosc(p.getWartosc());
                     item.setNazwa(produkt.getNazwa());
                     item.setProducent(produkt.getProducent());
