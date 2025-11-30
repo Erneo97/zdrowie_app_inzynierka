@@ -95,7 +95,7 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         showMaroRecipe(productViewModel)
 
 
-        var recipeName by remember { mutableStateOf("") }
+        var recipeName by remember { mutableStateOf(productViewModel.editRecipe.value.nazwa) }
 
         Spacer(Modifier.height(20.dp))
         Text("Podaj nazwę posiłku:", fontWeight = FontWeight.Bold, fontSize = 20.sp)
@@ -110,7 +110,8 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
             text = "Dodaj produkty",
             onClick = {
                 productViewModel.selectedTabIndexProductRecipe = 0
-                goToSearchProduct() }
+                goToSearchProduct()
+            }
         )
 
         Spacer(Modifier.height(25.dp))
@@ -203,7 +204,7 @@ fun RecipeCard(title: String,
                       meals: SnapshotStateList<MealInfo>,
                       onEditClick: () -> Unit,
                // TODO: Wybranie tego posilku
-                      onRemoveClick: (MealInfo) -> Unit
+                      onChecked: (SnapshotStateList<MealInfo>) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -214,18 +215,18 @@ fun RecipeCard(title: String,
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth().shadow(3.dp, RoundedCornerShape(6.dp))
-            .padding(8.dp)
+            .padding(15.dp)
             .animateContentSize(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(8.dp)
         ) {
             //  Nagłówek
             Row(
@@ -237,7 +238,7 @@ fun RecipeCard(title: String,
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp
+                    fontSize = 20.sp
                 )
                 Text("${String.format("%.0f", sumCalories)}kcal  (${countMeal})")
 
@@ -279,7 +280,7 @@ fun RecipeCard(title: String,
                         meals.forEach { meal ->
                             MealProductAdded(
                                 meal = meal,
-                                onClick = { onRemoveClick(meal) }
+                                onClick = { onChecked(meals) }
                             )
                         }
                     }
