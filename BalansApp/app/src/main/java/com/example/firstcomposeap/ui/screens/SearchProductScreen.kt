@@ -202,7 +202,7 @@ fun SearchProductScreen(
                         navController.navigate(Screen.NewRecipe.route)
                     }
                 },
-                mainText = "Dodaj nowy $mainText"
+                mainText = "Dodaj $mainText"
             )
 
             Text(
@@ -339,16 +339,27 @@ fun SearchProductScreen(
                 }
                 else { // wyświetlenie listy przepisów użytkownika
                     items(loginViewModel.userRecipesList) {item ->
+                        val isSelected = productViewModel.selecteProductsFromRecipe.contains(item)
+
                         RecipeCard(
                             title = item.nazwa,
                             meals = item.listaProdukty.toMealInfoList(),
                             onEditClick = {
+                                productViewModel.initEditRecipe(item)
                                 navController.navigate(Screen.NewRecipe.route)
+                            },
+                            onCheckedChange = {
+                               meals,  isChecked ->
 
-                            }, // TODO:
-                            onChecked = { } // TODO:
+                                if( isChecked ) {
+                                    productViewModel.selecteProductsFromRecipe.add(item)
+                                }
+                                else {
+                                    productViewModel.selecteProductsFromRecipe.remove(item)
+                                }
+                            },
+                            isChecked = isSelected,
                         )
-
                     }
                 }
 

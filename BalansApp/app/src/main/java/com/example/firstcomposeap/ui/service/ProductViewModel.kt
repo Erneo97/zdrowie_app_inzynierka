@@ -260,6 +260,9 @@ class ProductViewModel : ViewModel() {
 //  Dodawanie produktów do przepisu (nowego)
 
     var selectedProductsFromRecipe =   mutableStateListOf<Produkt>() // lista produktów w nowym przepisie
+
+    var selecteProductsFromRecipe = mutableStateListOf<DaniaDetail>()
+
     var recipeName = mutableStateOf("")
     var indexRecipe = mutableStateOf(-1)
 

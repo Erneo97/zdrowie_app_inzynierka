@@ -251,12 +251,12 @@ fun RecipeCard(title: String,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    modifier = Modifier.weight(3.5f)
+                    modifier = Modifier.weight(3f)
                 )
                 Text("${String.format("%.0f", sumCalories)}kcal  (${countMeal})",
                     modifier = Modifier.weight(2f))
 
-                Row (modifier = Modifier.weight(2.5f)) {
+                Row (modifier = Modifier.weight(3f)) {
                     IconButton(onClick = { onEditClick()}, modifier = Modifier.background(MaterialTheme.colorScheme.primary,
                         CircleShape
                     )) {

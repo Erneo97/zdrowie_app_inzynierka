@@ -59,6 +59,9 @@ fun UniversalMealTab(loginViewModel: LoginViewModel,
 
     LaunchedEffect(productViewModel.isSelectedProductsReadyToSend) { // wysyłanie do bazy danych użytkownika posiłku
         if( productViewModel.selectedDayTime.value != PoraDnia.CLEAR) {
+            productViewModel.selecteProductsFromRecipe.forEach { it ->  productViewModel.selectedProducts.addAll( it.listaProdukty )}
+            productViewModel.selecteProductsFromRecipe.clear()
+
             mealsMap[productViewModel.selectedDayTime.value]!!.produkty.addAll(
                 productViewModel.selectedProducts.toMealInfoList()
             )
