@@ -124,8 +124,8 @@ fun SearchProductScreen(
     LaunchedEffect(productViewModel.consumedProduct) {  // aktualizacja listy przez jeden produkt, zmodyfikowany produkt
         if( productViewModel.consumedProduct != null ) {
             val newProd = productViewModel.consumedProduct!!
-//            aktualizacja wartości
-            var index = productsList.indexOfFirst { it.id == newProd.id }
+//            aktualizacja wartości w liście produktów wyszukiwarki
+            var index = productsList.indexOfFirst { it.id == newProd.id  }
             if (index != -1) {
                 // dodanie nowego produktu
                 productsList[index] = newProd // lokalnie
@@ -281,7 +281,7 @@ fun SearchProductScreen(
                     .background(Color.White)
             ) {
                 items(productsList, key = { it.id }) { item ->
-                    val isChecked = if( onlyProduct)
+                    val isChecked = if( !onlyProduct)
                         productViewModel.selectedProducts.contains(item)
                     else
                         productViewModel.selectedProductsFromRecipe.contains(item)
