@@ -47,75 +47,8 @@ fun TreningsScreen(navController: NavHostController) {
 
             HeadText(
                 fontSize = 48.sp,
-                text = "Twoje plany treningowe"
+                text = "Twoje treningi"
             )
-
-            TrainingSeasonCard(
-                onClick = { },
-                seasonName = "Zimaq 2025",
-                startDate = "05.05.25",
-                endDate = "01.10.25",
-                trainingCount = 55,
-                isActive = true,
-                goal = "Masa mięśniowa"
-            )
-            TrainingSeasonCard(
-                onClick = { },
-                seasonName = "Wiosna 2025",
-                startDate = "05.05.25",
-                endDate = "01.10.25",
-                trainingCount = 55,
-                goal = "Masa mięśniowa"
-            )
-            TrainingSeasonCard(
-                onClick = { },
-                seasonName = "Wiosna 2025",
-                startDate = "05.05.25",
-                endDate = "01.10.25",
-                trainingCount = 55,
-                goal = "Masa mięśniowa"
-            )
-            TrainingSeasonCard(
-                onClick = { },
-                seasonName = "Wiosna 2025",
-                startDate = "05.05.25",
-                endDate = "01.10.25",
-                trainingCount = 55,
-                goal = "Masa mięśniowa"
-            )
-            TrainingSeasonCard(
-                onClick = { },
-                seasonName = "Wiosna 2025",
-                startDate = "05.05.25",
-                endDate = "01.10.25",
-                trainingCount = 55,
-                goal = "Masa mięśniowa"
-            )
-            TrainingSeasonCard(
-                onClick = { },
-                seasonName = "Wiosna 2025",
-                startDate = "05.05.25",
-                endDate = "01.10.25",
-                trainingCount = 55,
-                goal = "Masa mięśniowa"
-            )
-            TrainingSeasonCard(
-                onClick = { },
-                seasonName = "Wiosna 2025",
-                startDate = "05.05.25",
-                endDate = "01.10.25",
-                trainingCount = 55,
-                goal = "Masa mięśniowa"
-            )
-            TrainingSeasonCard(
-                onClick = { },
-                seasonName = "Wiosna 2025",
-                startDate = "05.05.25",
-                endDate = "01.10.25",
-                trainingCount = 55,
-                goal = "Masa mięśniowa"
-            )
-
 
         }
     }
