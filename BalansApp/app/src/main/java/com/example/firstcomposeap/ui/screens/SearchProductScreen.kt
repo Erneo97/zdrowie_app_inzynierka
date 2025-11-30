@@ -164,6 +164,10 @@ fun SearchProductScreen(
             1 -> context.getString(R.string.meal)
             else -> ""
         }
+        if( productViewModel.selectedTabIndexProductRecipe == 1) {
+            loginViewModel.downloadUserRecipes()
+        }
+
     }
 
     Column(
@@ -337,7 +341,12 @@ fun SearchProductScreen(
                 }
                 else { // wyświetlenie listy przepisów użytkownika
                     items(loginViewModel.userRecipesList) {item ->
-                        var meals = SnapshotStateList<MealInfo>()
+                        val meals = remember { mutableStateListOf<MealInfo>() }
+
+                        LaunchedEffect(item) {
+                            meals.clear()
+                            meals.addAll(item.toMealInfoList())
+                        }
 
                         meals.replaceWith(item.toMealInfoList())
 
