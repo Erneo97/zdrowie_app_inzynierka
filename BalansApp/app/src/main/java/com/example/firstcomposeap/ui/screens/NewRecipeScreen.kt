@@ -13,6 +13,7 @@ import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.meal.MealProductAdded
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
@@ -39,10 +40,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.InputField
@@ -53,7 +54,6 @@ import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.Dawka
 import com.example.firstcomposeap.ui.service.data.Jednostki
 import com.example.firstcomposeap.ui.service.data.MealInfo
-import com.example.firstcomposeap.ui.service.data.Produkt
 import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
 import com.example.firstcomposeap.ui.service.data.isSameProduct
 import com.example.firstcomposeap.ui.service.data.toMealInfo
@@ -69,6 +69,7 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
                     onClose: () -> Unit,
                     goToSearchProduct: () -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -85,16 +86,23 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
                     productViewModel.selectedTabIndexProductRecipe = 1
                           },
                 onAdd = {
-                    productViewModel.selectedTabIndexProductRecipe = 1
-                    if( productViewModel.indexRecipe.value == -1) // nowy przepis
-                        loginViewModel.addNewRecipe(productViewModel.selectedProductsFromRecipe, productViewModel.recipeName.value)
-                    else { // edycja istniejącego przepisu
-                        loginViewModel.updateNewRecipe(productViewModel.indexRecipe.value,
-                            productViewModel.selectedProductsFromRecipe,
-                            productViewModel.recipeName.value
-                        )
+                    if( productViewModel.recipeName.value != "" && productViewModel.selectedProductsFromRecipe.size > 0)
+                    {
+                        productViewModel.selectedTabIndexProductRecipe = 1
+                        if( productViewModel.indexRecipe.value == -1) // nowy przepis
+                            loginViewModel.addNewRecipe(productViewModel.selectedProductsFromRecipe, productViewModel.recipeName.value)
+                        else { // edycja istniejącego przepisu
+                            loginViewModel.updateNewRecipe(productViewModel.indexRecipe.value,
+                                productViewModel.selectedProductsFromRecipe,
+                                productViewModel.recipeName.value
+                            )
+                        }
+                        onClose()
                     }
-                    onClose()
+                    else {
+                        Toast.makeText(context, "Należy dodać nazwę i produkty by zapisać danie", Toast.LENGTH_LONG).show()
+                    }
+
                 },
                 mainText = "Zapisz posiłek"
             )
