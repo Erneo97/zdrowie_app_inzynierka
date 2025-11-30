@@ -1,5 +1,6 @@
 package com.example.balansapp.ui.service.data
 
+import com.example.firstcomposeap.ui.service.data.Produkt
 import java.util.Date
 
 
@@ -23,6 +24,13 @@ data class Dania(
     val id: Int,
     val nazwa: String = ""
 )
+
+data class DaniaDetail(
+    val id: Int,
+    val nazwa: String = "",
+    var listaProdukty: List<Produkt>
+)
+
 
 data class PommiarWagii(
     var wartosc: Double,

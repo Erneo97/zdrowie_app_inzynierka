@@ -2,6 +2,11 @@ package com.example.kolekcje.posilki;
 
 import java.util.List;
 
+/**
+ * Dania (Przepisy) - użytkownik tworzy dla siebie prywatne przepisy z danym makro, które może wykorzystąć w dowolnym momęcie
+ * Struktura zapisu do bazy danych
+ */
+
 public class Dania {
     private int id;
     private String nazwa;
