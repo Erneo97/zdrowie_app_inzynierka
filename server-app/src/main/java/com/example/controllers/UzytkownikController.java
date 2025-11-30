@@ -3,6 +3,7 @@ package com.example.controllers;
 import com.example.auth.jwt.JwtUtils;
 import com.example.kolekcje.PrzyjacieleInfo;
 import com.example.kolekcje.ZaproszenieInfo;
+import com.example.kolekcje.posilki.DaniaDetail;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
 import com.example.kolekcje.uzytkownik.Przyjaciele;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
@@ -118,7 +119,6 @@ public class UzytkownikController {
      * Dodanie do rekordu użtkownika
      * @param request - zaiwera obiekt klasy PommiarWagi
      * @param authentication - TOKEN potwierdzający tożsamość osoby wpisującej dane
-     * @return
      */
     @PostMapping("/waga")
     public ResponseEntity<String> addWeitht(@RequestBody PommiarWagii request, Authentication authentication) {
@@ -379,6 +379,45 @@ public class UzytkownikController {
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+    }
+
+
+    @PostMapping("/recipe")
+    public ResponseEntity<?> updateUserRecipe(@RequestBody List<DaniaDetail> recipes, Authentication authentication) {
+        log.info("updateUserRecipe");
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUser = uzytkownikService.getUserByEmail(userEmail);
+        if( optUser.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        Uzytkownik uzytkownik = optUser.get();
+        uzytkownikService.upgradeUserRecipes(uzytkownik, recipes);
+
+        return ResponseEntity.ok("Zaktualizowano przepisy uzytkownika");
+    }
+
+    @GetMapping("/recipe")
+    public ResponseEntity<?> getAllUserRecipe(Authentication authentication) {
+        log.info("updateUserRecipe");
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUser = uzytkownikService.getUserByEmail(userEmail);
+        if( optUser.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        Uzytkownik uzytkownik = optUser.get();
+
+
+        return ResponseEntity.ok().body(uzytkownikService.getAllUserRecipes(uzytkownik));
     }
 
 }
