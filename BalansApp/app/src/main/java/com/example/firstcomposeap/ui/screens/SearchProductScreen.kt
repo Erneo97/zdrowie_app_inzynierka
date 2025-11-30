@@ -60,13 +60,11 @@ import androidx.navigation.NavController
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.navigation.main.Screen
 import com.example.balansapp.ui.service.LoginViewModel
-import com.example.balansapp.ui.service.data.replaceWith
-import com.example.balansapp.ui.service.data.toMealInfoList
 import com.example.firstcomposeap.ui.components.icon.Arrow_back_ios_new
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.SearchViewModel
-import com.example.firstcomposeap.ui.service.data.MealInfo
 import com.example.firstcomposeap.ui.service.data.Produkt
+import com.example.firstcomposeap.ui.service.data.toMealInfoList
 
 fun setFlagToSendData(mainText: String, productViewModel: ProductViewModel, context: Context) {
 
@@ -341,18 +339,9 @@ fun SearchProductScreen(
                 }
                 else { // wyświetlenie listy przepisów użytkownika
                     items(loginViewModel.userRecipesList) {item ->
-                        val meals = remember { mutableStateListOf<MealInfo>() }
-
-                        LaunchedEffect(item) {
-                            meals.clear()
-                            meals.addAll(item.toMealInfoList())
-                        }
-
-                        meals.replaceWith(item.toMealInfoList())
-
                         RecipeCard(
                             title = item.nazwa,
-                            meals = meals,
+                            meals = item.listaProdukty.toMealInfoList(),
                             onEditClick = {
                                 navController.navigate(Screen.NewRecipe.route)
 

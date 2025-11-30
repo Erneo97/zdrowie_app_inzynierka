@@ -201,7 +201,7 @@ fun showMaroRecipe(productViewModel: ProductViewModel ) {
 @SuppressLint("UnrememberedMutableState", "DefaultLocale")
 @Composable
 fun RecipeCard(title: String,
-                      meals: SnapshotStateList<MealInfo>,
+                      meals: List<MealInfo>,
                       onEditClick: () -> Unit,
                // TODO: Wybranie tego posilku
                       onChecked: (SnapshotStateList<MealInfo>) -> Unit
@@ -280,7 +280,8 @@ fun RecipeCard(title: String,
                         meals.forEach { meal ->
                             MealProductAdded(
                                 meal = meal,
-                                onClick = { onChecked(meals) }
+                                onClick = {  }, // powinno zostać puste, nie będzie przycisku do zmiany listy
+                                visiblityButton = false
                             )
                         }
                     }

@@ -22,7 +22,7 @@ import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.service.data.MealInfo
 
 @Composable
-fun MealProductAdded(meal: MealInfo, onClick : () -> Unit) {
+fun MealProductAdded(meal: MealInfo, onClick : () -> Unit, visiblityButton : Boolean  = true) {
     Row(Modifier.fillMaxWidth().padding(2.dp).shadow(1.dp, RoundedCornerShape(4.dp)),
         verticalAlignment = Alignment.CenterVertically)
     {
@@ -36,19 +36,20 @@ fun MealProductAdded(meal: MealInfo, onClick : () -> Unit) {
             }
         }
 
-        FloatingActionButton(
-            onClick = onClick,
-            containerColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .size(22.dp)
-                .weight(1f)
-        ) {
-            Icon(
-                imageVector = Delete,
-                contentDescription = "Usuń element",
-                tint = Color.White
-            )
-        }
+        if( visiblityButton)
+            FloatingActionButton(
+                onClick = onClick,
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(22.dp)
+                    .weight(1f)
+            ) {
+                Icon(
+                    imageVector = Delete,
+                    contentDescription = "Usuń element",
+                    tint = Color.White
+                )
+            }
 
     }
 }
