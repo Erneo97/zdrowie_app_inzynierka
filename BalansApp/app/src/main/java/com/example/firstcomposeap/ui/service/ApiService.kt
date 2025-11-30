@@ -1,6 +1,7 @@
 package com.example.balansapp.ui.service
 
 import com.example.balansapp.ui.service.data.ChangePassword
+import com.example.balansapp.ui.service.data.DaniaDetail
 import com.example.balansapp.ui.service.data.LoginRequest
 import com.example.balansapp.ui.service.data.LoginResponse
 import com.example.balansapp.ui.service.data.PommiarWagii
@@ -82,6 +83,9 @@ interface ApiService {
     suspend fun changeAccessUserFrend(@Body body: PrzyjacieleInfo, @Header("Authorization") authorization: String)
             : Response<List<SimpleMessage>>
 
+    @POST("uzytkownicy/recipe")
+    suspend fun updateUserRecipes(@Body body: List<DaniaDetail>, @Header("Authorization") authorization: String)
+            : Response<List<SimpleMessage>>
 
     @POST("produkty/produkt")
     suspend fun addProductToDb(@Body body: Produkt) : Response<Produkt>

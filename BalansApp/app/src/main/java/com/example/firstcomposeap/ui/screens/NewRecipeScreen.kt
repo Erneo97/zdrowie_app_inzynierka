@@ -67,7 +67,7 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
                     onClose: () -> Unit,
                     goToSearchProduct: () -> Unit
 ) {
-
+    var recipeName by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -85,7 +85,7 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
                           },
                 onAdd = {
                     productViewModel.selectedTabIndexProductRecipe = 1
-//                    TODO()
+                    loginViewModel.addNewRecipe(productViewModel.selectedProductsFromRecipe, recipeName)
                 },
                 mainText = "Zapisz posiłek"
             )
@@ -95,7 +95,7 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         showMaroRecipe(productViewModel)
 
 
-        var recipeName by remember { mutableStateOf(productViewModel.editRecipe.value.nazwa) }
+
 
         Spacer(Modifier.height(20.dp))
         Text("Podaj nazwę posiłku:", fontWeight = FontWeight.Bold, fontSize = 20.sp)
@@ -117,7 +117,7 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
         Spacer(Modifier.height(25.dp))
         Text("Wybrane produkty:", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(20.dp))
-//        TODO: lista wybranych produktów
+
 
         LazyColumn(
             modifier = Modifier.fillMaxSize()

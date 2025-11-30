@@ -59,6 +59,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.navigation.main.Screen
+import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.data.replaceWith
 import com.example.balansapp.ui.service.data.toMealInfoList
 import com.example.firstcomposeap.ui.components.icon.Arrow_back_ios_new
@@ -83,6 +84,7 @@ fun SearchProductScreen(
     onClose: () -> Unit,
     searchViewModel: SearchViewModel = viewModel(),
     productViewModel: ProductViewModel,
+    loginViewModel: LoginViewModel,
     onlyProduct: Boolean = false
 ) {
     val context = LocalContext.current
@@ -334,7 +336,7 @@ fun SearchProductScreen(
                     }
                 }
                 else { // wyświetlenie listy przepisów użytkownika
-                    items(productViewModel.userRecipesList) {item ->
+                    items(loginViewModel.userRecipesList) {item ->
                         var meals = SnapshotStateList<MealInfo>()
 
                         meals.replaceWith(item.toMealInfoList())
@@ -343,7 +345,6 @@ fun SearchProductScreen(
                             title = item.nazwa,
                             meals = meals,
                             onEditClick = {
-                                productViewModel.clearEditRecipe()
                                 navController.navigate(Screen.NewRecipe.route)
 
                             }, // TODO:
