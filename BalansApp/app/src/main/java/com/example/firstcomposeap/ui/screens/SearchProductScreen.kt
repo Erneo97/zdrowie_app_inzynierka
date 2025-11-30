@@ -205,18 +205,21 @@ fun SearchProductScreen(
             Spacer(Modifier.height(12.dp))
 
 
-            TextField(
-                value = query,
-                onValueChange = { searchViewModel.onSearchQueryChange(it) },
-                placeholder = { Text("Nazwa produktu...") },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
-                    }
-            )
-            if( !onlyProduct)
+
+            if( productViewModel.selectedTabIndexProductRecipe == 0) {
+                TextField(
+                    value = query,
+                    onValueChange = { searchViewModel.onSearchQueryChange(it) },
+                    placeholder = { Text("Nazwa produktu...") },
+                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusChanged { focusState ->
+                            isFocused = focusState.isFocused
+                        }
+                )
+            }
+            if( !onlyProduct) {
                 TabRow(selectedTabIndex = productViewModel.selectedTabIndexProductRecipe) {
                     listOf(
                         context.getString(R.string.products),
@@ -224,13 +227,15 @@ fun SearchProductScreen(
                     ).forEachIndexed { index, title ->
                         Tab(
                             selected = productViewModel.selectedTabIndexProductRecipe == index,
-                            onClick = { productViewModel.selectedTabIndexProductRecipe = index
-                                      searchViewModel.searchedProducts = emptyList()
-                                      },
+                            onClick = {
+                                productViewModel.selectedTabIndexProductRecipe = index
+                                searchViewModel.searchedProducts = emptyList()
+                            },
                             text = { Text(title, fontSize = 22.sp) }
                         )
                     }
                 }
+            }
         }
 
         //  Lista z podpowiedziami do wyszukiwanej frazy
