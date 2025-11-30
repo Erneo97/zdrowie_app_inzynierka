@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +53,7 @@ import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.data.Dawka
 import com.example.firstcomposeap.ui.service.data.Jednostki
 import com.example.firstcomposeap.ui.service.data.MealInfo
+import com.example.firstcomposeap.ui.service.data.Produkt
 import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
 import com.example.firstcomposeap.ui.service.data.isSameProduct
 import com.example.firstcomposeap.ui.service.data.toMealInfo
@@ -67,7 +69,6 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
                     onClose: () -> Unit,
                     goToSearchProduct: () -> Unit
 ) {
-    var recipeName by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -85,7 +86,15 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
                           },
                 onAdd = {
                     productViewModel.selectedTabIndexProductRecipe = 1
-                    loginViewModel.addNewRecipe(productViewModel.selectedProductsFromRecipe, recipeName)
+                    if( productViewModel.indexRecipe.value == -1) // nowy przepis
+                        loginViewModel.addNewRecipe(productViewModel.selectedProductsFromRecipe, productViewModel.recipeName.value)
+                    else { // edycja istniejącego przepisu
+                        loginViewModel.updateNewRecipe(productViewModel.indexRecipe.value,
+                            productViewModel.selectedProductsFromRecipe,
+                            productViewModel.recipeName.value
+                        )
+                    }
+                    onClose()
                 },
                 mainText = "Zapisz posiłek"
             )
@@ -99,8 +108,8 @@ fun NewRecipeScreen(loginViewModel: LoginViewModel,
 
         Spacer(Modifier.height(20.dp))
         Text("Podaj nazwę posiłku:", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-        InputField(value = recipeName,
-            onValueChange = {recipeName = it},
+        InputField(value = productViewModel.recipeName.value,
+            onValueChange = {productViewModel.recipeName.value = it},
             modifier = Modifier.fillMaxWidth(),
             label = "Podaj nazwę dania"
         )
@@ -203,14 +212,16 @@ fun showMaroRecipe(productViewModel: ProductViewModel ) {
 fun RecipeCard(title: String,
                       meals: List<MealInfo>,
                       onEditClick: () -> Unit,
-               // TODO: Wybranie tego posilku
-                      onChecked: (SnapshotStateList<MealInfo>) -> Unit
+                    isChecked: Boolean = false,
+                    onCheckedChange: (List<MealInfo>, Boolean) -> Unit,
+
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     val countMeal by derivedStateOf { meals.count() }
     val sumCalories by derivedStateOf {calculateCaloriesInMeal(meals)}
 
+    var innerisChecked by remember {   mutableStateOf(isChecked) }
 
     OutlinedCard(
         modifier = Modifier
@@ -240,12 +251,12 @@ fun RecipeCard(title: String,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    modifier = Modifier.weight(4f)
+                    modifier = Modifier.weight(3.5f)
                 )
                 Text("${String.format("%.0f", sumCalories)}kcal  (${countMeal})",
                     modifier = Modifier.weight(2f))
 
-                Row (modifier = Modifier.weight(2f)) {
+                Row (modifier = Modifier.weight(2.5f)) {
                     IconButton(onClick = { onEditClick()}, modifier = Modifier.background(MaterialTheme.colorScheme.primary,
                         CircleShape
                     )) {
@@ -262,6 +273,16 @@ fun RecipeCard(title: String,
                             , tint = if (!expanded)  Color.White else MaterialTheme.colorScheme.error
                         )
                     }
+
+                    Checkbox(
+                        checked = innerisChecked,
+                        onCheckedChange = { checked ->
+                            innerisChecked = !innerisChecked
+                            onCheckedChange(meals, innerisChecked)
+
+                        }
+                    )
+
                 }
             }
 

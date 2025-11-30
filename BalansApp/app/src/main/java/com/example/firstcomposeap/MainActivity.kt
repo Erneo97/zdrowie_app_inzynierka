@@ -63,7 +63,8 @@ class MainActivity : ComponentActivity() {
                                 productViewModel.clearCreateProduct()
                                       },
                             goToSearchProduct = {navController.navigate(
-                                Screen.ProductSearch.createRoute(onlyProduct = true))})
+                                Screen.ProductSearch.createRoute(onlyProduct = true))},
+                        )
                     }
 
                     composable(route = Screen.ProductSearch.route,

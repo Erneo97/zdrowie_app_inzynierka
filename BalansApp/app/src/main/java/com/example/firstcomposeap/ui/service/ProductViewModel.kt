@@ -260,12 +260,22 @@ class ProductViewModel : ViewModel() {
 //  Dodawanie produktów do przepisu (nowego)
 
     var selectedProductsFromRecipe =   mutableStateListOf<Produkt>() // lista produktów w nowym przepisie
+    var recipeName = mutableStateOf("")
+    var indexRecipe = mutableStateOf(-1)
+
+    fun initEditRecipe( recipe: DaniaDetail ) {
+        selectedProductsFromRecipe.clear()
+        selectedProductsFromRecipe.addAll(recipe.listaProdukty)
+        recipeName.value = recipe.nazwa
+        indexRecipe.value = recipe.id
+    }
 
     var isChangeOnRecipe = mutableStateOf(false)
 
     fun clearCreateProduct() {
         selectedProductsFromRecipe.clear()
         isChangeOnRecipe.value = false
+        clearEditRecipe()
     }
     private val cleartedDanie = DaniaDetail(
         id = -1,
@@ -288,9 +298,14 @@ class ProductViewModel : ViewModel() {
     )
     fun clearEditRecipe( ) {
         editRecipe.value = cleartedDanie.copy()
+        recipeName.value =""
+        indexRecipe.value = -1
     }
 
     var editRecipe = mutableStateOf<DaniaDetail>(cleartedDanie.copy())
+
+
+
 
 
 

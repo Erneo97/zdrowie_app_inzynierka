@@ -28,7 +28,7 @@ data class Dania(
 
 data class DaniaDetail(
     val id: Int,
-    val nazwa: String = "",
+    var nazwa: String = "",
     var listaProdukty: List<Produkt>
 )
 
