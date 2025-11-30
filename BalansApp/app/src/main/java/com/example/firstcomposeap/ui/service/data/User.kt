@@ -1,7 +1,7 @@
 package com.example.balansapp.ui.service.data
 
+import com.example.firstcomposeap.ui.service.data.MealInfo
 import com.example.firstcomposeap.ui.service.data.Produkt
-import java.util.Date
 
 
 data class Uzytkownik(
@@ -30,6 +30,19 @@ data class DaniaDetail(
     val nazwa: String = "",
     var listaProdukty: List<Produkt>
 )
+
+fun DaniaDetail.toMealInfoList(): List<MealInfo> {
+    return listaProdukty.map { produkt ->
+        MealInfo(
+            id = produkt.id,
+            nazwa = produkt.nazwa,
+            producent = produkt.producent,
+            kodKreskowy = produkt.kodKreskowy,
+            objetosc = produkt.objetosc.firstOrNull()
+                ?: throw IllegalStateException("Produkt ${produkt.nazwa} nie ma żadnych dawek!")
+        )
+    }
+}
 
 
 data class PommiarWagii(
