@@ -33,8 +33,7 @@ class MainActivity : ComponentActivity() {
             val loginViewModel: LoginViewModel = viewModel()
             val registerViewModel: RegisterViewModel = viewModel()
             val productViewModel: ProductViewModel = viewModel ()
-            productViewModel.initUserRecipesList() // TODO: usunąć
-            
+
             loginViewModel.login("michal@michal.michal", "michal")
             productViewModel.token = loginViewModel.token
 
@@ -80,6 +79,7 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         onClose = {navController.popBackStack()},
                         productViewModel = productViewModel,
+                            loginViewModel = loginViewModel,
                         onlyProduct = onlyProduct
                         ) }
 

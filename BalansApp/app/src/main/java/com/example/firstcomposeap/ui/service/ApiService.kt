@@ -87,6 +87,10 @@ interface ApiService {
     suspend fun updateUserRecipes(@Body body: List<DaniaDetail>, @Header("Authorization") authorization: String)
             : Response<List<SimpleMessage>>
 
+    @GET("uzytkownicy/recipe")
+    suspend fun downloadUserRecipes( @Header("Authorization") authorization: String)
+            : Response<List<DaniaDetail>>
+
     @POST("produkty/produkt")
     suspend fun addProductToDb(@Body body: Produkt) : Response<Produkt>
 

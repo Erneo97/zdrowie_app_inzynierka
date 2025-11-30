@@ -1,6 +1,7 @@
 package com.example.balansapp.ui.service
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,8 +17,6 @@ import com.example.balansapp.ui.service.data.PrzyjacieleInfo
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.components.calculateUserAge
-import com.example.firstcomposeap.ui.service.data.Dawka
-import com.example.firstcomposeap.ui.service.data.Jednostki
 import com.example.firstcomposeap.ui.service.data.Produkt
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -330,6 +329,7 @@ fun calculatePPM( ) {
 
 
     fun addNewRecipe(produkty: List<Produkt>, nazwa : String ) {
+        Log.e("updateUserRecipe", " $nazwa")
         val new  = DaniaDetail(
             id = -1,
             nazwa = nazwa,
@@ -338,6 +338,7 @@ fun calculatePPM( ) {
 
         userRecipesList.add(new)
         updateRecipesUser()
+
     }
 
 
@@ -358,136 +359,155 @@ fun calculatePPM( ) {
         }
     }
 
+
+    fun downloadUserRecipes( ) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.downloadUserRecipes("Bearer $token")
+                if( response.isSuccessful) {
+                    userRecipesList.clear()
+                    userRecipesList.addAll(response.body()!!)
+                }
+                else {
+                    invitationResult = InvitationResult.Error(response.errorBody()?.string() ?: "Nieznany błąd")
+                }
+            }
+            catch (e : Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
     var userRecipesList = mutableStateListOf<DaniaDetail>() // lista przepisów danego użytkownika
 
-    fun initUserRecipesList() {
-        userRecipesList.addAll(listOf(DaniaDetail(
-            id = 1,
-            nazwa = "Sałatka grecka",
-            listaProdukty = listOf(
-                Produkt(
-                    id = 101,
-                    nazwa = "Ser feta",
-                    producent = "Mlekpol",
-                    kodKreskowy = "5901234567890",
-                    objetosc = listOf(
-                        Dawka(
-                            jednostki = Jednostki.GRAM,
-                            wartosc = 50f,
-                            kcal = 132f,
-                            bialko = 7f,
-                            weglowodany = 1f,
-                            tluszcze = 11f,
-                            blonnik = 0f
-                        )
-                    )
-                ),
-                Produkt(
-                    id = 102,
-                    nazwa = "Pomidor",
-                    producent = "Rolnik",
-                    kodKreskowy = "5900987654321",
-                    objetosc = listOf(
-                        Dawka(
-                            jednostki = Jednostki.GRAM,
-                            wartosc = 100f,
-                            kcal = 18f,
-                            bialko = 1f,
-                            weglowodany = 4f,
-                            tluszcze = 0f,
-                            blonnik = 1f
-                        )
-                    )
-                )
-            )
-        ),
-            DaniaDetail(
-                id = 2,
-                nazwa = "Kurczak z ryżem",
-                listaProdukty = listOf(
-                    Produkt(
-                        id = 201,
-                        nazwa = "Pierś z kurczaka",
-                        producent = "Drobex",
-                        kodKreskowy = "5901111111111",
-                        objetosc = listOf(
-                            Dawka(
-                                jednostki = Jednostki.GRAM,
-                                wartosc = 150f,
-                                kcal = 165f,
-                                bialko = 31f,
-                                weglowodany = 0f,
-                                tluszcze = 3.6f,
-                                blonnik = 0f
-                            )
-                        )
-                    ),
-                    Produkt(
-                        id = 202,
-                        nazwa = "Ryż biały",
-                        producent = "Kupiec",
-                        kodKreskowy = "5902222222222",
-                        objetosc = listOf(
-                            Dawka(
-                                jednostki = Jednostki.GRAM,
-                                wartosc = 180f,
-                                kcal = 230f,
-                                bialko = 4f,
-                                weglowodany = 50f,
-                                tluszcze = 1f,
-                                blonnik = 1f
-                            )
-                        )
-                    )
-                )
-            ),
-            DaniaDetail(
-                id = 4,
-                nazwa = "Kanapka z szynką",
-                listaProdukty = listOf(
-                    Produkt(
-                        id = 401,
-                        nazwa = "Chleb żytni",
-                        producent = "Bielmar",
-                        kodKreskowy = "5905555555555",
-                        objetosc = listOf(
-                            Dawka(
-                                jednostki = Jednostki.GRAM,
-                                wartosc = 70f,
-                                kcal = 165f,
-                                bialko = 5f,
-                                weglowodany = 30f,
-                                tluszcze = 1.5f,
-                                blonnik = 4f
-                            )
-                        )
-                    ),
-                    Produkt(
-                        id = 402,
-                        nazwa = "Szynka gotowana",
-                        producent = "Sokołów",
-                        kodKreskowy = "5906666666666",
-                        objetosc = listOf(
-                            Dawka(
-                                jednostki = Jednostki.GRAM,
-                                wartosc = 30f,
-                                kcal = 39f,
-                                bialko = 6f,
-                                weglowodany = 1f,
-                                tluszcze = 1f,
-                                blonnik = 0f
-                            )
-                        )
-                    )
-                )
-            )
-
-        )
-        )
-
-
-
-    }
+//    fun initUserRecipesList() {
+//        userRecipesList.addAll(listOf(DaniaDetail(
+//            id = 1,
+//            nazwa = "Sałatka grecka",
+//            listaProdukty = listOf(
+//                Produkt(
+//                    id = 101,
+//                    nazwa = "Ser feta",
+//                    producent = "Mlekpol",
+//                    kodKreskowy = "5901234567890",
+//                    objetosc = listOf(
+//                        Dawka(
+//                            jednostki = Jednostki.GRAM,
+//                            wartosc = 50f,
+//                            kcal = 132f,
+//                            bialko = 7f,
+//                            weglowodany = 1f,
+//                            tluszcze = 11f,
+//                            blonnik = 0f
+//                        )
+//                    )
+//                ),
+//                Produkt(
+//                    id = 102,
+//                    nazwa = "Pomidor",
+//                    producent = "Rolnik",
+//                    kodKreskowy = "5900987654321",
+//                    objetosc = listOf(
+//                        Dawka(
+//                            jednostki = Jednostki.GRAM,
+//                            wartosc = 100f,
+//                            kcal = 18f,
+//                            bialko = 1f,
+//                            weglowodany = 4f,
+//                            tluszcze = 0f,
+//                            blonnik = 1f
+//                        )
+//                    )
+//                )
+//            )
+//        ),
+//            DaniaDetail(
+//                id = 2,
+//                nazwa = "Kurczak z ryżem",
+//                listaProdukty = listOf(
+//                    Produkt(
+//                        id = 201,
+//                        nazwa = "Pierś z kurczaka",
+//                        producent = "Drobex",
+//                        kodKreskowy = "5901111111111",
+//                        objetosc = listOf(
+//                            Dawka(
+//                                jednostki = Jednostki.GRAM,
+//                                wartosc = 150f,
+//                                kcal = 165f,
+//                                bialko = 31f,
+//                                weglowodany = 0f,
+//                                tluszcze = 3.6f,
+//                                blonnik = 0f
+//                            )
+//                        )
+//                    ),
+//                    Produkt(
+//                        id = 202,
+//                        nazwa = "Ryż biały",
+//                        producent = "Kupiec",
+//                        kodKreskowy = "5902222222222",
+//                        objetosc = listOf(
+//                            Dawka(
+//                                jednostki = Jednostki.GRAM,
+//                                wartosc = 180f,
+//                                kcal = 230f,
+//                                bialko = 4f,
+//                                weglowodany = 50f,
+//                                tluszcze = 1f,
+//                                blonnik = 1f
+//                            )
+//                        )
+//                    )
+//                )
+//            ),
+//            DaniaDetail(
+//                id = 4,
+//                nazwa = "Kanapka z szynką",
+//                listaProdukty = listOf(
+//                    Produkt(
+//                        id = 401,
+//                        nazwa = "Chleb żytni",
+//                        producent = "Bielmar",
+//                        kodKreskowy = "5905555555555",
+//                        objetosc = listOf(
+//                            Dawka(
+//                                jednostki = Jednostki.GRAM,
+//                                wartosc = 70f,
+//                                kcal = 165f,
+//                                bialko = 5f,
+//                                weglowodany = 30f,
+//                                tluszcze = 1.5f,
+//                                blonnik = 4f
+//                            )
+//                        )
+//                    ),
+//                    Produkt(
+//                        id = 402,
+//                        nazwa = "Szynka gotowana",
+//                        producent = "Sokołów",
+//                        kodKreskowy = "5906666666666",
+//                        objetosc = listOf(
+//                            Dawka(
+//                                jednostki = Jednostki.GRAM,
+//                                wartosc = 30f,
+//                                kcal = 39f,
+//                                bialko = 6f,
+//                                weglowodany = 1f,
+//                                tluszcze = 1f,
+//                                blonnik = 0f
+//                            )
+//                        )
+//                    )
+//                )
+//            )
+//
+//        )
+//        )
+//
+//
+//
+//    }
 
 }
 
