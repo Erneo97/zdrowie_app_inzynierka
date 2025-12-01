@@ -118,6 +118,8 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
     }
 }
 
+// TODO: sprawdzić sójność przy wysyłaniu czy faktycznie są ogólne przy wybraniu szczegółowych
+
 /**
  * Gdy wybierasz bardziej szczeułową grupę mięśniową jej ogólny odpowiednik też zostaje wybrany albo odznaczony, gdy już nie ma żadej z dokładenj podgrupy
  */
