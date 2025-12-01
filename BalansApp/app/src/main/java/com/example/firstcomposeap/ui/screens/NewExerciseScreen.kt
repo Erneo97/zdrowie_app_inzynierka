@@ -1,6 +1,5 @@
 package com.example.firstcomposeap.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,11 +7,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,10 +26,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.input.InputField
+import com.example.firstcomposeap.ui.components.icon.Question_mark
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 
@@ -56,7 +61,7 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
             Spacer(Modifier.height(20.dp))
 
 
-            Text("Podaj nazwę nowego planu trenigowego")
+            Text("Nazwa nowego planu trenigowego")
             InputField(
                 value = nazwa,
                 onValueChange = {nazwa = it},
@@ -66,7 +71,7 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
             Spacer(Modifier.height(10.dp))
 
 
-            Text("Podaj opis cwiczenia")
+            Text("Opis ćwiczenia")
             InputField(
                 value = opis,
                 onValueChange = {opis = it},
@@ -75,17 +80,34 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
             )
             Spacer(Modifier.height(10.dp))
 
-            Text("Spalanie kcal na powtórzenia")
-            InputField(
-                value = spalanieStr,
-                onValueChange = {
-                    spalanieStr = it
-                    if( spalanieStr != "")
-                        spalanie = spalanieStr.toFloat()
-                },
-                label = "Nazwa planu trenigowego",
-                modifier = Modifier.fillMaxWidth()
-            )
+            Text("MET ćwiczenia")
+            Row (modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                InputField(
+                    value = spalanieStr,
+                    onValueChange = {
+                        spalanieStr = it
+                        if( spalanieStr != "")
+                            spalanie = spalanieStr.toFloat()
+                    },
+                    label = "Nazwa planu trenigowego",
+                    modifier = Modifier.weight(3f)
+                )
+                FloatingActionButton(
+                    onClick = { }, //TODO : pokazywanie tooltip
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.weight(0.5f).padding(5.dp).size(42.dp)
+                ) {
+                    Icon(
+                        imageVector = Question_mark,
+                        contentDescription = "co to MET",
+                        tint = Color.White
+                    )
+                }
+
+            }
+
         }
 
 
