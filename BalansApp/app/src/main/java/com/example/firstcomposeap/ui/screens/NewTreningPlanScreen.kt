@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -58,7 +59,9 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel, onCLose : () -> Uni
 
             Text("Czy Chcesz by to był twoj aktualny plan?")
             Spacer(Modifier.height(5.dp))
-            Row(Modifier.fillMaxWidth( ) ) {
+            Row(Modifier.fillMaxWidth( ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Checkbox(
                     checked = czyAktualny,
                     onCheckedChange = {czyAktualny = it},
