@@ -61,7 +61,9 @@ public enum GrupaMiesniowa {
 
     // --- ŁYDKI - PODGRUPY ---
     LDYKI_BRZUCHATY("Łydki - mięsień brzuchaty łydki"),
-    LDYKI_PLASZCZKOWATY("Łydki - mięsień płaszczkowaty");
+    LDYKI_PLASZCZKOWATY("Łydki - mięsień płaszczkowaty"),
+
+    CARDIO("Cardio");
 
 
 

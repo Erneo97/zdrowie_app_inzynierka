@@ -70,7 +70,10 @@ enum class GrupaMiesniowa(val grupaNazwa: String) {
 
     // --- ŁYDKI - PODGRUPY ---
     LDYKI_BRZUCHATY("Łydki - mięsień brzuchaty łydki"),
-    LDYKI_PLASZCZKOWATY("Łydki - mięsień płaszczkowaty");
+    LDYKI_PLASZCZKOWATY("Łydki - mięsień płaszczkowaty"),
+
+
+    CARDIO("Cardio");
 
     companion object {
         fun fromNazwa(nazwa: String  ) : GrupaMiesniowa? {
