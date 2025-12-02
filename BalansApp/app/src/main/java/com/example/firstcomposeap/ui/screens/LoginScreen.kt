@@ -72,7 +72,7 @@ fun LoginScreen(navController: NavController,
             Spacer(modifier = Modifier.height(14.dp))
 
             Text(text = context.getString(R.string.login_text))
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(36.dp))
             InputField(value = email,
                 isError = isError,
                 onValueChange = {
@@ -87,26 +87,26 @@ fun LoginScreen(navController: NavController,
                 password = password,
                 onPasswordChange = { password = it }
             )
-            Row {
-                LabeledCheckbox(
-                    label = context.getString(R.string.state_log_in),
-                    checked = stateLogIn,
-                    onCheckedChange = { stateLogIn = it }
-                )
-                TextButton(onClick = {}) {
-                    Text(text = context.getString(R.string.remind_pasd),
-                        modifier = Modifier.clickable {},
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontSize = 20.sp,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-            }
+//            Row {
+//                LabeledCheckbox(
+//                    label = context.getString(R.string.state_log_in),
+//                    checked = stateLogIn,
+//                    onCheckedChange = { stateLogIn = it }
+//                )
+//                TextButton(onClick = {}) {
+//                    Text(text = context.getString(R.string.remind_pasd),
+//                        modifier = Modifier.clickable {},
+//                        color = MaterialTheme.colorScheme.secondary,
+//                        fontSize = 20.sp,
+//                        textDecoration = TextDecoration.Underline
+//                    )
+//                }
+//            }
 
 
 
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(46.dp))
             FullSizeButton(
                 text = context.getString(R.string.log_in),
                 onClick = {
@@ -129,20 +129,20 @@ fun LoginScreen(navController: NavController,
             Spacer(modifier = Modifier.height(32.dp))
 
 
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(text = context.getString(R.string.login_socialmedia))
-            Row (modifier = Modifier.fillMaxWidth().padding(40.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly) {
-                LoginBySocialmedia(id = R.drawable.logo_fb,
-                    contentDescription = "Facebook",
-                    onClick = {/* TODO obsługa logowanie facebook */}
-                )
-
-                LoginBySocialmedia(id = R.drawable.logo_inst,
-                    contentDescription = "Instagram",
-                    onClick = {/* TODO obsługa logowanie instagram */}
-                )
-            }
+//            Spacer(modifier = Modifier.height(32.dp))
+//            Text(text = context.getString(R.string.login_socialmedia))
+//            Row (modifier = Modifier.fillMaxWidth().padding(40.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly) {
+//                LoginBySocialmedia(id = R.drawable.logo_fb,
+//                    contentDescription = "Facebook",
+//                    onClick = {/* TODO obsługa logowanie facebook */}
+//                )
+//
+//                LoginBySocialmedia(id = R.drawable.logo_inst,
+//                    contentDescription = "Instagram",
+//                    onClick = {/* TODO obsługa logowanie instagram */}
+//                )
+//            }
         }
     }
 
