@@ -61,11 +61,11 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
             Spacer(Modifier.height(20.dp))
 
 
-            Text("Nazwa nowego planu trenigowego")
+            Text("Nazwa nowego ćwiczenia")
             InputField(
                 value = nazwa,
                 onValueChange = {nazwa = it},
-                label = "Nazwa planu trenigowego",
+                label = "Nazwa nowego ćwiczenia",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(10.dp))
@@ -75,7 +75,7 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
             InputField(
                 value = opis,
                 onValueChange = {opis = it},
-                label = "Nazwa planu trenigowego",
+                label = "Opis ćwiczenia",
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(10.dp))
