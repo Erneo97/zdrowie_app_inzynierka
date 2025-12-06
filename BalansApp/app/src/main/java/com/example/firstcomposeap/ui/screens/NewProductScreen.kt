@@ -88,7 +88,9 @@ fun NewProductScreen(productViewModel: ProductViewModel,
                         id = -1,
                         objetosc = unitList,
                     )
-                )  }
+                )
+                onClose()
+                }
             ) {  Text("Zapisz produkt") }
         }
 
