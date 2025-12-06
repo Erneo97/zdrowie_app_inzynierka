@@ -44,7 +44,6 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
         onItemSelected = { selectedItem = it }
     ) {
             innerPadding -> Box(
-
         modifier = Modifier
             .padding(innerPadding),
         contentAlignment = Alignment.Center  )
@@ -52,7 +51,6 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
             LogoBackGround()
             Column {
                 Row(modifier = Modifier
-                    .padding(5.dp)
                     .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

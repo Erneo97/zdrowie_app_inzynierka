@@ -1,11 +1,17 @@
 package com.example.balansapp.ui.navigation.main
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import com.example.balansapp.R
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+
 @Composable
 fun MainLayout(
     navController: NavHostController,
@@ -42,6 +48,9 @@ fun MainLayout(
             )
         }
     ) { innerPadding ->
-        content(innerPadding)
+        Column {
+            Spacer(Modifier.height(20.dp))
+            content(innerPadding)
+        }
     }
 }
