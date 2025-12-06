@@ -1,11 +1,11 @@
 package com.example.services;
 
-import com.example.controllers.ProduktNazwa;
 import com.example.kolekcje.enumy.Jednostki;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.PoraDnia;
 import com.example.kolekcje.posilki.*;
 import com.example.repositories.MealRepository;
+import com.example.repositories.PotwierdzProduktyRepository;
 import com.example.repositories.ProduktRepository;
 import com.example.requests.MealUpdate;
 import org.springframework.stereotype.Component;
@@ -20,12 +20,20 @@ public class ProduktService {
     private final ProduktRepository produktyRepository;
     private final SequenceGeneratorService sequenceGenerator;
     private final MealRepository mealRepository;
+    private final PotwierdzProduktyRepository potwierdzProduktyRepository;
 
-    public ProduktService(ProduktRepository produktyRepository, SequenceGeneratorService sequenceGenerator, MealRepository mealRepository) {
+    public ProduktService(ProduktRepository produktyRepository,
+                          SequenceGeneratorService sequenceGenerator,
+                          MealRepository mealRepository,
+                          PotwierdzProduktyRepository potwierdzProduktyRepository) {
         this.produktyRepository = produktyRepository;
         this.sequenceGenerator = sequenceGenerator;
         this.mealRepository = mealRepository;
+        this.potwierdzProduktyRepository = potwierdzProduktyRepository;
     }
+
+    
+
 
     public Produkt createProducts(String producent, String nazwa, String kodkreskowy, List<Dawka> objetosc) {
         Produkt product;
@@ -40,7 +48,17 @@ public class ProduktService {
             product.setNazwa(nazwa);
             product.setKodKreskowy(kodkreskowy);
             product.setObjetosc(objetosc);
-            return produktyRepository.save(product);
+
+            produktyRepository.save(product);
+
+            Optional<Produkt> OptProdukt = produktyRepository.findByNazwaAndProducent(nazwa, producent);
+            if (OptProdukt.isPresent()) {
+                Produkt fp = OptProdukt.get();
+                ProduktyDoPotwierdzenia pdp = new ProduktyDoPotwierdzenia(fp.getId());
+                potwierdzProduktyRepository.save(pdp);
+
+            }
+            return product;
         }
 
 //         Produkt zostaje zaktualizowany
