@@ -15,6 +15,7 @@ import androidx.navigation.navArgument
 import com.example.balansapp.ui.navigation.main.Screen
 import com.example.balansapp.ui.screens.MealScreen
 import com.example.balansapp.ui.screens.ProfileScreen
+import com.example.balansapp.ui.screens.TestScreen
 import com.example.balansapp.ui.screens.TreningsPlanScreen
 import com.example.balansapp.ui.screens.TreningsScreen
 import com.example.balansapp.ui.service.LoginViewModel
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Home.route
+                    startDestination = Screen.Test.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
@@ -55,6 +56,8 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController, treningViewModel) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController) }
+
+                    composable(Screen.Test.route) { TestScreen() }
 
                     composable(Screen.NewExercise.route) { NewExerciseScreen(treningViewModel,
                         onCLose = { navController.popBackStack() }) }
