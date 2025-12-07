@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -34,16 +35,19 @@ import com.example.balansapp.ui.components.input.InputField
 import com.example.firstcomposeap.ui.components.icon.Question_mark
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit ) {
+fun NewExerciseScreen(treningViewModel: TreningViewModel,
+                      onCLose : () -> Unit )
+{
     var nazwa by remember { mutableStateOf("") }
     var opis by remember { mutableStateOf("") }
     var spalanie by remember { mutableStateOf(0.0f) }
     var spalanieStr by remember { mutableStateOf(spalanie.toString()) }
 
-
+    val scope = rememberCoroutineScope()
     val grupyMiesniowe = GrupaMiesniowa.entries.toList().sortedBy { it.grupaNazwa }
     val selectedGrupyMiesniowe = remember { mutableStateListOf<GrupaMiesniowa>() }
 
@@ -55,7 +59,19 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit )
         Column(Modifier.weight(5f)) {
             NavigationButtonsRetAdd(
                 onClose = { onCLose() },
-                onAdd = { }, // TODO:
+                onAdd = {
+                    scope.launch {
+                        treningViewModel.createNewExercise(
+                            nazwa = nazwa,
+                            opis = opis,
+                            met = spalanie,
+                            grupyMiesniowe = selectedGrupyMiesniowe
+                        )
+                        if( treningViewModel.message != null ) {
+                            onCLose()
+                        }
+                    }
+                },
                 mainText = "Zapisz nowe ćwiczenie"
             )
             Spacer(Modifier.height(20.dp))

@@ -9,6 +9,14 @@ data class treningsPlanCard(
     val goal : String
 )
 
+data class Cwiczenie(
+    val id: Int = -1,
+    val nazwa: String = "",
+    val opis: String = "",
+    val grupaMiesniowas: List<GrupaMiesniowa> = emptyList(),
+    val met: Float = 0f
+)
+
 
 enum class GrupaMiesniowa(val grupaNazwa: String) {
 
