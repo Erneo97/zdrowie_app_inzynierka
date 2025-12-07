@@ -1,14 +1,21 @@
 package com.example.firstcomposeap.ui.service
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.balansapp.ui.service.ApiClient
+import com.example.firstcomposeap.ui.service.data.Cwiczenie
+import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
+
 
 class TreningViewModel : ViewModel() {
     var token by mutableStateOf<String?>(null)
+    var errorMessage by mutableStateOf<String?>(null)
+    var message by mutableStateOf<String?>(null)
 
     var treningsPlanCard = mutableStateListOf<treningsPlanCard>(  treningsPlanCard(
         seasonName = "Zimaq 2025",
@@ -70,4 +77,24 @@ class TreningViewModel : ViewModel() {
 
 
 
+    suspend fun createNewExercise(nazwa: String, opis: String, met: Float, grupyMiesniowe: List<GrupaMiesniowa> ) {
+        message = null
+        val noweCwiczenie = Cwiczenie(nazwa =  nazwa,
+            opis = opis,
+            met = met,
+            grupaMiesniowas = grupyMiesniowe)
+
+        try {
+            val response = ApiClient.getApi(token ?: "").createExercise(noweCwiczenie)
+            if (response.isSuccessful) {
+                message = "Dodano ćwiczenie do bazy danych"
+                Log.e("createNewExercise", message ?: "")
+            } else {
+                errorMessage = "Błąd dodania ćwiczenie do bazy danych: ${response.code()}"
+            }
+        } catch (e: Exception) {
+            errorMessage = e.localizedMessage
+        }
+
+    }
 }

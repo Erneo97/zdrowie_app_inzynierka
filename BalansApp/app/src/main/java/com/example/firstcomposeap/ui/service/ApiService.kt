@@ -12,6 +12,7 @@ import com.example.balansapp.ui.service.data.SimpleMessage
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.service.data.AllMealsInDay
+import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.Produkt
 import okhttp3.ResponseBody
@@ -138,5 +139,15 @@ interface ApiService {
     suspend fun getAllMatchesProduct(
         @Path("nazwa") nazwa: String
     ): Response<List<Produkt>>
+
+
+    /**
+     * Obsługa Cwiczeń i treningów
+     */
+
+    @POST("trening/exercise/new")
+    suspend fun createExercise(
+        @Body body: Cwiczenie
+    ): Response<Cwiczenie>
 
 }
