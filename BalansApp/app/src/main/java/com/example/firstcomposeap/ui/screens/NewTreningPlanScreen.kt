@@ -28,7 +28,10 @@ import com.example.firstcomposeap.ui.service.TreningViewModel
 
 
 @Composable
-fun NewTreningPlanScreen(treningViewModel: TreningViewModel, onCLose : () -> Unit ) {
+fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
+                         onCLose : () -> Unit,
+                         onExerciseScrean : () -> Unit )
+{
     var nazwa by remember { mutableStateOf("") }
 
     var czyAktualny by remember { mutableStateOf(false) }
@@ -81,7 +84,7 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel, onCLose : () -> Uni
         Text("Dodaj Ćwiczenia", fontWeight = FontWeight.Bold, fontSize = 25.sp)
         FullSizeButton(
             text = "Dodaj ćwiczenie",
-            onClick = {  onCLose()  },
+            onClick = {  onExerciseScrean()  },
         )
         Column (Modifier.weight(5f).verticalScroll(rememberScrollState())
         ) {

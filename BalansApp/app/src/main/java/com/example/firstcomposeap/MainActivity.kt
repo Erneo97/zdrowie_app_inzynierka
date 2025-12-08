@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.ExerciseSearch.route
+                    startDestination = Screen.TreningPlan.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
@@ -61,10 +61,18 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screen.Test.route) { TestScreen() }
 
-                    composable(Screen.NewExercise.route) { NewExerciseScreen(treningViewModel,
-                        onCLose = { navController.popBackStack() }) }
-                    composable(Screen.NewTreningPlan.route) { NewTreningPlanScreen(treningViewModel,
-                        onCLose = { navController.popBackStack() }) }
+                    composable(Screen.NewExercise.route) {
+                        NewExerciseScreen(treningViewModel,
+                            onCLose = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(Screen.NewTreningPlan.route) {
+                        NewTreningPlanScreen(treningViewModel,
+                            onCLose = { navController.popBackStack() },
+                            onExerciseScrean = { navController.navigate(Screen.ExerciseSearch.route) }
+                        )
+                    }
 
                     composable(Screen.ExerciseSearch.route) { SearchExerciseScreen(
                         onClose = { navController.popBackStack()},
@@ -82,9 +90,10 @@ class MainActivity : ComponentActivity() {
                             productViewModel = productViewModel,
                             onClose = {navController.popBackStack()
                                 productViewModel.clearCreateProduct()
-                                      },
-                            goToSearchProduct = {navController.navigate(
-                                Screen.ProductSearch.createRoute(onlyProduct = true))},
+                            },
+                            goToSearchProduct = {
+                                navController.navigate(Screen.ProductSearch.createRoute(onlyProduct = true))
+                            },
                         )
                     }
 
