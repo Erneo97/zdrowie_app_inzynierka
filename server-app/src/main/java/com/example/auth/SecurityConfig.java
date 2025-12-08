@@ -27,7 +27,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/uzytkownicy",
                         "/api/uzytkownicy/**",
                         "/api/produkty/**",
-                        "/api/search/**")
+                        "/api/search/**",
+                        "/api/trening/**")
                 .permitAll()
                 .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // wyłączenie ciasteczek

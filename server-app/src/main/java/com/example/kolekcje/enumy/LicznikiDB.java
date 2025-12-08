@@ -6,6 +6,7 @@ public enum LicznikiDB {
     PRODUKTY("products"),
     POSILKI("meals"),
     TRENINGI("trenings"),
+    CWICZENIA("cwiczenia"),
     TOKENS("tokens"),
     ZAPROSZENIA("zaproszenia");
 
