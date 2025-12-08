@@ -106,7 +106,7 @@ fun SearchExerciseScreen(
 
             TextField(
                 value = query,
-                onValueChange = {  }, // wyszukiwanie podpowiedzi
+                onValueChange = { searchViewModel.onSearchQueryChange(it, false) },
                 placeholder = { Text("Nazwa ćwiczenia...") },
                 singleLine = true,
                 modifier = Modifier

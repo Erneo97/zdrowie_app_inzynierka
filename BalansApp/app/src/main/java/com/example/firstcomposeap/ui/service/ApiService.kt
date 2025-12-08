@@ -134,6 +134,11 @@ interface ApiService {
         @Query("nazwa") nazwa: String
     ): Response<List<String>>
 
+    @GET("search/cwiczenia")
+    suspend fun getAllMatchesExerciseNames(
+        @Query("nazwa") nazwa: String
+    ): Response<List<String>>
+
 
     @GET("search/produkts/{nazwa}")
     suspend fun getAllMatchesProduct(

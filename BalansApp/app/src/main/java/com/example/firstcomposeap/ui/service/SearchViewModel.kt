@@ -29,22 +29,44 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     var searchedProducts by mutableStateOf<List<Produkt>> (emptyList())
 
-    fun onSearchQueryChange(value: String) {
+    fun onSearchQueryChange(value: String, isProduct: Boolean = true) {
         searchQuery = value
 
         if (value.isBlank()) {
             suggestionsList = emptyList()
             return
         }
-        downloadSuggestions()
+        
+        if( isProduct) {
+            downloadSuggestionsProduct()
+        }
+        else {
+            downloadSuggestionsExercise()
+        }
     }
 
 
-    fun downloadSuggestions() {
-//        Log.e("downloadSuggestions", " ${searchQuery}")
+    fun downloadSuggestionsProduct() {
+//        Log.e("downloadSuggestionsProduct", " ${searchQuery}")
         viewModelScope.launch {
             try {
                 val response = ApiClient.api.getAllMatchesProduktNames(searchQuery)
+                if (response.isSuccessful) {
+                    suggestionsList = response.body() ?: emptyList()
+                } else {
+                    errorMessage = "Błąd pobierania sugestii: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+    fun downloadSuggestionsExercise() {
+//        Log.e("downloadSuggestionsExercise", " ${searchQuery}")
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.getAllMatchesExerciseNames(searchQuery)
                 if (response.isSuccessful) {
                     suggestionsList = response.body() ?: emptyList()
                 } else {
@@ -78,6 +100,8 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         suggestionsList = emptyList()
         resultsList = listOf(suggestion)
     }
+
+
 
 
 }
