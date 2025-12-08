@@ -26,9 +26,11 @@ import com.example.firstcomposeap.ui.screens.NewProductScreen
 import com.example.firstcomposeap.ui.screens.NewRecipeScreen
 import com.example.firstcomposeap.ui.screens.NewTreningPlanScreen
 import com.example.firstcomposeap.ui.screens.ProductConsumedDetails
+import com.example.firstcomposeap.ui.screens.SearchExerciseScreen
 import com.example.firstcomposeap.ui.screens.SearchProductScreen
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
+import kotlin.math.log
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.TreningPlan.route
+                    startDestination = Screen.ExerciseSearch.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
@@ -64,7 +66,11 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.NewTreningPlan.route) { NewTreningPlanScreen(treningViewModel,
                         onCLose = { navController.popBackStack() }) }
 
-
+                    composable(Screen.ExerciseSearch.route) { SearchExerciseScreen(
+                        onClose = { navController.popBackStack()},
+                        treningViewModel = treningViewModel,
+                        loginViewModel = loginViewModel
+                    ) }
 
                     composable(Screen.NewProduct.route) { NewProductScreen(productViewModel, onClose = {navController.popBackStack()}) }
                     composable(Screen.ProductConsumedDetails.route) { ProductConsumedDetails(
