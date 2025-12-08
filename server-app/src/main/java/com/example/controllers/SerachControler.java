@@ -1,5 +1,6 @@
 package com.example.controllers;
 
+import com.example.kolekcje.plan_treningowy.Cwiczenie;
 import com.example.kolekcje.posilki.Produkt;
 import com.example.services.ProduktService;
 import org.slf4j.Logger;
@@ -56,6 +57,37 @@ public class SerachControler {
         log.info(nazwy.toString());
         return nazwy;
     }
+
+    /**
+     * Zwraca wszystkie nazwy produktów których odległość levenstein od szukanego stringa jest <= 2
+     * @param nazwa
+     * @return
+     */
+    @GetMapping("/cwiczenia")
+    public List<String> suggestExercise(@RequestParam String nazwa) {
+        log.info("suggestExercise: " + nazwa);
+
+        if (nazwa == null || nazwa.isBlank()) {
+            return List.of();
+        }
+
+        Criteria nameCriteria = Criteria.where("nazwa").regex(Pattern.quote(nazwa), "i");
+
+        Query query = new Query();
+        query.addCriteria(new Criteria().orOperator(nameCriteria));
+        query.limit(15);
+        query.fields().include("nazwa");
+
+        List<Cwiczenie> cwiczenia = mongoTemplate.find(query, Cwiczenie.class, "Cwiczenia");
+
+        List<String> nazwy = cwiczenia.stream()
+                .map(Cwiczenie::getNazwa)
+                .toList();
+
+        log.info(nazwy.toString());
+        return nazwy;
+    }
+
 
     @GetMapping("/produkts/{nazwa}")
     public List<Produkt> getAllProduct(@PathVariable String nazwa) {
