@@ -59,7 +59,7 @@ public class SerachControler {
     }
 
     /**
-     * Zwraca wszystkie nazwy produktów których odległość levenstein od szukanego stringa jest <= 2
+     * Zwraca wszystkie nazwy ćwiczeń, któych nazwa pokrywa zawiera znaki zawarte w parm nazwa.
      * @param nazwa
      * @return
      */
