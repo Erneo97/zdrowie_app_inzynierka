@@ -19,11 +19,19 @@ public class Uzytkownik {
     List<PommiarWagii> waga;
     int wzrost, zapotrzebowanieKcal;
     Plec plec;
+    boolean blocked;
+    String role;
     Date dataUrodzenia;
     List<Przyjaciele> przyjaciele;
     List<Dania> dania;
 
-    public Uzytkownik() {}
+    public void setRole(String role) {this.role = role;}
+    public String getRole() {return role;}
+
+    public void setBlocked(boolean blocked) {
+         this.blocked = blocked;
+    }
+    public boolean isBlocked() {return blocked; }
 
     public void setDania(List<Dania> dania) {
         this.dania = dania;

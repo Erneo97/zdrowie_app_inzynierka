@@ -89,6 +89,15 @@ public class UzytkownikController {
             map.put("status", false);
             return new ResponseEntity<Object>(map, HttpStatus.UNAUTHORIZED);
         }
+
+        Optional<Uzytkownik> optUser = uzytkownikService.getUserByEmail(request.getEmail());
+        if( optUser.isPresent() ) {
+            Uzytkownik user = optUser.get();
+            if( user.isBlocked() ) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+            }
+        }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
