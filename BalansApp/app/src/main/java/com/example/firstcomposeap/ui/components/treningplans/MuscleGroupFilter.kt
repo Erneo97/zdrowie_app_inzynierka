@@ -1,7 +1,10 @@
 package com.example.firstcomposeap.ui.components.treningplans
 
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -16,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FilterChip
@@ -29,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import kotlin.collections.forEach
@@ -75,21 +80,40 @@ fun MuscleGroupFilter(
 
 
         Spacer(Modifier.height(8.dp))
+        val scrollState = rememberScrollState()
 
-        FlowRow(
-            modifier = Modifier.heightIn(min = 0.dp, max = 100.dp)
-                        .verticalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            selected.forEach { grupa ->
-                FilterChip(
-                    selected = true,
-                    onClick = {
-                        onSelectedChange(selected - grupa, accurately)
-                    },
-                    label = { Text(grupa.grupaNazwa) }
-                )
+        Box {
+            FlowRow(
+                modifier = Modifier
+                    .heightIn(min = 0.dp, max = 100.dp)
+                    .verticalScroll(scrollState),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                selected.forEach { grupa ->
+                    FilterChip(
+                        selected = true,
+                        onClick = {
+                            onSelectedChange(selected - grupa, accurately)
+                        },
+                        label = { Text(grupa.grupaNazwa) }
+                    )
+                }
+            }
+
+            if (selected.size > 4) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .background(
+                            color = Color.White.copy(alpha = 0.9f),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    val hiddenCount = selected.size - 4
+                    Text("+${hiddenCount} więcej", color = Color.Gray)
+                }
             }
         }
         HorizontalDivider()
@@ -131,3 +155,4 @@ fun MuscleGroupFilter(
         HorizontalDivider()
     }
 }
+
