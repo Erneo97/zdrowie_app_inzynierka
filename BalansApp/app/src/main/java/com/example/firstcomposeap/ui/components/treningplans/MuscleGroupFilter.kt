@@ -6,11 +6,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.OutlinedTextField
@@ -32,26 +37,32 @@ import kotlin.collections.forEach
 @Composable
 fun MuscleGroupFilter(
     selected: List<GrupaMiesniowa>,
-    onSelectedChange: (List<GrupaMiesniowa>) -> Unit
+    onSelectedChange: (List<GrupaMiesniowa>, Boolean) -> Unit
 ) {
     var search by remember { mutableStateOf("") }
-
+    var accurately by remember { mutableStateOf(false) }
     val allGroups = GrupaMiesniowa.entries.sortedBy {  it.grupaNazwa }
     val filtered = allGroups.filter {
         it.grupaNazwa.contains(search, ignoreCase = true)
     }
 
-    Column {
-        OutlinedTextField(
-            value = search,
-            onValueChange = { search = it },
-            label = { Text("Szukaj grupy mięśniowej") },
-            modifier = Modifier.fillMaxWidth()
-        )
+    Column  {
+        Row( ) {
+            OutlinedTextField(
+                value = search,
+                onValueChange = { search = it },
+                label = { Text("Szukaj grupy mięśniowej") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+        }
+
 
         Spacer(Modifier.height(8.dp))
 
         FlowRow(
+            modifier = Modifier.heightIn(min = 0.dp, max = 100.dp)
+                        .verticalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -59,7 +70,7 @@ fun MuscleGroupFilter(
                 FilterChip(
                     selected = true,
                     onClick = {
-                        onSelectedChange(selected - grupa)
+                        onSelectedChange(selected - grupa, accurately)
                     },
                     label = { Text(grupa.grupaNazwa) }
                 )
@@ -68,16 +79,21 @@ fun MuscleGroupFilter(
 
         Spacer(Modifier.height(8.dp))
 
-        LazyRow {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxHeight(0.1f),
+            verticalArrangement = Arrangement.Top,
+            horizontalArrangement = Arrangement.Start
+        ) {
             items(filtered) { grupa ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
                             if (grupa in selected) {
-                                onSelectedChange(selected - grupa)
+                                onSelectedChange(selected - grupa, accurately)
                             } else {
-                                onSelectedChange(selected + grupa)
+                                onSelectedChange(selected + grupa, accurately)
                             }
                         },
                     verticalAlignment = Alignment.CenterVertically
@@ -85,13 +101,13 @@ fun MuscleGroupFilter(
                     Checkbox(
                         checked = grupa in selected,
                         onCheckedChange = {
-                            if (it) onSelectedChange(selected + grupa)
-                            else onSelectedChange(selected - grupa)
+                            if (it) onSelectedChange(selected + grupa, accurately)
+                            else onSelectedChange(selected - grupa, accurately)
                         }
                     )
                     Text(
                         text = grupa.grupaNazwa,
-                        modifier = Modifier.padding(start = 12.dp)
+                        modifier = Modifier.padding(start = 6.dp)
                     )
                 }
             }
