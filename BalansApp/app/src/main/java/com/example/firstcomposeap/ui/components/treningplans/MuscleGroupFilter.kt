@@ -2,6 +2,7 @@ package com.example.firstcomposeap.ui.components.treningplans
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.unit.dp
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import kotlin.collections.forEach
@@ -47,13 +50,27 @@ fun MuscleGroupFilter(
     }
 
     Column  {
-        Row( ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             OutlinedTextField(
                 value = search,
                 onValueChange = { search = it },
                 label = { Text("Szukaj grupy mięśniowej") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.weight(3f)
             )
+            Column ( modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally)
+            {
+                Checkbox(
+                    checked = accurately,
+                    onCheckedChange = {accurately = it},
+                )
+                Spacer(Modifier.width(2.dp).height(3.dp))
+                Text((if (accurately) "Dokładne" else "Zawierające"))
+            }
+
 
         }
 

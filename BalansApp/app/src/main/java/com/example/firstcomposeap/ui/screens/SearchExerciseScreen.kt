@@ -59,7 +59,7 @@ fun SearchExerciseScreen(
     val productsList = remember { mutableStateListOf<Produkt>() }
 
     var selectedGroups by remember { mutableStateOf(listOf<GrupaMiesniowa>()) }
-
+    var accurately by remember { mutableStateOf(false) } // czy dokładne odwzorowanie tagów czy tylko te zawierające
 
 
     var mainText by remember { mutableStateOf("") }
@@ -117,7 +117,10 @@ fun SearchExerciseScreen(
             )
             MuscleGroupFilter(
                 selected = selectedGroups,
-                onSelectedChange = { selectedGroups = it }
+                onSelectedChange = { groups, accur ->
+                    selectedGroups = groups
+                    accurately = accur
+                }
             )
         }
 
