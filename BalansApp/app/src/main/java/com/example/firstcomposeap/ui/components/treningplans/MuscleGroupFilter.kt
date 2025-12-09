@@ -2,7 +2,6 @@ package com.example.firstcomposeap.ui.components.treningplans
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -20,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.unit.dp
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import kotlin.collections.forEach
@@ -93,8 +92,8 @@ fun MuscleGroupFilter(
                 )
             }
         }
-
-        Spacer(Modifier.height(8.dp))
+        HorizontalDivider()
+        Spacer(Modifier.height(4.dp))
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -129,5 +128,6 @@ fun MuscleGroupFilter(
                 }
             }
         }
+        HorizontalDivider()
     }
 }
