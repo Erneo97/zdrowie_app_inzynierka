@@ -12,6 +12,31 @@ data class treningsPlanCard(
     val goal : String
 )
 
+data class PlanTreningowy(
+    val id: Int,
+    val id_uzytkownia: Int,
+    val Date: String,
+    val nazwa : String,
+    val cwiczeniaPlanuTreningowe : List<cwiczeniaPlanuTreningowego>,
+    val cel : GOAL
+)
+
+enum class GOAL(val label: String) {
+    REDUCE("Redukcja wagi"),
+
+    MUSCLE("Masa mięśniowa"),
+
+    CONST("Utrzymanie wagi");
+
+
+    companion object {
+        fun fromNazwa(label: String  ) : GrupaMiesniowa? {
+            return GrupaMiesniowa.entries.find { it.grupaNazwa.equals(label, ignoreCase = true) }
+        }
+
+    }
+}
+
 data class Cwiczenie(
     val id: Int = -1,
     val nazwa: String = "",
@@ -31,6 +56,8 @@ data class Seria(
     var liczbaPowtorzen: Int = 0,
     var obciazenie: Float = 0.0f,
 )
+
+
 
 enum class GrupaMiesniowa(val grupaNazwa: String) {
 

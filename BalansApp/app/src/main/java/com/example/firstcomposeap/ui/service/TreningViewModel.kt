@@ -6,11 +6,15 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
 import com.example.firstcomposeap.ui.service.data.Cwiczenie
+import com.example.firstcomposeap.ui.service.data.GOAL
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
+import com.example.firstcomposeap.ui.service.data.PlanTreningowy
 import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowego
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
+import kotlinx.coroutines.launch
 
 
 class TreningViewModel : ViewModel() {
@@ -42,6 +46,31 @@ class TreningViewModel : ViewModel() {
         if (opt != null) {
             selectedExercised.remove(opt)
         }
+    }
+
+     fun createNewTreningPlan(nazwa: String, aktualny: Boolean = true, cel : GOAL = GOAL.CONST) {
+         val nowy = PlanTreningowy(
+             id = -1,
+             id_uzytkownia = -1,
+             Date = "",
+             nazwa = nazwa,
+             cwiczeniaPlanuTreningowe = selectedExercisedOnNewTP.toList(),
+             cel = cel,
+         )
+         Log.e("createNewTreningPlan", "${nowy} - ${selectedExercisedOnNewTP}")
+         viewModelScope.launch {
+             try {
+                 val response = ApiClient.getApi(token ?: "").createTreningPlan(body = nowy, aktualny = aktualny)
+                 if (response.isSuccessful) {
+                     message = "Dodano ćwiczenie do bazy danych"
+                     Log.e("createNewExercise", message ?: "")
+                 } else {
+                     errorMessage = "Błąd dodania ćwiczenie do bazy danych: ${response.code()}"
+                 }
+             } catch (e: Exception) {
+                 errorMessage = e.localizedMessage
+             }
+         }
     }
 
     var treningsPlanCard = mutableStateListOf<treningsPlanCard>(  treningsPlanCard(

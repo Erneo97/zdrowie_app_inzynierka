@@ -14,6 +14,7 @@ import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.service.data.AllMealsInDay
 import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.MealUpdate
+import com.example.firstcomposeap.ui.service.data.PlanTreningowy
 import com.example.firstcomposeap.ui.service.data.Produkt
 import okhttp3.ResponseBody
 import retrofit2.http.Body
@@ -162,6 +163,12 @@ interface ApiService {
     @POST("trening/exercise/new")
     suspend fun createExercise(
         @Body body: Cwiczenie
+    ): Response<Cwiczenie>
+
+    @POST("trening/treningPlan")
+    suspend fun createTreningPlan(
+        @Body body: PlanTreningowy,
+        @Query("aktualny") aktualny: Boolean = false
     ): Response<Cwiczenie>
 
 }

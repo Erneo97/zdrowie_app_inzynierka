@@ -24,8 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.InputField
+import com.example.firstcomposeap.ui.components.meal.SelectBox
 import com.example.firstcomposeap.ui.components.treningplans.CwiczenieSeriesItem
 import com.example.firstcomposeap.ui.service.TreningViewModel
+import com.example.firstcomposeap.ui.service.data.GOAL
 
 
 @Composable
@@ -36,7 +38,7 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
     var nazwa by remember { mutableStateOf("") }
 
     var czyAktualny by remember { mutableStateOf(false) }
-    var cel by remember { mutableStateOf("") }
+    var cel by remember { mutableStateOf("Wybierz cel") }
 
     Spacer(Modifier.height(10.dp))
 
@@ -46,13 +48,15 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
         .padding(10.dp)) {
         NavigationButtonsRetAdd(
             onClose = { onCLose() },
-            onAdd = { },
+            onAdd = {
+                treningViewModel.createNewTreningPlan(nazwa, czyAktualny, cel = GOAL.MUSCLE)
+            },
             mainText = "Zapisz nowy plan"
         )
         Spacer(Modifier.height(15.dp))
 
 
-        Column(Modifier.weight(2f)
+        Column(Modifier.weight(2.8f)
         ) {
             Text("Nazwa treningu: ")
             InputField(
@@ -77,7 +81,13 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
                     .height(3.dp))
                 Text((if (czyAktualny) "Aktualny" else "Dodatkowy") + " plan")
             }
-            // TODO: cel treningu
+
+            SelectBox(
+                options = GOAL.entries.map { it.label },
+                selectedOption = cel,
+                onOptionSelected = {cel = it},
+                label = "Cel treningu"
+            )
 
 
         }
