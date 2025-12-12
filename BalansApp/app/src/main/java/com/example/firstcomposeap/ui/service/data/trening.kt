@@ -1,5 +1,8 @@
 package com.example.firstcomposeap.ui.service.data
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
+
 data class treningsPlanCard(
     val seasonName : String,
     val startDate : String,
@@ -17,6 +20,17 @@ data class Cwiczenie(
     val met: Float = 0f
 )
 
+data class cwiczeniaPlanuTreningowego (
+    val id: Int,
+    val nazwa: String,
+    val grupaMiesniowas: List<GrupaMiesniowa>,
+    val serie: SnapshotStateList<Seria> = emptyList<Seria>().toMutableStateList()
+)
+
+data class Seria(
+    var liczbaPowtorzen: Int,
+    var obciazenie: Float,
+)
 
 enum class GrupaMiesniowa(val grupaNazwa: String) {
 
