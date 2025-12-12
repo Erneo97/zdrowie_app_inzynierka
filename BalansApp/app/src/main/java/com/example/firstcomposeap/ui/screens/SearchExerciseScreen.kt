@@ -4,10 +4,13 @@ package com.example.firstcomposeap.ui.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,24 +22,33 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import com.example.balansapp.R
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.treningplans.MuscleGroupFilter
@@ -181,7 +193,9 @@ fun SearchExerciseScreen(
                     items(searchViewModel.searchedExercies, key = { it.id }) { item ->
                         SelectiveExerciseItem(
                             exer = item,
-                            onSelected = { }
+                            onSelected = { cw, select ->
+
+                            }
                         )
 
                         HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
@@ -200,11 +214,108 @@ fun SearchExerciseScreen(
 
 
 @Composable
-fun SelectiveExerciseItem(exer: Cwiczenie, onSelected: () -> Unit) {
-    Column {
-        Text(exer.nazwa)
-        Text(exer.opis)
+fun SelectiveExerciseItem(exer: Cwiczenie,
+                          isChecked: Boolean = false,
+                          onSelected: (Cwiczenie, Boolean) -> Unit) {
 
+    val shadowColor = MaterialTheme.colorScheme.primary
+    var innerisChecked by remember {   mutableStateOf(isChecked) }
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .drawBehind {
+                val shadowOffsetX = 8f
+                val shadowOffsetY = 8f
+                val shadowColor = shadowColor.copy(alpha = 0.25f)
+                drawRoundRect(
+                    color = shadowColor,
+                    topLeft = Offset(shadowOffsetX, shadowOffsetY),
+                    size = size,
+                    cornerRadius = CornerRadius(25f, 25f),
+                )
+            }
+            .shadow(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(25.dp),
+                ambientColor = shadowColor.copy(alpha = 0.8f),
+                spotColor = shadowColor.copy(alpha = 0.8f)
+            )
+            .border(
+                width = 2.dp,
+                color = Color.Gray.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(25.dp)
+            )
+            .background(Color.White, RoundedCornerShape(16.dp))
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+
+                Text(
+                    text =" ${exer.nazwa}",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Spacer(Modifier.height(2.dp))
+                HorizontalDivider()
+                Text(
+                    text = "Grupy Mięśniowe:",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Text(
+                    text = "${exer.grupaMiesniowas}",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Light,
+                    color = Color.Black
+                )
+                Spacer(Modifier.height(3.dp))
+                Text(
+                    text = "Opis:",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Text(
+                    text = exer.opis,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Light,
+                    color = Color.Black
+                )
+
+
+
+
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            VerticalDivider()
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Checkbox(
+                    checked = innerisChecked,
+                    onCheckedChange = { checked ->
+                        innerisChecked = !innerisChecked
+                        onSelected(exer, innerisChecked)
+                    }
+                )
+            }
+        }
     }
 }
 
