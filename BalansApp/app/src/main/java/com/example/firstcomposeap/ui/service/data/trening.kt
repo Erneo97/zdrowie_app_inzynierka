@@ -28,8 +28,8 @@ data class cwiczeniaPlanuTreningowego (
 )
 
 data class Seria(
-    var liczbaPowtorzen: Int,
-    var obciazenie: Float,
+    var liczbaPowtorzen: Int = 0,
+    var obciazenie: Float = 0.0f,
 )
 
 enum class GrupaMiesniowa(val grupaNazwa: String) {
