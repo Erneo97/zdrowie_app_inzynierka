@@ -37,15 +37,13 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
                          onCLose : () -> Unit,
                          onExerciseScrean : () -> Unit )
 {
-    var nazwa by remember { mutableStateOf("") }
-    val context = LocalContext.current
 
+
+    val context = LocalContext.current
     var czyAktualny by remember { mutableStateOf(false) }
-    var cel by remember { mutableStateOf("Wybierz cel") }
     var correct by remember { mutableStateOf(true) }
 
     Spacer(Modifier.height(10.dp))
-
 
 
     Column(Modifier
@@ -56,12 +54,12 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
             onAdd = {
                 correct = true
 
-                val wybranyCel = GOAL.fromNazwa(cel)
+                val wybranyCel = GOAL.fromNazwa(treningViewModel.cel)
                 if( wybranyCel == null ) {
                     Toast.makeText(context, "Brak wybranego celu", Toast.LENGTH_SHORT).show()
                     correct = false
                 }
-                else if(nazwa.isEmpty()) {
+                else if(treningViewModel.nazwa.isEmpty()) {
                     Toast.makeText(context, "Trzeba podać nazwę", Toast.LENGTH_SHORT).show()
                     correct = false
                 }
@@ -71,7 +69,7 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
                 }
 
                 if( correct) {
-                    treningViewModel.createNewTreningPlan(nazwa, czyAktualny, cel = wybranyCel!! )
+                    treningViewModel.createNewTreningPlan(treningViewModel.nazwa, czyAktualny, cel = wybranyCel!! )
                     onCLose()
                 }
             },
@@ -84,8 +82,8 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
         ) {
             Text("Nazwa treningu: ")
             InputField(
-                value = nazwa,
-                onValueChange = { nazwa = it},
+                value = treningViewModel.nazwa,
+                onValueChange = { treningViewModel.nazwa = it},
                 label = "Nazwa treningu",
                 modifier = Modifier.fillMaxWidth()
             )
@@ -108,8 +106,8 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
 
             SelectBox(
                 options = GOAL.entries.map { it.label },
-                selectedOption = cel,
-                onOptionSelected = {cel = it},
+                selectedOption = treningViewModel.cel,
+                onOptionSelected = {treningViewModel.cel = it},
                 label = "Cel treningu"
             )
 

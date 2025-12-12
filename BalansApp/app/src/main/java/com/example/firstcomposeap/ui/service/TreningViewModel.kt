@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 
 
 class TreningViewModel : ViewModel() {
+    var nazwa by   mutableStateOf("")
+    var cel by  mutableStateOf("Wybierz cel")
     var token by mutableStateOf<String?>(null)
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
