@@ -1,26 +1,32 @@
 package com.example.controllers;
 
 import com.example.kolekcje.plan_treningowy.Cwiczenie;
+import com.example.kolekcje.plan_treningowy.PlanTreningowy;
+import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.services.TreningService;
+import com.example.services.UzytkownikService;
+import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/trening")
 public class TreningClontroller {
     private final TreningService treningService;
+    private final UzytkownikService uzytkownikService;
 
     private static final Logger log = LoggerFactory.getLogger(TreningClontroller.class);
 
 
-    public TreningClontroller(TreningService treningService) {
+    public TreningClontroller(TreningService treningService, UzytkownikService uzytkownikService) {
         this.treningService = treningService;
+        this.uzytkownikService = uzytkownikService;
     }
 
 
@@ -34,4 +40,28 @@ public class TreningClontroller {
 
         return ResponseEntity.status(201).body(created);
     }
+
+    @PostMapping("/treningPlan")
+    public ResponseEntity<?> createTreningPlan(@RequestBody PlanTreningowy nowyPlan, @RequestParam boolean aktualny,
+                                               Authentication authentication) {
+        log.info("createTreningPlan " + nowyPlan.getNazwa() + " " + nowyPlan.getCwiczeniaPlanuTreningowe()  + " " + authentication.getName());
+        if( authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        Uzytkownik usr = optUsr.get();
+
+        treningService.createTreningPlan(usr, nowyPlan, aktualny);
+
+        return ResponseEntity.status(201).body("Utworzo nowy plan treningowy");
+    }
+
+
+
 }

@@ -99,6 +99,10 @@ public class UzytkownikService {
         });
     }
 
+    public void updateUser(Uzytkownik updatedUser) {
+        uzytkownikRepository.save(updatedUser);
+    }
+
 //    public boolean deleteUser(int id) {
 //        if( repository.existsById(id)) {
 //            repository.deleteById(id);
