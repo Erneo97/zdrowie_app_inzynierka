@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.InputField
+import com.example.firstcomposeap.ui.components.treningplans.CwiczenieSeriesItem
 import com.example.firstcomposeap.ui.service.TreningViewModel
 
 
@@ -40,7 +41,9 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
     Spacer(Modifier.height(10.dp))
 
 
-    Column(Modifier.fillMaxSize().padding(10.dp)) {
+    Column(Modifier
+        .fillMaxSize()
+        .padding(10.dp)) {
         NavigationButtonsRetAdd(
             onClose = { onCLose() },
             onAdd = { },
@@ -69,9 +72,12 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
                     checked = czyAktualny,
                     onCheckedChange = {czyAktualny = it},
                 )
-                Spacer(Modifier.width(4.dp).height(3.dp))
+                Spacer(Modifier
+                    .width(4.dp)
+                    .height(3.dp))
                 Text((if (czyAktualny) "Aktualny" else "Dodatkowy") + " plan")
             }
+            // TODO: cel treningu
 
 
         }
@@ -86,15 +92,21 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
             text = "Dodaj ćwiczenie",
             onClick = {  onExerciseScrean()  },
         )
-        Column (Modifier.weight(5f).verticalScroll(rememberScrollState())
+        Spacer(Modifier.height(10.dp))
+        Text("Wybrane ćwiczenia:", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+
+        Column (Modifier
+            .weight(5f)
+            .verticalScroll(rememberScrollState())
         ) {
 
-            Spacer(Modifier.height(10.dp))
-            Text("Wybrane ćwiczenia:", fontWeight = FontWeight.Bold, fontSize = 25.sp)
-
-
-
-
+            treningViewModel.selectedExercisedOnNewTP.forEach {
+                item -> CwiczenieSeriesItem(
+                    cwiczenie = item,
+                    onRemove = { treningViewModel.removeExerciseFromPlan(item) }
+                )
+            }
+            Spacer(Modifier.height(15.dp))
 
         }
 
