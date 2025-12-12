@@ -1,5 +1,6 @@
 package com.example.controllers;
 
+import com.example.kolekcje.enumy.GrupaMiesniowa;
 import com.example.kolekcje.plan_treningowy.Cwiczenie;
 import com.example.kolekcje.posilki.Produkt;
 import com.example.services.ProduktService;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -64,24 +66,49 @@ public class SerachControler {
      * @return
      */
     @GetMapping("/cwiczenia")
-    public List<String> suggestExercise(@RequestParam String nazwa) {
-        log.info("suggestExercise: " + nazwa);
+    public List<String> suggestExercise(@RequestParam  String nazwa,
+                                        @RequestParam(required = false) List<String> grupyMiesiniowe,
+                                        @RequestParam  Boolean dokladnosc
+    ) {
+        log.info("suggestExercise: { " + nazwa + " } " + grupyMiesiniowe + " " + dokladnosc);
 
-        if (nazwa == null || nazwa.isBlank()) {
-            return List.of();
+        List<GrupaMiesniowa> finalGroups = (grupyMiesiniowe == null || grupyMiesiniowe.isEmpty())
+                ? Arrays.asList(GrupaMiesniowa.values())
+                : grupyMiesiniowe.stream()
+                .map(GrupaMiesniowa::valueOf)
+                .toList();
+
+
+        log.info("suggestExercise: "  + "finalGroups " + finalGroups);
+        Query query = new Query();
+
+        if (dokladnosc != null && dokladnosc) {
+            query.addCriteria(Criteria.where("grupaMiesniowas").all(finalGroups));
+        } else {
+            query.addCriteria(Criteria.where("grupaMiesniowas").in(finalGroups));
         }
 
-        Criteria nameCriteria = Criteria.where("nazwa").regex(Pattern.quote(nazwa), "i");
-
-        Query query = new Query();
-        query.addCriteria(new Criteria().orOperator(nameCriteria));
-        query.limit(15);
-        query.fields().include("nazwa");
+        query.limit(25);
 
         List<Cwiczenie> cwiczenia = mongoTemplate.find(query, Cwiczenie.class, "Cwiczenia");
+        log.info("suggestExercise: "  + "cwiczenia " + cwiczenia);
 
+        String[] fragments = nazwa.split(" ");
         List<String> nazwy = cwiczenia.stream()
                 .map(Cwiczenie::getNazwa)
+                .filter(cwNazwa -> {
+                    for (String fragment : fragments) {
+                        fragment = fragment.trim();
+                        if (!fragment.isEmpty()) {
+                            final String f = fragment.toLowerCase();
+                            boolean matches = cwNazwa.toLowerCase().contains(f) ;
+                            if (!matches) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                })
                 .toList();
 
         log.info(nazwy.toString());

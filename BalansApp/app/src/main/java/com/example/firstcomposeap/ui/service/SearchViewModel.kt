@@ -1,11 +1,13 @@
 package com.example.firstcomposeap.ui.service
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
+import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import com.example.firstcomposeap.ui.service.data.Produkt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -29,25 +31,25 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     var searchedProducts by mutableStateOf<List<Produkt>> (emptyList())
 
-    fun onSearchQueryChange(value: String, isProduct: Boolean = true) {
+    fun onSearchQueryChange(value: String=searchQuery, isProduct: Boolean = true,
+                            groupMuscle: List<GrupaMiesniowa> = emptyList(),
+                            precision: Boolean = false
+                            ) {
         searchQuery = value
-
-        if (value.isBlank()) {
-            suggestionsList = emptyList()
-            return
-        }
+        Log.e("onSearchQueryChange", "${isProduct} - ${searchQuery} = ${groupMuscle}")
         
         if( isProduct) {
+            Log.e("onSearchQueryChange", "product")
             downloadSuggestionsProduct()
         }
         else {
-            downloadSuggestionsExercise()
+            Log.e("onSearchQueryChange", "exercise")
+            downloadSuggestionsExercise(groupMuscle, precision)
         }
     }
 
 
     fun downloadSuggestionsProduct() {
-//        Log.e("downloadSuggestionsProduct", " ${searchQuery}")
         viewModelScope.launch {
             try {
                 val response = ApiClient.api.getAllMatchesProduktNames(searchQuery)
@@ -62,11 +64,16 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun downloadSuggestionsExercise() {
-//        Log.e("downloadSuggestionsExercise", " ${searchQuery}")
+    fun downloadSuggestionsExercise(groupMuscle: List<GrupaMiesniowa> = emptyList(),
+                                    precision: Boolean = false
+    ) {
         viewModelScope.launch {
             try {
-                val response = ApiClient.api.getAllMatchesExerciseNames(searchQuery)
+                Log.e("downloadSuggestionsExercise", "przewd res")
+                val response = ApiClient.api.getAllMatchesExerciseNames(searchQuery,
+                    grupyMiesiniowe = groupMuscle.map { it.name },
+                    precision )
+                Log.e("downloadSuggestionsExercise", "przewd ${response}")
                 if (response.isSuccessful) {
                     suggestionsList = response.body() ?: emptyList()
                 } else {

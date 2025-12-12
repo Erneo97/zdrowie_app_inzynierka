@@ -136,7 +136,9 @@ interface ApiService {
 
     @GET("search/cwiczenia")
     suspend fun getAllMatchesExerciseNames(
-        @Query("nazwa") nazwa: String
+        @Query("nazwa") nazwa: String,
+        @Query("grupyMiesiniowe") grupyMiesiniowe: List<String>?,
+        @Query("dokladnosc") dokladnosc: Boolean
     ): Response<List<String>>
 
 
