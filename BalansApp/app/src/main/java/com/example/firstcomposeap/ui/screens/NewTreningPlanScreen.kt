@@ -49,7 +49,8 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
         NavigationButtonsRetAdd(
             onClose = { onCLose() },
             onAdd = {
-                treningViewModel.createNewTreningPlan(nazwa, czyAktualny, cel = GOAL.MUSCLE)
+                treningViewModel.createNewTreningPlan(nazwa, czyAktualny, cel = GOAL.fromNazwa(cel) ?: GOAL.CONST)
+                onCLose()
             },
             mainText = "Zapisz nowy plan"
         )

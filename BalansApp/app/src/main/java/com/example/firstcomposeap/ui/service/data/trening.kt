@@ -30,8 +30,8 @@ enum class GOAL(val label: String) {
 
 
     companion object {
-        fun fromNazwa(label: String  ) : GrupaMiesniowa? {
-            return GrupaMiesniowa.entries.find { it.grupaNazwa.equals(label, ignoreCase = true) }
+        fun fromNazwa(label: String  ) : GOAL? {
+            return GOAL.entries.find { it.label.equals(label, ignoreCase = true) }
         }
 
     }
