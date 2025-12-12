@@ -17,6 +17,8 @@ class TreningViewModel : ViewModel() {
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
 
+    var selectedExercisedOnNewTP = mutableStateListOf<Cwiczenie>()
+
     var treningsPlanCard = mutableStateListOf<treningsPlanCard>(  treningsPlanCard(
         seasonName = "Zimaq 2025",
         startDate = "05.05.25",

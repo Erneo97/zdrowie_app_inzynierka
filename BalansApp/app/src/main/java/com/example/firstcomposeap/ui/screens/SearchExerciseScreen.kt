@@ -1,6 +1,7 @@
 package com.example.firstcomposeap.ui.screens
 
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -105,7 +106,9 @@ fun SearchExerciseScreen(
 
             NavigationButtonsRetAdd(
                 onClose = {onClose() },
-                onAdd = { }, // TODO: dodanie ćwiczeń
+                onAdd = {
+                    Log.e("SearchExerciseScreen", "${treningViewModel.selectedExercisedOnNewTP}")
+                }, // TODO: dodanie ćwiczeń
                 mainText = "Dodaj Ćwiczenia do trenignu"
             )
 
@@ -189,12 +192,16 @@ fun SearchExerciseScreen(
                     .heightIn(max = 650.dp)
                     .background(Color.White)
             ) {
-
                     items(searchViewModel.searchedExercies, key = { it.id }) { item ->
+                        val isSelected = treningViewModel.selectedExercisedOnNewTP.contains(item)
                         SelectiveExerciseItem(
                             exer = item,
+                            isChecked = isSelected,
                             onSelected = { cw, select ->
-
+                                if( select )
+                                    treningViewModel.selectedExercisedOnNewTP.add(item)
+                                else
+                                    treningViewModel.selectedExercisedOnNewTP.remove(item)
                             }
                         )
 
