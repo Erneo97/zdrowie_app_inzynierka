@@ -62,6 +62,23 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body("Utworzo nowy plan treningowy");
     }
 
+    @GetMapping("/treningPlan")
+    public ResponseEntity<?> getAllTreningPlans( Authentication authentication) {
+
+        if( authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        Uzytkownik usr = optUsr.get();
+
+        return ResponseEntity.status(201).body(treningService.getAllTreningPlans(usr));
+    }
+
 
 
 }
