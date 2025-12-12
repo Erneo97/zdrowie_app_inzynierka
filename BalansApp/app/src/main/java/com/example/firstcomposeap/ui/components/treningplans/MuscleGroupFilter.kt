@@ -44,7 +44,8 @@ import kotlin.collections.forEach
 @Composable
 fun MuscleGroupFilter(
     selected: List<GrupaMiesniowa>,
-    onSelectedChange: (List<GrupaMiesniowa>, Boolean) -> Unit
+    onSelectedChange: (List<GrupaMiesniowa>) -> Unit,
+    onChangePrecision: (Boolean) -> Unit
 ) {
     var search by remember { mutableStateOf("") }
     var accurately by remember { mutableStateOf(false) }
@@ -69,7 +70,10 @@ fun MuscleGroupFilter(
             {
                 Checkbox(
                     checked = accurately,
-                    onCheckedChange = {accurately = it},
+                    onCheckedChange = {
+                        accurately = it
+                        onChangePrecision(it)
+                    },
                 )
                 Spacer(Modifier.width(2.dp).height(3.dp))
                 Text((if (accurately) "Dokładne" else "Zawierające"))
@@ -94,7 +98,7 @@ fun MuscleGroupFilter(
                     FilterChip(
                         selected = true,
                         onClick = {
-                            onSelectedChange(selected - grupa, accurately)
+                            onSelectedChange(selected - grupa)
                         },
                         label = { Text(grupa.grupaNazwa) }
                     )
@@ -131,9 +135,9 @@ fun MuscleGroupFilter(
                         .fillMaxWidth()
                         .clickable {
                             if (grupa in selected) {
-                                onSelectedChange(selected - grupa, accurately)
+                                onSelectedChange(selected - grupa)
                             } else {
-                                onSelectedChange(selected + grupa, accurately)
+                                onSelectedChange(selected + grupa)
                             }
                         },
                     verticalAlignment = Alignment.CenterVertically
@@ -141,8 +145,8 @@ fun MuscleGroupFilter(
                     Checkbox(
                         checked = grupa in selected,
                         onCheckedChange = {
-                            if (it) onSelectedChange(selected + grupa, accurately)
-                            else onSelectedChange(selected - grupa, accurately)
+                            if (it) onSelectedChange(selected + grupa)
+                            else onSelectedChange(selected - grupa)
                         }
                     )
                     Text(

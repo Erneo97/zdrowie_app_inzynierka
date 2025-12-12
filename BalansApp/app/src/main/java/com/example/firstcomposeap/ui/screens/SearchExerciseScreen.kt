@@ -117,10 +117,15 @@ fun SearchExerciseScreen(
             )
             MuscleGroupFilter(
                 selected = selectedGroups,
-                onSelectedChange = { groups, accur ->
+                onSelectedChange = { groups ->
                     selectedGroups = groups
-                    accurately = accur
                     searchViewModel.onSearchQueryChange(isProduct =  false, groupMuscle = selectedGroups, precision =  accurately)
+                    isFocused = true
+                },
+                onChangePrecision = {
+                    accurately = it
+                    searchViewModel.onSearchQueryChange(isProduct =  false, groupMuscle = selectedGroups, precision =  accurately)
+                    isFocused = true
                 }
             )
         }
