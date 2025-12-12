@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.example.balansapp.ui.service.ApiClient
 import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
+import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowego
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
 
 
@@ -17,7 +18,31 @@ class TreningViewModel : ViewModel() {
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
 
-    var selectedExercisedOnNewTP = mutableStateListOf<Cwiczenie>()
+    val selectedExercised = mutableStateListOf<Cwiczenie>()
+    val selectedExercisedOnNewTP = mutableStateListOf<cwiczeniaPlanuTreningowego>()
+
+    fun addNewExerciseToPlan(cwiczenie: Cwiczenie ) {
+        selectedExercised.add(cwiczenie)
+        selectedExercisedOnNewTP.add(cwiczeniaPlanuTreningowego(
+            id = cwiczenie.id,
+            nazwa = cwiczenie.nazwa,
+            grupaMiesniowas = cwiczenie.grupaMiesniowas,
+        ))
+    }
+    fun removeExerciseFromPlan(cwiczenie: Cwiczenie ) {
+        selectedExercised.remove(cwiczenie)
+        val opt = selectedExercisedOnNewTP.find { it.id == cwiczenie.id }
+        if (opt != null) {
+            selectedExercisedOnNewTP.remove(opt)
+        }
+    }
+    fun removeExerciseFromPlan(cwiczenie: cwiczeniaPlanuTreningowego ) {
+        selectedExercisedOnNewTP.remove(cwiczenie)
+        val opt = selectedExercised.find { it.id == cwiczenie.id }
+        if (opt != null) {
+            selectedExercised.remove(opt)
+        }
+    }
 
     var treningsPlanCard = mutableStateListOf<treningsPlanCard>(  treningsPlanCard(
         seasonName = "Zimaq 2025",
