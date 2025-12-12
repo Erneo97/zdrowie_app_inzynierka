@@ -2,11 +2,14 @@ package com.example.firstcomposeap.ui.service
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
+import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import com.example.firstcomposeap.ui.service.data.Produkt
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,6 +52,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     }
 
 
+
     fun downloadSuggestionsProduct() {
         viewModelScope.launch {
             try {
@@ -64,9 +68,14 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    private var searchedMuscleGroups = mutableStateListOf<GrupaMiesniowa>()
+    private var searchedGroupPrecision = mutableStateOf(false)
     fun downloadSuggestionsExercise(groupMuscle: List<GrupaMiesniowa> = emptyList(),
                                     precision: Boolean = false
     ) {
+        searchedMuscleGroups = groupMuscle.toMutableStateList()
+        searchedGroupPrecision.value = precision
+
         viewModelScope.launch {
             try {
                 Log.e("downloadSuggestionsExercise", "przewd res")
@@ -78,6 +87,27 @@ class SearchViewModel @Inject constructor() : ViewModel() {
                     suggestionsList = response.body() ?: emptyList()
                 } else {
                     errorMessage = "Błąd pobierania sugestii: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+
+    var searchedExercies by mutableStateOf<List<Cwiczenie>> (emptyList())
+    fun downloadSearcheExercised() {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.getAllExercises(searchQuery,
+                    searchedMuscleGroups.toList().map { it.name },
+                    searchedGroupPrecision.value
+                )
+                if (response.isSuccessful) {
+                    val cwiczenia = response.body() ?: emptyList()
+                    searchedExercies = cwiczenia
+                } else {
+                    errorMessage = "Błąd pobierania produktów: ${response.code()}"
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage

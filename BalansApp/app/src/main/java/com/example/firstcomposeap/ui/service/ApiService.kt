@@ -141,6 +141,13 @@ interface ApiService {
         @Query("dokladnosc") dokladnosc: Boolean
     ): Response<List<String>>
 
+    @GET("search/cwiczenia/all")
+    suspend fun getAllExercises(
+        @Query("nazwa") nazwa: String,
+        @Query("grupyMiesiniowe") grupyMiesiniowe: List<String>?,
+        @Query("dokladnosc") dokladnosc: Boolean
+    ): Response<List<Cwiczenie>>
+
 
     @GET("search/produkts/{nazwa}")
     suspend fun getAllMatchesProduct(

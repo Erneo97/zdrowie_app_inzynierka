@@ -110,9 +110,57 @@ public class SerachControler {
                     return true;
                 })
                 .toList();
-
+        log.info("suggestExercise: "  + "ret " + nazwy);
         log.info(nazwy.toString());
         return nazwy;
+    }
+
+    @GetMapping("/cwiczenia/all")
+    public List<Cwiczenie> getAllExercises(@RequestParam  String nazwa,
+                                        @RequestParam(required = false) List<String> grupyMiesiniowe,
+                                        @RequestParam  Boolean dokladnosc
+    ) {
+        log.info("suggestExercise: { " + nazwa + " } " + grupyMiesiniowe + " " + dokladnosc);
+
+        List<GrupaMiesniowa> finalGroups = (grupyMiesiniowe == null || grupyMiesiniowe.isEmpty())
+                ? Arrays.asList(GrupaMiesniowa.values())
+                : grupyMiesiniowe.stream()
+                .map(GrupaMiesniowa::valueOf)
+                .toList();
+
+
+        log.info("suggestExercise: "  + "finalGroups " + finalGroups);
+        Query query = new Query();
+
+        if (dokladnosc != null && dokladnosc) {
+            query.addCriteria(Criteria.where("grupaMiesniowas").all(finalGroups));
+        } else {
+            query.addCriteria(Criteria.where("grupaMiesniowas").in(finalGroups));
+        }
+
+        query.limit(25);
+
+        List<Cwiczenie> cwiczenia = mongoTemplate.find(query, Cwiczenie.class, "Cwiczenia");
+        log.info("suggestExercise: "  + "cwiczenia " + cwiczenia);
+
+        String[] fragments = nazwa.split(" ");
+        List<Cwiczenie> filtratedExercise = cwiczenia.stream()
+                .filter(cwiczenie -> {
+                    for (String fragment : fragments) {
+                        fragment = fragment.trim();
+                        if (!fragment.isEmpty()) {
+                            final String f = fragment.toLowerCase();
+                            boolean matches = cwiczenie.getNazwa().toLowerCase().contains(f) ;
+                            if (!matches) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                })
+                .toList();
+
+        return filtratedExercise;
     }
 
 

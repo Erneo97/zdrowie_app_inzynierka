@@ -42,8 +42,8 @@ import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.treningplans.MuscleGroupFilter
 import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
+import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
-import com.example.firstcomposeap.ui.service.data.Produkt
 
 
 @Composable
@@ -56,7 +56,7 @@ fun SearchExerciseScreen(
     val context = LocalContext.current
     val query = searchViewModel.searchQuery
     val suggestions = searchViewModel.suggestionsList
-    val productsList = remember { mutableStateListOf<Produkt>() }
+    val exerisesList = remember { mutableStateListOf<Cwiczenie>() }
 
     var selectedGroups by remember { mutableStateOf(listOf<GrupaMiesniowa>()) }
     var accurately by remember { mutableStateOf(false) } // czy dokładne odwzorowanie tagów czy tylko te zawierające
@@ -81,7 +81,7 @@ fun SearchExerciseScreen(
             ) {
                 focusManager.clearFocus()
                 isFocused = false
-                // TODO: pobranie cwiczen
+                searchViewModel.downloadSearcheExercised()
             },
         verticalArrangement = Arrangement.Top
     ) {
@@ -178,8 +178,11 @@ fun SearchExerciseScreen(
                     .background(Color.White)
             ) {
 
-                    items(productsList, key = { it.id }) { item ->
-
+                    items(searchViewModel.searchedExercies, key = { it.id }) { item ->
+                        SelectiveExerciseItem(
+                            exer = item,
+                            onSelected = { }
+                        )
 
                         HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                     }
@@ -196,5 +199,12 @@ fun SearchExerciseScreen(
 }
 
 
+@Composable
+fun SelectiveExerciseItem(exer: Cwiczenie, onSelected: () -> Unit) {
+    Column {
+        Text(exer.nazwa)
+        Text(exer.opis)
 
+    }
+}
 
