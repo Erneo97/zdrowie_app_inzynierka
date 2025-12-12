@@ -25,6 +25,15 @@ class TreningViewModel : ViewModel() {
     val selectedExercised = mutableStateListOf<Cwiczenie>()
     val selectedExercisedOnNewTP = mutableStateListOf<cwiczeniaPlanuTreningowego>()
 
+    fun validateCwiczeniaWPlanie( ) : Boolean {
+        selectedExercisedOnNewTP.forEach { it ->
+            if( it.serie.isEmpty() )
+                return false
+        }
+
+        return true
+    }
+
     fun addNewExerciseToPlan(cwiczenie: Cwiczenie ) {
         selectedExercised.add(cwiczenie)
         selectedExercisedOnNewTP.add(cwiczeniaPlanuTreningowego(

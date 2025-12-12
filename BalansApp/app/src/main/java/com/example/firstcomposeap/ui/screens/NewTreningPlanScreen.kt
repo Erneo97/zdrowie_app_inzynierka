@@ -1,5 +1,6 @@
 package com.example.firstcomposeap.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,11 +38,14 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
                          onExerciseScrean : () -> Unit )
 {
     var nazwa by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     var czyAktualny by remember { mutableStateOf(false) }
     var cel by remember { mutableStateOf("Wybierz cel") }
+    var correct by remember { mutableStateOf(true) }
 
     Spacer(Modifier.height(10.dp))
+
 
 
     Column(Modifier
@@ -49,8 +54,26 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
         NavigationButtonsRetAdd(
             onClose = { onCLose() },
             onAdd = {
-                treningViewModel.createNewTreningPlan(nazwa, czyAktualny, cel = GOAL.fromNazwa(cel) ?: GOAL.CONST)
-                onCLose()
+                correct = true
+
+                val wybranyCel = GOAL.fromNazwa(cel)
+                if( wybranyCel == null ) {
+                    Toast.makeText(context, "Brak wybranego celu", Toast.LENGTH_SHORT).show()
+                    correct = false
+                }
+                else if(nazwa.isEmpty()) {
+                    Toast.makeText(context, "Trzeba podać nazwę", Toast.LENGTH_SHORT).show()
+                    correct = false
+                }
+                else if(!treningViewModel.validateCwiczeniaWPlanie( ) ) {
+                    Toast.makeText(context, "Wybrane ćwiczenia muszą mieć conajmniej 1 serię", Toast.LENGTH_SHORT).show()
+                    correct = false
+                }
+
+                if( correct) {
+                    treningViewModel.createNewTreningPlan(nazwa, czyAktualny, cel = wybranyCel!! )
+                    onCLose()
+                }
             },
             mainText = "Zapisz nowy plan"
         )
