@@ -3,6 +3,7 @@ package com.example.kolekcje.plan_treningowy;
 import com.example.kolekcje.enumy.GOAL;
 
 public class TreningsPlanCard {
+    int id;
     String seasonName;
     String startDate;
     String endDate;
@@ -12,6 +13,7 @@ public class TreningsPlanCard {
 
     public TreningsPlanCard() {}
 
+    public int getId() {return id;}
     public String getSeasonName() {return seasonName;}
     public String getStartDate() {return startDate;}
     public String getEndDate() {return endDate;}
@@ -19,6 +21,7 @@ public class TreningsPlanCard {
     public boolean isActive() {return isActive;}
     public GOAL getGoal() {return goal;}
 
+    public void setId(int id) {this.id = id;}
     public void setSeasonName(String seasonName) {this.seasonName = seasonName;}
     public void setStartDate(String startDate) {this.startDate = startDate;}
     public void setEndDate(String endDate) {this.endDate = endDate;}

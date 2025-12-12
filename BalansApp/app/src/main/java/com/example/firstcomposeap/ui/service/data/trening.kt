@@ -4,6 +4,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 
 data class treningsPlanCard(
+    val id: Int,
     val seasonName : String,
     val startDate : String,
     val endDate : String,
