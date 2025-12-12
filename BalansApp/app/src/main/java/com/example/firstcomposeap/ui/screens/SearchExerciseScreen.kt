@@ -1,7 +1,6 @@
 package com.example.firstcomposeap.ui.screens
 
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -25,7 +24,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import com.example.balansapp.R
 import androidx.compose.material3.Text
@@ -33,7 +34,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.balansapp.ui.service.LoginViewModel
+import com.example.firstcomposeap.ui.components.icon.Arrow_back_ios_new
 import com.example.firstcomposeap.ui.components.treningplans.MuscleGroupFilter
 import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
@@ -69,7 +70,6 @@ fun SearchExerciseScreen(
     val context = LocalContext.current
     val query = searchViewModel.searchQuery
     val suggestions = searchViewModel.suggestionsList
-    val exerisesList = remember { mutableStateListOf<Cwiczenie>() }
 
     var selectedGroups by remember { mutableStateOf(listOf<GrupaMiesniowa>()) }
     var accurately by remember { mutableStateOf(false) } // czy dokładne odwzorowanie tagów czy tylko te zawierające
@@ -104,13 +104,17 @@ fun SearchExerciseScreen(
                 .fillMaxWidth()
         ) {
 
-            NavigationButtonsRetAdd(
-                onClose = {onClose() },
-                onAdd = {
-                    Log.e("SearchExerciseScreen", "${treningViewModel.selectedExercisedOnNewTP}")
-                }, // TODO: dodanie ćwiczeń
-                mainText = "Dodaj Ćwiczenia do trenignu"
-            )
+            FloatingActionButton(
+                onClick = onClose,
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Arrow_back_ios_new,
+                    contentDescription = "Anuluj",
+                    tint = Color.White
+                )
+            }
 
             Text(
                 "${context.getString(R.string.search)} $mainText",
@@ -193,15 +197,15 @@ fun SearchExerciseScreen(
                     .background(Color.White)
             ) {
                     items(searchViewModel.searchedExercies, key = { it.id }) { item ->
-                        val isSelected = treningViewModel.selectedExercisedOnNewTP.contains(item)
+                        val isSelected = treningViewModel.selectedExercised.contains(item)
                         SelectiveExerciseItem(
                             exer = item,
                             isChecked = isSelected,
                             onSelected = { cw, select ->
                                 if( select )
-                                    treningViewModel.selectedExercisedOnNewTP.add(item)
+                                    treningViewModel.addNewExerciseToPlan(cw)
                                 else
-                                    treningViewModel.selectedExercisedOnNewTP.remove(item)
+                                    treningViewModel.removeExerciseFromPlan(cw)
                             }
                         )
 
