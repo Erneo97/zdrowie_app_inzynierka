@@ -81,7 +81,7 @@ fun SearchExerciseScreen(
             ) {
                 focusManager.clearFocus()
                 isFocused = false
-                searchViewModel.downloadSearcheProducts()
+                // TODO: pobranie cwiczen
             },
         verticalArrangement = Arrangement.Top
     ) {
@@ -106,7 +106,7 @@ fun SearchExerciseScreen(
 
             TextField(
                 value = query,
-                onValueChange = { searchViewModel.onSearchQueryChange(it, false) },
+                onValueChange = { searchViewModel.onSearchQueryChange(it, false, selectedGroups, accurately) },
                 placeholder = { Text("Nazwa ćwiczenia...") },
                 singleLine = true,
                 modifier = Modifier
@@ -120,6 +120,7 @@ fun SearchExerciseScreen(
                 onSelectedChange = { groups, accur ->
                     selectedGroups = groups
                     accurately = accur
+                    searchViewModel.onSearchQueryChange(isProduct =  false, groupMuscle = selectedGroups, precision =  accurately)
                 }
             )
         }
@@ -145,7 +146,7 @@ fun SearchExerciseScreen(
                             modifier = Modifier
                                 .clickable {
                                     searchViewModel.selectSuggestion(item)
-                                    searchViewModel.downloadSearcheProducts()
+                                    // pobranie cwiczen
                                     focusManager.clearFocus()
                                     isFocused = false
                                 }
