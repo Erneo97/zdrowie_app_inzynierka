@@ -18,7 +18,7 @@ public class TreningsPlanCard {
     public String getStartDate() {return startDate;}
     public String getEndDate() {return endDate;}
     public int getTrainingCount() {return trainingCount;}
-    public boolean isActive() {return isActive;}
+    public boolean getIsActive() {return isActive;}
     public GOAL getGoal() {return goal;}
 
     public void setId(int id) {this.id = id;}
@@ -26,6 +26,6 @@ public class TreningsPlanCard {
     public void setStartDate(String startDate) {this.startDate = startDate;}
     public void setEndDate(String endDate) {this.endDate = endDate;}
     public void setTrainingCount(int trainingCount) {this.trainingCount = trainingCount;}
-    public void setActive(boolean isActive) {this.isActive = isActive;}
+    public void setIsActive(boolean isActive) {this.isActive = isActive;}
     public void setGoal(GOAL goal) {this.goal = goal;}
 }
