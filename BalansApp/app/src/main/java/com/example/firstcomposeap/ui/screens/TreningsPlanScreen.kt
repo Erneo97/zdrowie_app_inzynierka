@@ -66,6 +66,7 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
                         modifier = Modifier.weight(3f)
                     ) {
                         Text("Nowy plan treningowy", fontSize = 15.sp)
+                        treningViewModel.setTreningPlanScreen()
                         treningViewModel.init()
                     }
                 }
@@ -81,7 +82,11 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
 
                     treningViewModel.treningsPlanCard.forEach { item ->
                         TrainingSeasonCard(
-                            onClick = { },
+                            onClick = {
+                                treningViewModel.setTreningPlanScreen(true)
+                                treningViewModel.init(nazwa = item.seasonName, cel = item.goal.label, aktualny = item.isActive)
+                                navController.navigate(Screen.NewTreningPlan.route)
+                            },
                             treningPlan = item
                         )
                     }

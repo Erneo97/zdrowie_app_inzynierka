@@ -67,11 +67,11 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
                 }
 
                 if( correct) {
-                    treningViewModel.createNewTreningPlan(treningViewModel.nazwa, czyAktualny, cel = wybranyCel!! )
+                    treningViewModel.aktualizujBazeDanych(treningViewModel.nazwa, czyAktualny, cel = wybranyCel!! )
                     onCLose()
                 }
             },
-            mainText = "Zapisz nowy plan"
+            mainText = treningViewModel.buttonText
         )
         Spacer(Modifier.height(15.dp))
 

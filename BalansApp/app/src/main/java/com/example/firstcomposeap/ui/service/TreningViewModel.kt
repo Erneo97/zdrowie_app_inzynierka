@@ -22,12 +22,6 @@ class TreningViewModel : ViewModel() {
     var cel by  mutableStateOf("Wybierz cel")
     var aktualny by mutableStateOf(false)
 
-    fun init(nazwa: String = "", cel: String ="Wybierz cel", aktualny: Boolean = false ) {
-        this.nazwa = nazwa
-        this.cel = cel
-        this.aktualny = aktualny
-    }
-
 
     var token by mutableStateOf<String?>(null)
     var errorMessage by mutableStateOf<String?>(null)
@@ -43,6 +37,39 @@ class TreningViewModel : ViewModel() {
         }
 
         return true
+    }
+
+//    var currentFunction: () -> Unit
+    var buttonText by mutableStateOf("")
+    var newOrEdit by mutableStateOf(false)
+    fun setTreningPlanScreen(newOrEdit: Boolean = false ) {
+        this.newOrEdit = newOrEdit
+        if( newOrEdit) {
+            buttonText = "Aktualizuj plan Treningowy"
+        }
+        else {
+            buttonText = "Zapisz plan Treningowy"
+        }
+    }
+
+    fun init(nazwa: String = "", cel: String ="Wybierz cel", aktualny: Boolean = false ) {
+        this.nazwa = nazwa
+        this.cel = cel
+        this.aktualny = aktualny
+
+        if( this.newOrEdit ) {
+//          TODO:  pobieranie cwiczen wewnątrz planu treningowego
+        }
+
+    }
+
+    fun aktualizujBazeDanych(nazwa: String ="", aktualny: Boolean = true, cel : GOAL = GOAL.CONST ) {
+        if( newOrEdit) {
+//             TODO: aktualizuj plan treningowy
+        }
+        else {
+            createNewTreningPlan(nazwa = nazwa, aktualny = aktualny, cel = cel) // tworzy plan treningowy gdy ktos wybran "Nowy plan treningowy"
+        }
     }
 
     fun addNewExerciseToPlan(cwiczenie: Cwiczenie ) {
@@ -67,6 +94,8 @@ class TreningViewModel : ViewModel() {
             selectedExercised.remove(opt)
         }
     }
+
+
 
      fun createNewTreningPlan(nazwa: String, aktualny: Boolean = true, cel : GOAL = GOAL.CONST) {
          val nowy = PlanTreningowy(
