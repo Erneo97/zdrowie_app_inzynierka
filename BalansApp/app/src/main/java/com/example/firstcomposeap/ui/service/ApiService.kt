@@ -16,6 +16,7 @@ import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.PlanTreningowy
 import com.example.firstcomposeap.ui.service.data.Produkt
+import com.example.firstcomposeap.ui.service.data.treningsPlanCard
 import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -170,5 +171,8 @@ interface ApiService {
         @Body body: PlanTreningowy,
         @Query("aktualny") aktualny: Boolean = false
     ): Response<Cwiczenie>
+
+    @GET("trening/treningPlan")
+    suspend fun getAllTreningPlans( ): Response<List<treningsPlanCard>>
 
 }

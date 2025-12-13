@@ -35,7 +35,7 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_plans)) }
 
     LaunchedEffect(Unit) {
-
+        treningViewModel.getUserTreningPlansCard()
     }
 
     MainLayout(
@@ -81,16 +81,9 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
                     treningViewModel.treningsPlanCard.forEach { item ->
                         TrainingSeasonCard(
                             onClick = { },
-                            seasonName = item.seasonName,
-                            startDate = item.startDate,
-                            endDate = item.endDate,
-                            trainingCount = item.trainingCount,
-                            isActive = item.isActive,
-                            goal = item.goal
+                            treningPlan = item
                         )
                     }
-
-
                 }
             }
         }

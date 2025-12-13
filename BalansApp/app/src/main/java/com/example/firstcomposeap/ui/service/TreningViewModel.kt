@@ -68,15 +68,13 @@ class TreningViewModel : ViewModel() {
              cwiczeniaPlanuTreningowe = selectedExercisedOnNewTP.toList(),
              cel = cel,
          )
-         Log.e("createNewTreningPlan", "${nowy} - ${selectedExercisedOnNewTP}")
          viewModelScope.launch {
              try {
                  val response = ApiClient.getApi(token ?: "").createTreningPlan(body = nowy, aktualny = aktualny)
                  if (response.isSuccessful) {
-                     message = "Dodano ćwiczenie do bazy danych"
-                     Log.e("createNewExercise", message ?: "")
+                     message = "Dodano plan treningowy do bazy danych"
                  } else {
-                     errorMessage = "Błąd dodania ćwiczenie do bazy danych: ${response.code()}"
+                     errorMessage = "Błąd dodania planu treningowego do bazy danych: ${response.code()}"
                  }
              } catch (e: Exception) {
                  errorMessage = e.localizedMessage
@@ -84,63 +82,31 @@ class TreningViewModel : ViewModel() {
          }
     }
 
-    var treningsPlanCard = mutableStateListOf<treningsPlanCard>(  treningsPlanCard(
-        seasonName = "Zimaq 2025",
-        startDate = "05.05.25",
-        endDate = "01.10.25",
-        trainingCount = 55,
-        isActive = true,
-        goal = "Masa mięśniowa"
-    ),
-        treningsPlanCard(
-            seasonName = "Wiosna 2025",
-            startDate = "05.05.25",
-            endDate = "01.10.25",
-            trainingCount = 333,
-            goal = "Masa mięśniowa"
-        ),
-        treningsPlanCard(
-            seasonName = "Wiosna 2025",
-            startDate = "05.05.25",
-            endDate = "01.10.25",
-            trainingCount = 44,
-            goal = "Masa mięśniowa"
-        ),
-        treningsPlanCard(
-            seasonName = "Wiosna 2025",
-            startDate = "05.05.25",
-            endDate = "01.10.25",
-            trainingCount = 23,
-            goal = "Masa mięśniowa"
-        ),
-        treningsPlanCard(
-            seasonName = "Wiosna 2025",
-            startDate = "05.05.25",
-            endDate = "01.10.25",
-            trainingCount = 66,
-            goal = "Masa mięśniowa"
-        ),
-        treningsPlanCard(
-            seasonName = "Wiosna 2025",
-            startDate = "05.05.25",
-            endDate = "01.10.25",
-            trainingCount = 65,
-            goal = "Masa mięśniowa"
-        ),
-        treningsPlanCard(
-            seasonName = "Wiosna 2025",
-            startDate = "05.05.25",
-            endDate = "01.10.25",
-            trainingCount = 45,
-            goal = "Masa mięśniowa"
-        ),
-        treningsPlanCard(
-            seasonName = "Wiosna 2025",
-            startDate = "05.05.25",
-            endDate = "01.10.25",
-            trainingCount = 332,
-            goal = "Masa mięśniowa"
-        ))
+    var treningsPlanCard = mutableStateListOf<treningsPlanCard>()
+    fun getUserTreningPlansCard() {
+
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").getAllTreningPlans()
+                if (response.isSuccessful) {
+                    message = "Pobrano listę treningó"
+
+                    response.body()?.let {
+                        treningsPlanCard.clear()
+                        treningsPlanCard.addAll(it.sortedWith (
+                            compareBy <treningsPlanCard>{ !it.isActive }.thenBy { it.endDate }.thenBy { it.seasonName })
+                        )
+                    }
+                } else {
+                    errorMessage = "Błąd pobierania listy treningów: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+
 
 
 
