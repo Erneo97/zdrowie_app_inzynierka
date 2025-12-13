@@ -2,6 +2,7 @@ package com.example.services;
 
 import com.example.controllers.UzytkownikController;
 import com.example.kolekcje.enumy.LicznikiDB;
+import com.example.kolekcje.plan_treningowy.CwiczeniaPlanuTreningowego;
 import com.example.kolekcje.plan_treningowy.Cwiczenie;
 import com.example.kolekcje.plan_treningowy.PlanTreningowy;
 import com.example.kolekcje.plan_treningowy.TreningsPlanCard;
@@ -10,6 +11,8 @@ import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.repositories.CwiczeniaRepository;
 import com.example.repositories.PotwierdzProduktyRepository;
 import com.example.repositories.TreningPlanRepository;
+import com.example.requests.CwiczeniaPlanuTreningowegoResponse;
+import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,9 +23,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class TreningService {
@@ -81,6 +82,56 @@ public class TreningService {
             uzytkownikService.updateUser(uzytkownik);
         }
     }
+
+    public void updateTreningPlan(Uzytkownik uzytkownik, PlanTreningowy nowyPlan, Boolean aktualnyPlan ) {
+        nowyPlan.setId_uzytkownia(uzytkownik.getId());
+        treningPlanRepository.save(nowyPlan);
+        if( aktualnyPlan ) {
+            uzytkownik.setAktualnyPlan(nowyPlan.getId());
+            uzytkownikService.updateUser(uzytkownik);
+        }
+    }
+
+    public List<CwiczeniaPlanuTreningowegoResponse> getExerciseTreningPlan(Uzytkownik uzytkownik, int id ) {
+
+        Optional<PlanTreningowy> optPT = treningPlanRepository.findById(id);
+        if( optPT.isEmpty() ) {
+            return null;
+        }
+        List<CwiczeniaPlanuTreningowegoResponse> list = new ArrayList<>();
+        PlanTreningowy plan = optPT.get();
+
+        if( plan.getId_uzytkownia() == uzytkownik.getId() ) {
+            List<CwiczeniaPlanuTreningowego> cw = plan.getCwiczeniaPlanuTreningowe();
+
+            cw.forEach( cwiczenieWPlanie -> {
+                    Optional<Cwiczenie> optCw = getCwiczenieById(cwiczenieWPlanie.getId());
+                    if( optCw.isPresent()) {
+                        Cwiczenie znalezione = optCw.get();
+                        CwiczeniaPlanuTreningowegoResponse nowy = new CwiczeniaPlanuTreningowegoResponse();
+
+                        nowy.setId(cwiczenieWPlanie.getId());
+
+                        nowy.setGrupaMiesniowas(znalezione.getGrupaMiesniowas());
+                        nowy.setNazwa(znalezione.getNazwa());
+
+                        nowy.setSerie(cwiczenieWPlanie.getSerie());
+                        log.info("\t{} {} {}", nowy.getId(), nowy.getNazwa(), nowy.getSerie().size() );
+                        list.add(nowy);
+                    }
+            });
+
+            return list;
+        }
+
+
+        return null;
+    }
+
+    public Optional<Cwiczenie> getCwiczenieById(int id) {
+        return cwiczeniaRepository.findCwiczenieById(id);
+    }
+
     private static final Logger log = LoggerFactory.getLogger(TreningService.class);
     public List<TreningsPlanCard> getAllTreningPlans(Uzytkownik uzytkownik) {
 
