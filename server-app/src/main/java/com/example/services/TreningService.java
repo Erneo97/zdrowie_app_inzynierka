@@ -67,7 +67,7 @@ public class TreningService {
     }
 
     public void createTreningPlan(Uzytkownik uzytkownik, PlanTreningowy nowyPlan, Boolean aktualnyPlan ) {
-        nowyPlan.setId_uzytkownia(uzytkownik.getId());
+        nowyPlan.setIdUzytkownia(uzytkownik.getId());
         nowyPlan.setId(sequenceGenerator.getNextSequence(LicznikiDB.PLANY_TRENINGOWE.getNazwa()));
         String isoDate = LocalDate.now().toString();
         nowyPlan.setDataUtworzenia(Date.from(
@@ -84,7 +84,15 @@ public class TreningService {
     }
 
     public void updateTreningPlan(Uzytkownik uzytkownik, PlanTreningowy nowyPlan, Boolean aktualnyPlan ) {
-        nowyPlan.setId_uzytkownia(uzytkownik.getId());
+        nowyPlan.setIdUzytkownia(uzytkownik.getId());
+
+        Optional<PlanTreningowy > opt = treningPlanRepository.findById(nowyPlan.getId());
+        if( opt.isEmpty() ) {
+            return;
+        }
+        PlanTreningowy now = opt.get();
+        nowyPlan.setDataUtworzenia(now.getDataUtworzenia());
+        
         treningPlanRepository.save(nowyPlan);
         if( aktualnyPlan ) {
             uzytkownik.setAktualnyPlan(nowyPlan.getId());
@@ -101,7 +109,7 @@ public class TreningService {
         List<CwiczeniaPlanuTreningowegoResponse> list = new ArrayList<>();
         PlanTreningowy plan = optPT.get();
 
-        if( plan.getId_uzytkownia() == uzytkownik.getId() ) {
+        if( plan.getIdUzytkownia() == uzytkownik.getId() ) {
             List<CwiczeniaPlanuTreningowego> cw = plan.getCwiczeniaPlanuTreningowe();
 
             cw.forEach( cwiczenieWPlanie -> {
@@ -134,10 +142,7 @@ public class TreningService {
     private static final Logger log = LoggerFactory.getLogger(TreningService.class);
     public List<TreningsPlanCard> getAllTreningPlans(Uzytkownik uzytkownik) {
 
-        Query query = new Query();
-        query.addCriteria(Criteria.where("id_uzytkownia").in(uzytkownik.getId()));
-
-        List<PlanTreningowy> planyUzytkownika = mongoTemplate.find(query, PlanTreningowy.class, "PlanTreningowy");
+        List<PlanTreningowy> planyUzytkownika = treningPlanRepository.findByIdUzytkownia(uzytkownik.getId());
 
         List<TreningsPlanCard> treningPlanCards = new ArrayList<>();
 
@@ -155,7 +160,7 @@ public class TreningService {
 
             treningPlanCards.add(nowy);
         });
-
+        log.info(treningPlanCards.toString());
         return treningPlanCards;
     }
 
