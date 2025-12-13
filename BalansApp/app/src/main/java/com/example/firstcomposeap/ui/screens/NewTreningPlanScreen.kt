@@ -38,7 +38,7 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
                          onExerciseScrean : () -> Unit )
 {
     val context = LocalContext.current
-    var czyAktualny by remember { mutableStateOf(false) }
+    var czyAktualny by remember { mutableStateOf(treningViewModel.aktualny) }
     var correct by remember { mutableStateOf(true) }
 
     Spacer(Modifier.height(10.dp))

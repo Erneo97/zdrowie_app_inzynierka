@@ -66,6 +66,7 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
                         modifier = Modifier.weight(3f)
                     ) {
                         Text("Nowy plan treningowy", fontSize = 15.sp)
+                        treningViewModel.init()
                     }
                 }
 
