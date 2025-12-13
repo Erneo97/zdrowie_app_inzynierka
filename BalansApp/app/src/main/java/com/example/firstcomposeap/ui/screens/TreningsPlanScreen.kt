@@ -61,12 +61,14 @@ fun TreningsPlanScreen(navController: NavHostController, treningViewModel: Treni
                     }
 
                     Button(
-                        onClick = { navController.navigate(Screen.NewTreningPlan.route) },
+                        onClick = {
+                            treningViewModel.setTreningPlanScreen()
+                            treningViewModel.init()
+                            navController.navigate(Screen.NewTreningPlan.route) },
                         modifier = Modifier.weight(3f)
                     ) {
                         Text("Nowy plan treningowy", fontSize = 15.sp)
-                        treningViewModel.setTreningPlanScreen()
-                        treningViewModel.init()
+
                     }
                 }
 
