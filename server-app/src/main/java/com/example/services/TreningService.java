@@ -116,7 +116,6 @@ public class TreningService {
                         nowy.setNazwa(znalezione.getNazwa());
 
                         nowy.setSerie(cwiczenieWPlanie.getSerie());
-                        log.info("\t{} {} {}", nowy.getId(), nowy.getNazwa(), nowy.getSerie().size() );
                         list.add(nowy);
                     }
             });
@@ -147,7 +146,7 @@ public class TreningService {
             nowy.setId(item.getId());
             nowy.setSeasonName(item.getNazwa());
             nowy.setIsActive( (uzytkownik.getAktualnyPlan() == item.getId()));
-            log.info("tp  " + uzytkownik.getAktualnyPlan() + " " + item.getId()+ "   " + (uzytkownik.getAktualnyPlan() == item.getId()));
+
             nowy.setGoal(item.getCel());
             nowy.setStartDate(item.getDataUtworzenia().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString());
 
