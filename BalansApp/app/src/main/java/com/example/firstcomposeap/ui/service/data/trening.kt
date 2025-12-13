@@ -46,7 +46,15 @@ data class Cwiczenie(
     val met: Float = 0f
 )
 
+
 data class cwiczeniaPlanuTreningowego (
+    val id: Int,
+    val nazwa: String,
+    val grupaMiesniowas: List<GrupaMiesniowa>,
+    val serie: SnapshotStateList<Seria> = emptyList<Seria>().toMutableStateList()
+)
+
+data class cwiczeniaPlanuTreningowegoResponse (
     val id: Int,
     val nazwa: String,
     val grupaMiesniowas: List<GrupaMiesniowa>,
