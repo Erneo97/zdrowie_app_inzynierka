@@ -10,7 +10,7 @@ data class treningsPlanCard(
     val endDate : String,
     val trainingCount : Int,
     val isActive : Boolean = false,
-    val goal : String
+    val goal : GOAL
 )
 
 data class PlanTreningowy(
