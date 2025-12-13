@@ -31,20 +31,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.firstcomposeap.ui.service.data.treningsPlanCard
 
 
 @Composable
 fun TrainingSeasonCard(
-    seasonName: String,
-    startDate: String,
-    endDate: String,
-    trainingCount: Int,
-    goal: String,
-    isActive: Boolean = false,
+    treningPlan: treningsPlanCard,
     onClick: () -> Unit
 ) {
-    var shadowColor = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-
+    var shadowColor = if (treningPlan.isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,22 +79,22 @@ fun TrainingSeasonCard(
             ) {
 
                 Text(
-                    text = seasonName,
+                    text = treningPlan.seasonName,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.secondary
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Liczba treningów: $trainingCount", fontSize = 14.sp)
+                Text(text = "Liczba treningów: ${treningPlan.trainingCount}", fontSize = 14.sp)
 
                 Text(
-                    text = "Obecnie używany: ${if (isActive) "Tak" else "Nie"}",
+                    text = "Obecnie używany: ${if (treningPlan.isActive) "Tak" else "Nie"}",
                     fontSize = 14.sp
                 )
 
                 Text(
-                    text = "Cel treningu: $goal",
+                    text = "Cel treningu: ${treningPlan.goal.label}",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -109,7 +104,7 @@ fun TrainingSeasonCard(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "$startDate - $endDate",
+                    text = "${treningPlan.startDate} - ${treningPlan.endDate}",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium
                 )
