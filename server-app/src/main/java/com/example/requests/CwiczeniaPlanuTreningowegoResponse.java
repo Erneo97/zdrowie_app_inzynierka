@@ -20,7 +20,7 @@ public class CwiczeniaPlanuTreningowegoResponse {
     public String getNazwa() {return nazwa;}
     public void setNazwa(String nazwa) {this.nazwa=nazwa;}
 
-    public List<GrupaMiesniowa> getGrupoMiesniowas() {return grupaMiesniowas;}
+    public List<GrupaMiesniowa> getGrupaMiesniowas() {return grupaMiesniowas;}
     public void setGrupaMiesniowas(List<GrupaMiesniowa> grupaMiesniowas) {this.grupaMiesniowas=grupaMiesniowas;}
 
 }
