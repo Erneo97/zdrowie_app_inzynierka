@@ -11,7 +11,7 @@ import java.util.List;
 public class PlanTreningowy {
     @Id
     private int id;
-    private int id_uzytkownia;
+    private int idUzytkownia;
     Date dataUtworzenia;
     String nazwa;
     List<CwiczeniaPlanuTreningowego> cwiczeniaPlanuTreningowe;
@@ -22,15 +22,21 @@ public class PlanTreningowy {
 
     public PlanTreningowy() { }
     public int getId() {return id;}
-    public int getId_uzytkownia() {return id_uzytkownia;}
-    public Date getDataUtworzenia() {return dataUtworzenia;}
+    public int getIdUzytkownia() {return idUzytkownia;}
     public String getNazwa() {return nazwa;}
 
     public void setId(int id) {this.id = id;}
-    public void setId_uzytkownia(int id_uzytkownia) {this.id_uzytkownia = id_uzytkownia;}
+    public void setIdUzytkownia(int id_uzytkownia) {this.idUzytkownia = id_uzytkownia;}
     public void setNazwa(String nazwa) {this.nazwa = nazwa;}
-    public void setDataUtworzenia(Date data) { dataUtworzenia = data; }
 
     public List<CwiczeniaPlanuTreningowego> getCwiczeniaPlanuTreningowe() {return cwiczeniaPlanuTreningowe;}
     public void setCwiczeniaPlanuTreningowe(List<CwiczeniaPlanuTreningowego> cwiczeniaPlanuTreningowe) {this.cwiczeniaPlanuTreningowe = cwiczeniaPlanuTreningowe;}
+
+    public Date getDataUtworzenia() {
+        return dataUtworzenia;
+    }
+
+    public void setDataUtworzenia(Date dataUtworzenia) {
+        this.dataUtworzenia = dataUtworzenia;
+    }
 }
