@@ -197,7 +197,7 @@ fun SearchExerciseScreen(
                     .background(Color.White)
             ) {
                     items(searchViewModel.searchedExercies, key = { it.id }) { item ->
-                        val isSelected = treningViewModel.selectedExercised.contains(item)
+                        val isSelected = treningViewModel.selectedExercised.contains(item) || treningViewModel.selectedExercisedOnNewTP.stream().anyMatch { it -> it.id == item.id }
                         SelectiveExerciseItem(
                             exer = item,
                             isChecked = isSelected,
