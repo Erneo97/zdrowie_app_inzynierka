@@ -99,7 +99,10 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
             ) {
                 Checkbox(
                     checked = czyAktualny,
-                    onCheckedChange = {czyAktualny = it},
+                    onCheckedChange = {
+                        czyAktualny = it
+                        treningViewModel.aktualny = it
+                                      },
                 )
                 Spacer(Modifier
                     .width(4.dp)
