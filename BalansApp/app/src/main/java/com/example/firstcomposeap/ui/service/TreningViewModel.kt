@@ -59,10 +59,11 @@ class TreningViewModel : ViewModel() {
         this.cel = cel
         this.aktualny = aktualny
         this.idPlanu = id
+        selectedExercised.clear()
+        selectedExercisedOnNewTP.clear()
 
         if( this.newOrEdit ) {
             downloadTreningDetail()
-//          TODO:  pobieranie cwiczen wewnątrz planu treningowego
         }
 
     }
@@ -102,13 +103,11 @@ class TreningViewModel : ViewModel() {
     var loading by mutableStateOf(false)
     fun downloadTreningDetail() {
         loading = true
-        Log.e("downloadTreningDetail", "downloadTreningDetail")
         viewModelScope.launch {
             try {
                 val response = ApiClient.getApi(token ?: "").getExerciseTreningPlan(idPlanu)
                 if (response.isSuccessful) {
                     message = "Udało się pobrać dane"
-                    Log.e("downloadTreningDetail", "message: ${message}")
                     response.body()?.let { it ->
                         selectedExercisedOnNewTP.clear()
                         selectedExercisedOnNewTP.addAll(it.map { item ->
@@ -121,16 +120,11 @@ class TreningViewModel : ViewModel() {
                         ) }.toList()
                         )
                     }
-                    response.body()?.forEach { item ->
-                        Log.e("downloadTreningDetail", "Plan: ${item.nazwa}, serie: ${item.serie.size}")
-                    }
                 } else {
                     errorMessage = "Błąd dodania planu treningowego do bazy danych: ${response.code()}"
-                    Log.e("downloadTreningDetail", "errorMessage: ${errorMessage}")
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage
-                Log.e("downloadTreningDetail", "errorMessage: ${errorMessage}")
             }
             finally {
                 loading = false
