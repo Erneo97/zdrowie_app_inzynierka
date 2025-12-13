@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
@@ -21,6 +22,7 @@ class TreningViewModel : ViewModel() {
     var nazwa by   mutableStateOf("")
     var cel by  mutableStateOf("Wybierz cel")
     var aktualny by mutableStateOf(false)
+    var idPlanu by mutableStateOf(-1)
 
 
     var token by mutableStateOf<String?>(null)
@@ -52,12 +54,14 @@ class TreningViewModel : ViewModel() {
         }
     }
 
-    fun init(nazwa: String = "", cel: String ="Wybierz cel", aktualny: Boolean = false ) {
+    fun init(nazwa: String = "", cel: String ="Wybierz cel", aktualny: Boolean = false, id : Int = -1 ) {
         this.nazwa = nazwa
         this.cel = cel
         this.aktualny = aktualny
+        this.idPlanu = id
 
         if( this.newOrEdit ) {
+            downloadTreningDetail()
 //          TODO:  pobieranie cwiczen wewnątrz planu treningowego
         }
 
@@ -65,7 +69,7 @@ class TreningViewModel : ViewModel() {
 
     fun aktualizujBazeDanych(nazwa: String ="", aktualny: Boolean = true, cel : GOAL = GOAL.CONST ) {
         if( newOrEdit) {
-//             TODO: aktualizuj plan treningowy
+            updateTreningPlan()
         }
         else {
             createNewTreningPlan(nazwa = nazwa, aktualny = aktualny, cel = cel) // tworzy plan treningowy gdy ktos wybran "Nowy plan treningowy"
@@ -95,7 +99,67 @@ class TreningViewModel : ViewModel() {
         }
     }
 
+    var loading by mutableStateOf(false)
+    fun downloadTreningDetail() {
+        loading = true
+        Log.e("downloadTreningDetail", "downloadTreningDetail")
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").getExerciseTreningPlan(idPlanu)
+                if (response.isSuccessful) {
+                    message = "Udało się pobrać dane"
+                    Log.e("downloadTreningDetail", "message: ${message}")
+                    response.body()?.let { it ->
+                        selectedExercisedOnNewTP.clear()
+                        selectedExercisedOnNewTP.addAll(it.map { item ->
+                            Log.e("downloadTreningDetail", "${item.nazwa} - ${item.id} - ${item.grupaMiesniowas} - ${item.serie}")
+                            cwiczeniaPlanuTreningowego(
+                            id = item.id,
+                            nazwa = item.nazwa,
+                            grupaMiesniowas = item.grupaMiesniowas,
+                            serie = item.serie.toMutableStateList()
+                        ) }.toList()
+                        )
+                    }
+                    response.body()?.forEach { item ->
+                        Log.e("downloadTreningDetail", "Plan: ${item.nazwa}, serie: ${item.serie.size}")
+                    }
+                } else {
+                    errorMessage = "Błąd dodania planu treningowego do bazy danych: ${response.code()}"
+                    Log.e("downloadTreningDetail", "errorMessage: ${errorMessage}")
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+                Log.e("downloadTreningDetail", "errorMessage: ${errorMessage}")
+            }
+            finally {
+                loading = false
+            }
+        }
+    }
 
+    fun updateTreningPlan() {
+        val nowy = PlanTreningowy(
+            id = idPlanu,
+            id_uzytkownia = -1,
+            Date = "",
+            nazwa = nazwa,
+            cwiczeniaPlanuTreningowe = selectedExercisedOnNewTP.toList(),
+            cel = GOAL.fromNazwa(cel) ?: GOAL.CONST,
+        )
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").updateTreningPlan(body = nowy, aktualny = aktualny)
+                if (response.isSuccessful) {
+                    message = "Dodano plan treningowy do bazy danych"
+                } else {
+                    errorMessage = "Błąd dodania planu treningowego do bazy danych: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
 
      fun createNewTreningPlan(nazwa: String, aktualny: Boolean = true, cel : GOAL = GOAL.CONST) {
          val nowy = PlanTreningowy(
@@ -122,12 +186,11 @@ class TreningViewModel : ViewModel() {
 
     var treningsPlanCard = mutableStateListOf<treningsPlanCard>()
     fun getUserTreningPlansCard() {
-
         viewModelScope.launch {
             try {
                 val response = ApiClient.getApi(token ?: "").getAllTreningPlans()
                 if (response.isSuccessful) {
-                    message = "Pobrano listę treningó"
+                    message = "Pobrano listę treningów"
 
                     response.body()?.let {
                         treningsPlanCard.clear()
@@ -159,7 +222,6 @@ class TreningViewModel : ViewModel() {
             val response = ApiClient.getApi(token ?: "").createExercise(noweCwiczenie)
             if (response.isSuccessful) {
                 message = "Dodano ćwiczenie do bazy danych"
-                Log.e("createNewExercise", message ?: "")
             } else {
                 errorMessage = "Błąd dodania ćwiczenie do bazy danych: ${response.code()}"
             }

@@ -58,7 +58,7 @@ data class cwiczeniaPlanuTreningowegoResponse (
     val id: Int,
     val nazwa: String,
     val grupaMiesniowas: List<GrupaMiesniowa>,
-    val serie: SnapshotStateList<Seria> = emptyList<Seria>().toMutableStateList()
+    val serie: List<Seria> = emptyList()
 )
 
 data class Seria(
