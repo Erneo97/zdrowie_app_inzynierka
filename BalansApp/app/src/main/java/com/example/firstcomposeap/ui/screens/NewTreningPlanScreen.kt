@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +38,10 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
                          onCLose : () -> Unit,
                          onExerciseScrean : () -> Unit )
 {
+    if( treningViewModel.loading ) {
+        CircularProgressIndicator()
+    }
+
     val context = LocalContext.current
     var czyAktualny by remember { mutableStateOf(treningViewModel.aktualny) }
     var correct by remember { mutableStateOf(true) }
@@ -129,7 +134,6 @@ fun NewTreningPlanScreen(treningViewModel: TreningViewModel,
             .weight(5f)
             .verticalScroll(rememberScrollState())
         ) {
-
             treningViewModel.selectedExercisedOnNewTP.forEach {
                 item -> CwiczenieSeriesItem(
                     cwiczenie = item,
