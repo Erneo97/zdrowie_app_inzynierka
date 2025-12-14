@@ -238,7 +238,7 @@ class TreningViewModel : ViewModel() {
 
                     response.body()?.let {
                         trening = it
-                        trening!!.data = trening!!.data.substring(0, 9)
+                        trening!!.data = trening!!.data.substring(0, 10)
                     }
                 } else {
                     errorMessage = "Błąd pobierania treningu: ${response.code()}"
