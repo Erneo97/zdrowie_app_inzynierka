@@ -149,7 +149,7 @@ data class Trening(
     var idUser: Int,
     var idPlanu: Int,
     var data: String,
-    var cwiczenia: List<CwiczenieWTreningu> = emptyList(),
+    var cwiczenia: SnapshotStateList <CwiczenieWTreningu>,
     var spaloneKalorie: Float = 0f
 )
 
@@ -157,5 +157,5 @@ data class CwiczenieWTreningu(
     var id: Int,
     var nazwa: String,
     var czas: String, // format mm:ss
-    var serie: List<Seria> = emptyList()
+    var serie: SnapshotStateList<Seria>
 )
