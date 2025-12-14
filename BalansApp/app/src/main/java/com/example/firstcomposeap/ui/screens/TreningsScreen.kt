@@ -2,6 +2,7 @@ package com.example.balansapp.ui.screens
 
 
 import android.os.SystemClock
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -191,6 +192,7 @@ fun CwiczenieTreningItem(
             .padding(8.dp)
             .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
             .padding(8.dp)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Text(
             text =" ${cwiczenie.nazwa}",
