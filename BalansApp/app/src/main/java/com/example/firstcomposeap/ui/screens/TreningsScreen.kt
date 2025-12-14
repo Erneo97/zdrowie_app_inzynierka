@@ -1,6 +1,7 @@
 package com.example.balansapp.ui.screens
 
 
+import android.os.SystemClock
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,16 +39,12 @@ import androidx.navigation.NavHostController
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.LogoBackGround
-import com.example.balansapp.ui.components.treningplans.TrainingSeasonCard
 import com.example.balansapp.ui.navigation.main.MainLayout
-import com.example.balansapp.ui.navigation.main.Screen
 import com.example.firstcomposeap.ui.components.icon.Delete
-import com.example.firstcomposeap.ui.components.treningplans.CwiczenieSeriesItem
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.CwiczenieWTreningu
 import com.example.firstcomposeap.ui.service.data.Seria
-import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowego
-import kotlin.io.path.Path
+import kotlinx.coroutines.delay
 
 @Composable
 fun TreningsScreen(navController: NavHostController, treningViewModel: TreningViewModel) {
@@ -132,15 +129,16 @@ fun newTreningTab (treningViewModel: TreningViewModel) {
         Text("Rozpocznij trening by kontynułować")
     }
     else {
-
-        Text("${treningViewModel.trening!!.data}")
-        Text("${treningViewModel.trening!!.idPlanu}")
-
+        Text("${treningViewModel.trening!!.data} ",
+            fontWeight = FontWeight.SemiBold, fontSize = 25.sp
+        )
+        Spacer(Modifier.height(10.dp))
 
         treningViewModel.trening!!.cwiczenia.forEach {
             CwiczenieTreningItem(
                 cwiczenie = it,
-                onRemove = { treningViewModel.trening!!.cwiczenia.remove(it) }
+                onRemove = { treningViewModel.trening!!.cwiczenia.remove(it) },
+                updateTime = { nowyCzas -> it.czas = nowyCzas}
             )
         }
     }
@@ -149,8 +147,43 @@ fun newTreningTab (treningViewModel: TreningViewModel) {
 @Composable
 fun CwiczenieTreningItem(
     cwiczenie: CwiczenieWTreningu,
-    onRemove: (CwiczenieWTreningu) -> Unit
+    onRemove: (CwiczenieWTreningu) -> Unit,
+    updateTime : (String) -> Unit
 ) {
+    var isRunning by remember { mutableStateOf(false) }
+    var startTime by remember { mutableStateOf(0L) }
+    var elapsedMs by remember { mutableStateOf(parseTimeToMs(cwiczenie.czas)) }
+    var accumulatedTime by remember { mutableStateOf(parseTimeToMs(cwiczenie.czas)) }
+
+
+    LaunchedEffect(isRunning) {
+        if (isRunning) {
+            startTime = SystemClock.uptimeMillis()
+            while (isRunning) {
+                elapsedMs = accumulatedTime + (SystemClock.uptimeMillis() - startTime)
+                delay(400)
+                updateTime(formatMMSS((elapsedMs)))
+            }
+        }
+    }
+
+
+    fun startStopwatch() {
+        isRunning = true
+    }
+
+    fun pauseStopwatch() {
+        isRunning = false
+        accumulatedTime = elapsedMs
+    }
+
+    fun resetStopwatch() {
+        isRunning = false
+        elapsedMs = 0L
+        accumulatedTime = 0L
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -167,6 +200,31 @@ fun CwiczenieTreningItem(
         Spacer(modifier = Modifier.height(2.dp))
         HorizontalDivider()
 
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("czas ćwiczenia:  ${formatMMSS(elapsedMs)}", fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
+        Spacer(modifier = Modifier.height(2.dp))
+        Row (modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(onClick = { resetStopwatch() }, modifier = Modifier.weight(1.3f)
+            ) {
+                Text("Reset")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(onClick = { startStopwatch() }, modifier = Modifier.weight(2f)) {
+                Text("Start")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(onClick = { pauseStopwatch() }, modifier = Modifier.weight(2f)) {
+                Text("Pauza")
+            }
+
+        }
+
+        Spacer(modifier = Modifier.height(2.dp))
+        HorizontalDivider()
         Spacer(modifier = Modifier.height(8.dp))
 
 
@@ -262,6 +320,21 @@ fun CwiczenieTreningItem(
         }
     }
 
+}
+
+fun formatMMSS(ms: Long): String {
+    val totalSeconds = ms / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "%02d:%02d".format(minutes, seconds)
+}
+
+fun parseTimeToMs(time: String): Long {
+    val parts = time.split(":")
+    if (parts.size != 2) return 0L
+    val minutes = parts[0].toLongOrNull() ?: 0L
+    val seconds = parts[1].toLongOrNull() ?: 0L
+    return (minutes * 60 + seconds) * 1000
 }
 
 
