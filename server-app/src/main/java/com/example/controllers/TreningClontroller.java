@@ -149,6 +149,30 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningService.createTrenicBasedOnTreningPlan(optPT.get(), usr));
     }
 
+    @PostMapping("/trening/update")
+    public ResponseEntity<?> updateTrening(Trening usrTrening,  Authentication authentication) {
+
+        if( authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() || optUsr.get().getId() == usrTrening.getIdUser() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        Uzytkownik usr = optUsr.get();
+        Optional<PlanTreningowy> optPT = treningService.getById(usr.getAktualnyPlan());
+        if( optPT.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Brak rzadanych danych");
+        }
+
+        treningService.updateTrening(usrTrening, usr);
+
+        return ResponseEntity.status(201).body("");
+    }
+
 
 
 

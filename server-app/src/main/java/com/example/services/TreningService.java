@@ -12,6 +12,7 @@ import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.repositories.CwiczeniaRepository;
 import com.example.repositories.PotwierdzProduktyRepository;
 import com.example.repositories.TreningPlanRepository;
+import com.example.repositories.TreningRepository;
 import com.example.requests.CwiczeniaPlanuTreningowegoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,19 +32,20 @@ public class TreningService {
     private final TreningPlanRepository treningPlanRepository;
     private final SequenceGeneratorService sequenceGenerator;
     private final UzytkownikService uzytkownikService;
-    private final MongoTemplate mongoTemplate;
+    private final TreningRepository treningRepository;
 
     public TreningService(CwiczeniaRepository cwiczeniaRepository,
                           TreningPlanRepository treningPlanRepository,
                           PotwierdzProduktyRepository potwierdzProduktyRepository,
-                          MongoTemplate mongoTemplate,
+                          TreningRepository treningRepository,
                           SequenceGeneratorService sequenceGenerator, UzytkownikService uzytkownikService) {
+
         this.cwiczeniaRepository = cwiczeniaRepository;
         this.treningPlanRepository = treningPlanRepository;
         this.potwierdzProduktyRepository = potwierdzProduktyRepository;
         this.sequenceGenerator = sequenceGenerator;
         this.uzytkownikService = uzytkownikService;
-        this.mongoTemplate = mongoTemplate;
+        this.treningRepository = treningRepository;
     }
 
     public Optional<PlanTreningowy> getById(int id) {
@@ -206,6 +208,12 @@ public class TreningService {
         return trening;
     }
 
+    public void updateTrening(Trening trening, Uzytkownik uzytkownik) {
+        if( trening.getIdTrening() == -1 ) {
+            trening.setIdTrening(sequenceGenerator.getNextSequence(LicznikiDB.TRENINGI.getNazwa()));
+        }
+        treningRepository.save(trening);
+    }
 
 
 }

@@ -5,7 +5,7 @@ import com.example.kolekcje.plan_treningowy.Seria;
 import java.util.List;
 
 public class CwiczenieWTreningu {
-    int id;
+    int id; // id ćwiczenia w bazie
     String nazwa, czas; //  czas w formacie mm:ss
     List<Seria> serie;
 
