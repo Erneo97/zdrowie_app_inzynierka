@@ -101,7 +101,7 @@ fun TestScreen() {
 }
 
 
-fun formatMs(ms: Long): String {
+private fun formatMs(ms: Long): String {
     val totalSeconds = ms / 1000
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
