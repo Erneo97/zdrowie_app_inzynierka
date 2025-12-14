@@ -72,7 +72,7 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
                 LogoBackGround()
 
             Column (
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -131,17 +131,20 @@ fun newTreningTab (treningViewModel: TreningViewModel) {
         Text("Rozpocznij trening by kontynułować")
     }
     else {
-        Text("${treningViewModel.trening!!.data} ",
+        Text("${treningViewModel.trening!!.data}, spalone kcal: ${treningViewModel.trening!!.spaloneKalorie} kcal",
             fontWeight = FontWeight.SemiBold, fontSize = 25.sp
         )
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(5.dp))
+        HorizontalDivider()
 
-        treningViewModel.trening!!.cwiczenia.forEach {
-            CwiczenieTreningItem(
-                cwiczenie = it,
-                onRemove = { treningViewModel.trening!!.cwiczenia.remove(it) },
-                updateTime = { nowyCzas -> it.czas = nowyCzas}
-            )
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            treningViewModel.trening!!.cwiczenia.forEach {
+                CwiczenieTreningItem(
+                    cwiczenie = it,
+                    onRemove = { treningViewModel.trening!!.cwiczenia.remove(it) },
+                    updateTime = { nowyCzas -> it.czas = nowyCzas}
+                )
+            }
         }
     }
 }
