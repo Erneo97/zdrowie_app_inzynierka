@@ -16,6 +16,7 @@ import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.PlanTreningowy
 import com.example.firstcomposeap.ui.service.data.Produkt
+import com.example.firstcomposeap.ui.service.data.Trening
 import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowegoResponse
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
 import okhttp3.ResponseBody
@@ -186,5 +187,8 @@ interface ApiService {
 
     @GET("trening/treningPlan")
     suspend fun getAllTreningPlans( ): Response<List<treningsPlanCard>>
+
+    @GET("trening/new")
+    suspend fun getAcctualTrening( ): Response<Trening>
 
 }

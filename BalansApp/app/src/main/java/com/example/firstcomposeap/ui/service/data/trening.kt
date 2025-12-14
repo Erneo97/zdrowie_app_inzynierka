@@ -141,3 +141,21 @@ enum class GrupaMiesniowa(val grupaNazwa: String) {
     }
 
 }
+
+
+
+data class Trening(
+    var idTrening: Int,
+    var idUser: Int,
+    var idPlanu: Int,
+    var data: String,
+    var cwiczenia: List<CwiczenieWTreningu> = emptyList(),
+    var spaloneKalorie: Float = 0f
+)
+
+data class CwiczenieWTreningu(
+    var id: Int,
+    var nazwa: String,
+    var czas: String, // format mm:ss
+    var serie: List<Seria> = emptyList()
+)

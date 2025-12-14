@@ -13,6 +13,7 @@ import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.GOAL
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import com.example.firstcomposeap.ui.service.data.PlanTreningowy
+import com.example.firstcomposeap.ui.service.data.Trening
 import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowego
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
 import kotlinx.coroutines.launch
@@ -224,4 +225,25 @@ class TreningViewModel : ViewModel() {
         }
 
     }
+
+
+    var trening by mutableStateOf<Trening?>(null)
+
+    fun getAcctualTrening() {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").getAcctualTrening()
+                if (response.isSuccessful) {
+                    message = "Pobrano aktualny trening"
+
+                    response.body()?.let { trening = it  }
+                } else {
+                    errorMessage = "Błąd pobierania treningu: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
 }

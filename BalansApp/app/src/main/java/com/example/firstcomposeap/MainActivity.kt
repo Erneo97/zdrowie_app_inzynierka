@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.Home.route) { MealScreen(navController, loginViewModel, productViewModel) }
                     composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController, treningViewModel) }
-                    composable(Screen.Trenings.route) { TreningsScreen(navController) }
+                    composable(Screen.Trenings.route) { TreningsScreen(navController, treningViewModel) }
 
                     composable(Screen.Test.route) { TestScreen() }
 

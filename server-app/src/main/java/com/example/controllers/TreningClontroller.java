@@ -128,9 +128,8 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningService.getAllTreningPlans(usr));
     }
 
-    @GetMapping("/trening/new")
+    @GetMapping("/new")
     public ResponseEntity<?> getAcctualTrening( Authentication authentication) {
-
         if( authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
