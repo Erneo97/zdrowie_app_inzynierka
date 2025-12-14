@@ -4,10 +4,13 @@ package com.example.balansapp.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -59,7 +62,25 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
                     )
                 }
                 else {
+                    Row(modifier = Modifier
+                        .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(
+                            onClick = { treningViewModel.trening = null },
+                            modifier = Modifier.weight(2f)
+                        ) {
+                            Text("Anuluj", fontSize = 15.sp)
 
+                        }
+
+                        Button(
+                            onClick = {  }, // TODO: zapisanie podejścia
+                            modifier = Modifier.weight(3f)
+                        ) {
+                            Text("Zapisz trening", fontSize = 15.sp)
+                        }
+                    }
                 }
 
                 TabRow(selectedTabIndex = selectedTabIndex) {

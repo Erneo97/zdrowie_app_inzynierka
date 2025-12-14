@@ -236,7 +236,10 @@ class TreningViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     message = "Pobrano aktualny trening"
 
-                    response.body()?.let { trening = it  }
+                    response.body()?.let {
+                        trening = it
+                        trening!!.data = trening!!.data.substring(0, 9)
+                    }
                 } else {
                     errorMessage = "Błąd pobierania treningu: ${response.code()}"
                 }
