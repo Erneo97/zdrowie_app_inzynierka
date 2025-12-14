@@ -6,6 +6,8 @@ import com.example.kolekcje.plan_treningowy.Cwiczenie;
 import com.example.kolekcje.plan_treningowy.PlanTreningowy;
 import com.example.kolekcje.plan_treningowy.TreningsPlanCard;
 import com.example.kolekcje.posilki.ProduktyDoPotwierdzenia;
+import com.example.kolekcje.trening.CwiczenieWTreningu;
+import com.example.kolekcje.trening.Trening;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.repositories.CwiczeniaRepository;
 import com.example.repositories.PotwierdzProduktyRepository;
@@ -163,5 +165,47 @@ public class TreningService {
         log.info(treningPlanCards.toString());
         return treningPlanCards;
     }
+
+    public Trening createTrenicBasedOnTreningPlan(PlanTreningowy plan, Uzytkownik uzytkownik) {
+        Trening trening = new Trening();
+
+        trening.setIdTrening(-1);
+        trening.setIdUser(uzytkownik.getId());
+        trening.setIdPlanu(plan.getId());
+
+        LocalDate today = LocalDate.now();
+
+        trening.setData(Date.from(
+                LocalDate.parse(today.toString())
+                        .atStartOfDay(ZoneOffset.UTC)
+                        .toInstant())
+        );
+
+
+        List<CwiczenieWTreningu> wykonaneCwiczenia = plan.getCwiczeniaPlanuTreningowe()
+                .stream().map(
+                item -> {
+            CwiczenieWTreningu nowe = new CwiczenieWTreningu();
+
+            Optional<Cwiczenie> optCw = getCwiczenieById(item.getId());
+            if( optCw.isEmpty()) {
+                return null;
+            }
+
+            nowe.setId(item.getId());
+            nowe.setNazwa(optCw.get().getNazwa());
+
+            nowe.setSerie(item.getSerie());
+            nowe.setCzas("00:00");
+
+            return nowe;
+        }).toList();
+
+        trening.setCwiczenia(wykonaneCwiczenia);
+
+        return trening;
+    }
+
+
 
 }
