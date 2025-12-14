@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.kolekcje.plan_treningowy.Cwiczenie;
 import com.example.kolekcje.plan_treningowy.PlanTreningowy;
+import com.example.kolekcje.trening.Trening;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.requests.CwiczeniaPlanuTreningowegoResponse;
 import com.example.services.TreningService;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,6 +127,29 @@ public class TreningClontroller {
 
         return ResponseEntity.status(201).body(treningService.getAllTreningPlans(usr));
     }
+
+    @GetMapping("/trening/new")
+    public ResponseEntity<?> getAcctualTrening( Authentication authentication) {
+
+        if( authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        Uzytkownik usr = optUsr.get();
+        Optional<PlanTreningowy> optPT = treningService.getById(usr.getAktualnyPlan());
+        if( optPT.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Brak rzadanych danych");
+        }
+
+        return ResponseEntity.status(201).body(treningService.createTrenicBasedOnTreningPlan(optPT.get(), usr));
+    }
+
+
 
 
 
