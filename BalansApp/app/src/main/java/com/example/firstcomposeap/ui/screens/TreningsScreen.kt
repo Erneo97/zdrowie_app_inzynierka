@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -240,6 +241,8 @@ fun CwiczenieTreningItem(
                 )
             }
 
+            var done by remember(seria) { mutableStateOf(false ) }
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -251,38 +254,59 @@ fun CwiczenieTreningItem(
 
                 Spacer(modifier = Modifier.width(2.dp))
 
-                TextField(
-                    value = liczbaPowtorzen,
-                    onValueChange = {
-                        liczbaPowtorzen = it
-                        seria.liczbaPowtorzen = it.toIntOrNull() ?: 0
-                    },
-                    label = { Text("Powtórzenia") },
-                    modifier = Modifier.weight(5f),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
+                if( !done ) {
+                    TextField(
+                        value = liczbaPowtorzen,
+                        onValueChange = {
+                            liczbaPowtorzen = it
+                            seria.liczbaPowtorzen = it.toIntOrNull() ?: 0
+                        },
+                        label = { Text("Powtórzenia") },
+                        modifier = Modifier.weight(4f),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
 
-                TextField(
-                    value = obciazenie,
-                    onValueChange = {
-                        obciazenie = it
-                        seria.obciazenie = it.toFloatOrNull() ?: 0f
-                    },
-                    label = { Text("Obciążenie") },
-                    modifier = Modifier.weight(4f),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
+                    TextField(
+                        value = obciazenie,
+                        onValueChange = {
+                            obciazenie = it
+                            seria.obciazenie = it.toFloatOrNull() ?: 0f
+                        },
+                        label = { Text("Obciążenie") },
+                        modifier = Modifier.weight(4f),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    )
 
-                IconButton(
-                    onClick = { cwiczenie.serie.remove(seria) },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Delete, contentDescription = "Usuń serię")
+                    IconButton(
+                        onClick = { cwiczenie.serie.remove(seria) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(Delete, contentDescription = "Usuń serię")
+                    }
                 }
+                else {
+                    Column (modifier = Modifier.weight(4f),) {
+                        Text("Powtórzenia")
+                        Text(liczbaPowtorzen, fontWeight = FontWeight.SemiBold)
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Column (modifier = Modifier.weight(4f),) {
+                        Text("Obciążenie")
+                        Text(obciazenie, fontWeight = FontWeight.SemiBold)
+                    }
+                }
+
+                Checkbox(
+                    checked = done,
+                    onCheckedChange = {done = it},
+                    modifier = Modifier.weight(2f).padding(2.dp)
+                )
             }
         }
 
