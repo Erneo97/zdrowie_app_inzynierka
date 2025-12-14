@@ -1,6 +1,5 @@
 package com.example.services;
 
-import com.example.controllers.UzytkownikController;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.plan_treningowy.CwiczeniaPlanuTreningowego;
 import com.example.kolekcje.plan_treningowy.Cwiczenie;
@@ -12,12 +11,9 @@ import com.example.repositories.CwiczeniaRepository;
 import com.example.repositories.PotwierdzProduktyRepository;
 import com.example.repositories.TreningPlanRepository;
 import com.example.requests.CwiczeniaPlanuTreningowegoResponse;
-import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -46,6 +42,10 @@ public class TreningService {
         this.sequenceGenerator = sequenceGenerator;
         this.uzytkownikService = uzytkownikService;
         this.mongoTemplate = mongoTemplate;
+    }
+
+    public Optional<PlanTreningowy> getById(int id) {
+        return treningPlanRepository.findById(id);
     }
 
     public Cwiczenie createExercise(Cwiczenie cwiczenia) {
@@ -92,7 +92,7 @@ public class TreningService {
         }
         PlanTreningowy now = opt.get();
         nowyPlan.setDataUtworzenia(now.getDataUtworzenia());
-        
+
         treningPlanRepository.save(nowyPlan);
         if( aktualnyPlan ) {
             uzytkownik.setAktualnyPlan(nowyPlan.getId());
