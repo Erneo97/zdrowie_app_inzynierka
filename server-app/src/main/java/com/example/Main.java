@@ -1,8 +1,5 @@
 package com.example;
 
-import com.example.kolekcje.enumy.Plec;
-import com.example.kolekcje.uzytkownik.Uzytkownik;
-import com.example.services.UzytkownikService;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +11,6 @@ public class Main {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Main.class, args);
     }
-
 
     @Bean
     CommandLineRunner showAllUsers(UzytkownikRepository repository) {

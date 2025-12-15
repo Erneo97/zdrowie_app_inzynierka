@@ -15,7 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -131,6 +134,40 @@ public class UzytkownikService {
        return false;
     }
 
+
+    /**
+     * Funkcja do zwracania wszystkich pomiarów wagii użytkownika (posiadającego dany email), które są od danej daty do data + dayCount.
+     *
+     * @param email
+     * @param dataPoczatkowa
+     * @param dayCount
+     * @return
+     */
+    public List<PommiarWagii> getUserWeightsByDate(String email, Date dataPoczatkowa, int dayCount) {
+        Optional<Uzytkownik> userOpt = repository.findByEmail(email);
+        if( userOpt.isPresent()) {
+            Uzytkownik user = userOpt.get();
+            List<PommiarWagii> wagii = user.getWaga();
+
+            if(wagii == null || wagii.isEmpty()) {
+                wagii = new ArrayList<>();
+            }
+
+
+            LocalDate dataTempt = dataPoczatkowa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(dayCount);
+            Date dataKoncowa = Date.from(
+                    dataTempt.atStartOfDay(ZoneId.systemDefault()).toInstant()
+            );
+
+
+            return wagii.stream().filter(
+                    pomiarWagi -> {
+                        return pomiarWagi.data.compareTo(dataPoczatkowa) >= 0 && pomiarWagi.data.compareTo(dataKoncowa) <= 0;
+                    }
+            ).toList();
+        }
+        return null;
+    }
 
     public void updateUserPassword(String email, String password) {
         repository.findByEmail(email).ifPresent(u -> {
@@ -394,6 +431,7 @@ public class UzytkownikService {
         }).collect(Collectors.toList());
 
     }
+
 
 
 }
