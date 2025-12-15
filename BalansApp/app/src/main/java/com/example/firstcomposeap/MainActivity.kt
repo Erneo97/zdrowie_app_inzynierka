@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Trenings.route
+                    startDestination = Screen.Test.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
