@@ -17,4 +17,12 @@ public class PommiarWagii {
         this.miesnie = miesnie;
         this.nawodnienie = nawodnienie;
     }
+
+    public double getMiesnie() {
+        return miesnie;
+    }
+    public double getTluszcz() {return tluszcz;}
+    public double getWartosc() {return wartosc;}
+    public Date getData() {return data;}
+    public double getNawodnienie() {return nawodnienie;}
 }
