@@ -252,10 +252,9 @@ fun CwiczenieTreningItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                    .padding(vertical = 1.dp)
             ) {
-
-                Text("${index + 1}", modifier = Modifier.weight(1f))
+                Text("${index + 1}", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
                 Spacer(modifier = Modifier.width(2.dp))
 
