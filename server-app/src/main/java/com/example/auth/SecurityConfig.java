@@ -28,7 +28,8 @@ public class SecurityConfig {
                         "/api/uzytkownicy/**",
                         "/api/produkty/**",
                         "/api/search/**",
-                        "/api/trening/**")
+                        "/api/trening/**",
+                        "/api/statistic/**")
                 .permitAll()
                 .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // wyłączenie ciasteczek
