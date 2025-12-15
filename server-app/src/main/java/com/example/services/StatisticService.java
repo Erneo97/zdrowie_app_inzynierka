@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class StatisticService {
@@ -22,43 +25,41 @@ public class StatisticService {
      */
     public List<StatisticParameters> getStatisticsForWeight(List<PommiarWagii> weights) {
         List<StatisticParameters> statistics = new ArrayList<>();
-        List<Double> days = datesToDays(
-                weights.stream().map(PommiarWagii::getData).toList()
-        );
+
 
         statistics.add(
                 getStatisticParameters(
-                        weights.stream().map(PommiarWagii::getWartosc).toList(),
-                        days
+                        weights.stream().map(PommiarWagii::getWartosc).filter(value -> value > 0).toList()
                 )
         );
 
         statistics.add(
                 getStatisticParameters(
-                        weights.stream().map(PommiarWagii::getTluszcz).toList(),
-                        days
+                        weights.stream().map(PommiarWagii::getTluszcz).filter(value -> value > 0).toList()
                 )
         );
 
         statistics.add(
                 getStatisticParameters(
-                        weights.stream().map(PommiarWagii::getMiesnie).toList(),
-                        days
+                        weights.stream().map(PommiarWagii::getMiesnie).filter(value -> value > 0).toList()
                 )
         );
 
         statistics.add(
                 getStatisticParameters(
-                        weights.stream().map(PommiarWagii::getNawodnienie).toList(),
-                        days
+                        weights.stream().map(PommiarWagii::getNawodnienie).filter(value -> value > 0).toList()
                 )
         );
 
         return statistics;
     }
 
-    private static StatisticParameters getStatisticParameters(List<Double> values, List<Double> days) {
+    private static StatisticParameters getStatisticParameters(List<Double> values) {
         StatisticParameters statistics = new StatisticParameters();
+        List<Double> days = IntStream.rangeClosed(1, values.size())
+                .mapToDouble(i -> (double) i)
+                .boxed()  // double -> Double
+                .collect(Collectors.toList());
 
         DoubleSummaryStatistics statsWeight = values.stream().mapToDouble(Double::doubleValue).summaryStatistics();
 
