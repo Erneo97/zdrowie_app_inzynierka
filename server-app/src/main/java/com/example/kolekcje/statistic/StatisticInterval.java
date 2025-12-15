@@ -1,8 +1,11 @@
 package com.example.kolekcje.statistic;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class StatisticInterval {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     Date data;
     int countDays;
 
@@ -17,5 +20,4 @@ public class StatisticInterval {
 
     public void setData(Date data) {this.data = data;}
     public void setCountDays(int countDays) {this.countDays = countDays;}
-
 }

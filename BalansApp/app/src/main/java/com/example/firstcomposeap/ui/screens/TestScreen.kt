@@ -34,16 +34,23 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.balansapp.ui.service.LoginViewModel
+import com.example.firstcomposeap.ui.service.StatisticViewModel
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun TestScreen() {
+fun TestScreen(statisticViewModel: StatisticViewModel) {
     var selectedItem by remember { mutableStateOf("") }
     var isRunning by remember { mutableStateOf(false) }
     var startTime by remember { mutableStateOf(0L) }
     var elapsedMs by remember { mutableStateOf(0L) }
 
+
+    LaunchedEffect(Unit, statisticViewModel.token) {
+        statisticViewModel.downloadWeightsUserStatistic()
+    }
 
     LaunchedEffect(isRunning) {
         if (isRunning) {
@@ -72,12 +79,27 @@ fun TestScreen() {
     ) {
         LogoBackGround()
 
+
+
             Column (
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    statisticViewModel.weightStats.forEach { stats ->
+                        stats?.let {
+                            Text(text = "Median: ${it.median}")
+                            Text(text = "Min: ${it.min}")
+                            Text(text = "Max: ${it.max}")
+                            Text(text = "Trend: y = ${it.a}x + ${it.b}")
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                    }
+                }
 
+
+                Spacer(Modifier.height(15.dp))
                 LineChartWithControls(
                     points = listOf(
                         ChartPoint(0.0, 10.0),
