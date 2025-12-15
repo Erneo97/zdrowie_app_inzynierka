@@ -2,21 +2,20 @@ package com.example.services;
 
 import com.example.kolekcje.statistic.StatisticParameters;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Component
 public class StatisticService {
+
+    private static final Logger log = LoggerFactory.getLogger(StatisticService.class);
 
     /**
      * Zwraca dane statystyczne kolejno dla: wagi, tk. tłuszczowe, tk. mięśniowej, nawodnienia
@@ -33,11 +32,13 @@ public class StatisticService {
                 )
         );
 
+
         statistics.add(
                 getStatisticParameters(
                         weights.stream().map(PommiarWagii::getTluszcz).filter(value -> value > 0).toList()
                 )
         );
+
 
         statistics.add(
                 getStatisticParameters(
@@ -74,26 +75,6 @@ public class StatisticService {
         statistics.setTrendLine(wynik[0], wynik[1]);
 
         return statistics;
-    }
-    private static List<Double> datesToDays(List<Date> dates) {
-        if (dates == null || dates.isEmpty()) {
-            throw new IllegalArgumentException("Lista dat jest pusta");
-        }
-
-        ZoneId zone = ZoneId.systemDefault();
-
-        LocalDate baseDate = dates.getFirst().toInstant()
-                .atZone(zone)
-                .toLocalDate();
-
-        return dates.stream()
-                .map(d -> {
-                    LocalDate current = d.toInstant()
-                            .atZone(zone)
-                            .toLocalDate();
-                    return (double) ChronoUnit.DAYS.between(baseDate, current);
-                })
-                .toList();
     }
 
     private static double median(List<Double> items) {

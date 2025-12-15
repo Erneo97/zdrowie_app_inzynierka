@@ -11,15 +11,6 @@ data class StatisticParameters(
     var max: Double = 0.0,
     var average: Double = 0.0,
     var median: Double = 0.0,
-    var a: Double? = null,
-    var b: Double? = null
-) {
-    fun getTrendLine(): Pair<Double, Double>? {
-        return if (a != null && b != null) Pair(a!!, b!!) else null
-    }
-
-    fun setTrendLine(a: Double, b: Double) {
-        this.a = a
-        this.b = b
-    }
-}
+    var a: Double,
+    var b: Double
+)
