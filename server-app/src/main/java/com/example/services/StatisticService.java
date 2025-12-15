@@ -70,6 +70,8 @@ public class StatisticService {
 
         double[] wynik = linearRegression(values,  days);
 
+        statistics.setTrendLine(wynik[0], wynik[1]);
+
         return statistics;
     }
     private static List<Double> datesToDays(List<Date> dates) {
