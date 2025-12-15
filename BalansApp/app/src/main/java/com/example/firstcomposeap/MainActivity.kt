@@ -29,6 +29,7 @@ import com.example.firstcomposeap.ui.screens.ProductConsumedDetails
 import com.example.firstcomposeap.ui.screens.SearchExerciseScreen
 import com.example.firstcomposeap.ui.screens.SearchProductScreen
 import com.example.firstcomposeap.ui.service.ProductViewModel
+import com.example.firstcomposeap.ui.service.StatisticViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import kotlin.math.log
 
@@ -38,12 +39,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             val loginViewModel: LoginViewModel = viewModel()
             val registerViewModel: RegisterViewModel = viewModel()
+            val statisticViewModel : StatisticViewModel = viewModel ()
             val productViewModel: ProductViewModel = viewModel ()
             val treningViewModel : TreningViewModel = viewModel ()
 
             loginViewModel.login("michal@michal.michal", "michal")
+
+            statisticViewModel.token = loginViewModel.token
             productViewModel.token = loginViewModel.token
             treningViewModel.token = loginViewModel.token
+
+
+
 
             balansappTheme {
                 val navController: NavHostController = rememberNavController()
@@ -59,7 +66,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController, treningViewModel) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController, treningViewModel) }
 
-                    composable(Screen.Test.route) { TestScreen() }
+                    composable(Screen.Test.route) { TestScreen(statisticViewModel) }
 
                     composable(Screen.NewExercise.route) {
                         NewExerciseScreen(treningViewModel,

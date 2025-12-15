@@ -16,6 +16,8 @@ import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.PlanTreningowy
 import com.example.firstcomposeap.ui.service.data.Produkt
+import com.example.firstcomposeap.ui.service.data.StatisticInterval
+import com.example.firstcomposeap.ui.service.data.StatisticParameters
 import com.example.firstcomposeap.ui.service.data.Trening
 import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowegoResponse
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
@@ -189,6 +191,14 @@ interface ApiService {
     suspend fun getAllTreningPlans( ): Response<List<treningsPlanCard>>
 
     @GET("trening/new")
-    suspend fun getAcctualTrening( ): Response<Trening>
+    suspend fun getAcctualTrening( ) : Response<Trening>
+
+
+
+//    STATYSTYKI
+
+    @POST("statistic/weight")
+    suspend fun getStatisticUserWeight( @Body interval: StatisticInterval )
+            : Response<List<StatisticParameters>>
 
 }
