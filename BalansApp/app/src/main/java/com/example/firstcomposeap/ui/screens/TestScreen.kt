@@ -52,8 +52,8 @@ fun TestScreen(statisticViewModel: StatisticViewModel) {
     var startTime by remember { mutableStateOf(0L) }
     var elapsedMs by remember { mutableStateOf(0L) }
 
-    var selectedPeriod by remember { mutableStateOf(StatisticPeriod.WEEK) }
-    var days by remember { mutableStateOf(StatisticPeriod.WEEK.days) }
+    var selectedPeriod by remember { mutableStateOf(StatisticPeriod.SIX_MONTHS) }
+    var days by remember { mutableStateOf(StatisticPeriod.SIX_MONTHS.days) }
     var localDate by remember {  mutableStateOf<LocalDate>(LocalDate.now()) }
 
     var selectOption by remember {  mutableStateOf(PomiarWagiOptions.WAGA) }
@@ -62,21 +62,20 @@ fun TestScreen(statisticViewModel: StatisticViewModel) {
     var points = remember { mutableStateListOf<ChartPoint>() }
 
 
-    LaunchedEffect(selectOption, days, localDate) {
-        selectedLabel = selectOption.label
-        selectedValue = statisticViewModel.getCorrectStatisticParameters(selectOption)
-    }
-
-    LaunchedEffect(Unit, statisticViewModel.token, days, localDate) {
+    LaunchedEffect(statisticViewModel.token, days, localDate) {
         statisticViewModel.downloadWeightsUserStatistic(days, localDate)
         statisticViewModel.downloadWeightsDataUser(days, localDate)
+    }
+
+    LaunchedEffect(Unit, selectOption, days, localDate) {
+        selectedLabel = selectOption.label
+        selectedValue = statisticViewModel.getCorrectStatisticParameters(selectOption)
 
         points.apply {
             points.clear()
             points.addAll(statisticViewModel.getDataByOption(selectOption))
         }
     }
-
 
 
     LaunchedEffect(isRunning) {
@@ -133,16 +132,14 @@ fun TestScreen(statisticViewModel: StatisticViewModel) {
                     )
                     Spacer(Modifier.height(15.dp))
 
-                    points.let {
-                        LineChartWithControls(
-                            points = it.toList(),
-                            xAxisLabel = "Dni",
-                            yAxisLabel = "Wartość",
-                            modifier = Modifier.padding(16.dp),
-                            a = value.a,
-                            b = value.b
-                        )
-                    }
+                    LineChartWithControls(
+                        points = points.toList(),
+                        xAxisLabel = "Dni",
+                        yAxisLabel = "Wartość",
+                        modifier = Modifier.padding(16.dp),
+                        a = value.a,
+                        b = value.b
+                    )
                 }
 
 
