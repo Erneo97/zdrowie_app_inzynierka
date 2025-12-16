@@ -31,17 +31,20 @@ public class StatisticController {
 
     @PostMapping("/weight")
     public ResponseEntity<?> getUserWeight(@RequestBody StatisticInterval interval, Authentication authentication) {
-       log.info("getUserWeight called {}", authentication);
+       log.info("getUserWeight authentication {}", authentication);
 
         if( authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
         String userEmail = authentication.getName();
-        log.info("getUserWeight called  - {} {}: {} {}", userEmail, interval, interval.getData(), interval.getCountDays());
+        log.info("getUserWeight dane  - {} {}: {} {}", userEmail, interval, interval.getData(), interval.getCountDays());
 
         List<PommiarWagii> wagi = uzytkownikService.getUserWeightsByDate(userEmail, interval.getData(), interval.getCountDays());
-        log.info("getUserWeight called {} ", wagi.size());
+        log.info("getUserWeight weight size {} ", wagi.size());
+        if(wagi.size() > 3)
+            return ResponseEntity.ok(statisticService.getStatisticsForWeight(wagi));
 
-        return ResponseEntity.ok(statisticService.getStatisticsForWeight(wagi));
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Wybranym zakresie nie ma danych");
     }
 }
