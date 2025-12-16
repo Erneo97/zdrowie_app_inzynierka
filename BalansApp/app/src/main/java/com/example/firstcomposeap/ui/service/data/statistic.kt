@@ -20,7 +20,7 @@ data class StatisticInterval(
 )
 
 data class ChartPoint(
-    val x: Double,
+    val x: String,
     val y: Double
 )
 

@@ -90,15 +90,29 @@ class StatisticViewModel : ViewModel() {
             return emptyList()
 
         if( option == PomiarWagiOptions.TK_MIESNIOWA ) {
-            return weightData.filter { it.miesnie > 0 }.mapIndexed {  index, it -> ChartPoint(
-                x = it.miesnie,
-                y = index.toDouble()
+            return weightData.filter { it.miesnie > 0.0 }.mapIndexed {  index, it -> ChartPoint(
+                x = it.data,
+                y = it.miesnie
             ) }
         }
-        Log.e("getDataByOption", "${weightData.filter { it.wartosc > 0 }.toList()}")
-        return weightData.filter { it.wartosc > 0 }.mapIndexed {  index, it -> ChartPoint(
-            x = it.miesnie,
-            y = index.toDouble()
+
+        if( option == PomiarWagiOptions.TK_TLUSZCZOWA ) {
+            return weightData.filter { it.tluszcz > 0.0 }.map{  it -> ChartPoint(
+                x = it.data,
+                y = it.tluszcz
+            ) }
+        }
+
+        if( option == PomiarWagiOptions.NAWODNIENIE ) {
+            return weightData.filter { it.nawodnienie > 0.0 }.mapIndexed {  index, it -> ChartPoint(
+                x = it.data,
+                y = it.nawodnienie
+            ) }
+        }
+
+        return weightData.filter { it.wartosc > 0.0 }.mapIndexed {  index, it -> ChartPoint(
+            x = it.data,
+            y = it.wartosc
         ) }
     }
 

@@ -103,8 +103,12 @@ fun LineChart(
 
     Canvas(modifier = modifier) {
 
-        val minX = points.minOf { it.x }
-        val maxX = points.maxOf { it.x }
+        val indexedPoints = points.mapIndexed { index, p ->
+            index.toDouble() to p
+        }
+
+        val minX = 0.0
+        val maxX = (indexedPoints.size - 1).toDouble()
         val minY = points.minOf { it.y }
         val maxY = points.maxOf { it.y }
 
@@ -112,15 +116,15 @@ fun LineChart(
         val rangeY = (maxY - minY).takeIf { it != 0.0 } ?: 1.0
 
         fun scaleX(x: Double): Float =
-            (padding + (x - minX) / rangeX * (size.width - 2 * padding)).toFloat()
+            (padding + x / rangeX * (size.width - 2 * padding)).toFloat()
 
         fun scaleY(y: Double): Float =
             (size.height - padding - (y - minY) / rangeY * (size.height - 2 * padding)).toFloat()
 
         /* ================= GRID ================= */
         if (showGrid) {
-            points.forEach { p ->
-                val x = scaleX(p.x)
+            indexedPoints.forEach { (xVal, p) ->
+                val x = scaleX(xVal)
                 val y = scaleY(p.y)
 
                 drawLine(
@@ -156,8 +160,8 @@ fun LineChart(
 
         /* ================= LINE ================= */
         val path = Path()
-        points.sortedBy { it.x }.forEachIndexed { index, p ->
-            val x = scaleX(p.x)
+        indexedPoints.forEachIndexed { index, (xVal, p) ->
+            val x = scaleX(xVal)
             val y = scaleY(p.y)
             if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
         }
@@ -169,20 +173,18 @@ fun LineChart(
         )
 
         /* ================= POINTS ================= */
-        points.forEach { p ->
+        indexedPoints.forEach { (xVal, p) ->
             drawCircle(
                 color = pointColor,
                 radius = pointRadius.toFloat(),
-                center = Offset(scaleX(p.x), scaleY(p.y))
+                center = Offset(scaleX(xVal), scaleY(p.y))
             )
         }
 
         /* ================= TREND LINE ================= */
         if (showTrendLine && trendA != null && trendB != null) {
-
-            val x1 = minX
+            val x1 = 0.0
             val x2 = maxX
-
             val y1 = trendA * x1 + trendB
             val y2 = trendA * x2 + trendB
 
@@ -203,12 +205,11 @@ fun LineChart(
                 textAlign = android.graphics.Paint.Align.CENTER
             }
 
-            // X axis values
-            points.forEach { p ->
-                val x = scaleX(p.x)
+            // X axis labels (STRING)
+            indexedPoints.forEach { (xVal, p) ->
                 drawText(
-                    "%.2f".format(p.x),
-                    x,
+                    p.x,
+                    scaleX(xVal),
                     size.height - padding.toFloat() + 32f,
                     paint
                 )
@@ -217,36 +218,22 @@ fun LineChart(
             // Y axis values
             paint.textAlign = android.graphics.Paint.Align.RIGHT
             points.forEach { p ->
-                val y = scaleY(p.y)
                 drawText(
                     "%.2f".format(p.y),
                     padding.toFloat() - 12f,
-                    y + 8f,
+                    scaleY(p.y) + 8f,
                     paint
                 )
             }
 
-            /* ===== Axis labels ===== */
             paint.textAlign = android.graphics.Paint.Align.CENTER
             paint.textSize = 34f
 
-            // X label
-            drawText(
-                xAxisLabel,
-                size.width / 2,
-                size.height - 8f,
-                paint
-            )
+            drawText(xAxisLabel, size.width / 2, size.height - 8f, paint)
 
-            // Y label
             save()
             rotate(-90f, 18f, size.height / 2)
-            drawText(
-                yAxisLabel,
-                18f,
-                size.height / 2,
-                paint
-            )
+            drawText(yAxisLabel, 18f, size.height / 2, paint)
             restore()
         }
     }
