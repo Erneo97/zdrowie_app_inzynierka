@@ -4,6 +4,7 @@ import com.example.auth.jwt.JwtUtils;
 import com.example.kolekcje.PrzyjacieleInfo;
 import com.example.kolekcje.ZaproszenieInfo;
 import com.example.kolekcje.posilki.DaniaDetail;
+import com.example.kolekcje.statistic.StatisticInterval;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
 import com.example.kolekcje.uzytkownik.Przyjaciele;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
@@ -12,6 +13,7 @@ import com.example.requests.ChangePassword;
 import com.example.requests.LoginRequest;
 import com.example.services.UzytkownikService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -143,6 +145,26 @@ public class UzytkownikController {
         if( ret )
             return ResponseEntity.ok("Dodano pomiar wagi");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Użytkownik nie znaleziony");
+    }
+
+    @GetMapping("/waga")
+    public ResponseEntity<?> getUserWeights(
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            Date date,
+            @RequestParam int countDays,
+            Authentication authentication) {
+        log.info("getUserWeights {} {}", date, countDays);
+
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        String userEmail = authentication.getName();
+        List<PommiarWagii> wagi = uzytkownikService.getUserWeightsByDate(userEmail, date, countDays);
+
+
+        return ResponseEntity.ok(wagi);
     }
 
     // UPDATE - PUT /api/uzytkownicy/update
