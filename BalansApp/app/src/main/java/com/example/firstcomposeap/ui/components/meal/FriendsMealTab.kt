@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.data.PrzyjacieleInfo
 import com.example.firstcomposeap.ui.service.ProductViewModel
+import com.example.firstcomposeap.ui.service.data.PomiarWagiOptions
 
 @Composable
 fun FriendsMealTab(
@@ -123,6 +124,59 @@ fun SelectBox(
             genderOptions.forEach { gender ->
                 DropdownMenuItem(
                     text = { Text(gender) },
+                    onClick = {
+                        onOptionSelected(gender)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectPomiarWagiOptionBox(
+    options: List<PomiarWagiOptions>,
+    selectedOption: PomiarWagiOptions,
+    onOptionSelected: (PomiarWagiOptions) -> Unit,
+    label: String = "Wybierz opcje"
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val genderOptions = options
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = selectedOption.label,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+                .shadow(20.dp, RoundedCornerShape(12.dp))
+                .background(Color.White, RoundedCornerShape(12.dp)),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.White,
+                cursorColor = Color.Black
+            ),
+            shape = RoundedCornerShape(12.dp)
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            genderOptions.forEach { gender ->
+                DropdownMenuItem(
+                    text = { Text(gender.label) },
                     onClick = {
                         onOptionSelected(gender)
                         expanded = false
