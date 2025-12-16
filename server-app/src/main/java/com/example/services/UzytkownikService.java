@@ -139,11 +139,11 @@ public class UzytkownikService {
      * Funkcja do zwracania wszystkich pomiarów wagii użytkownika (posiadającego dany email), które są od danej daty do data + dayCount.
      *
      * @param email
-     * @param dataPoczatkowa
+     * @param dataKoncowa
      * @param dayCount
      * @return
      */
-    public List<PommiarWagii> getUserWeightsByDate(String email, Date dataPoczatkowa, int dayCount) {
+    public List<PommiarWagii> getUserWeightsByDate(String email, Date dataKoncowa, int dayCount) {
         Optional<Uzytkownik> userOpt = repository.findByEmail(email);
         if( userOpt.isPresent()) {
             Uzytkownik user = userOpt.get();
@@ -154,8 +154,8 @@ public class UzytkownikService {
             }
 
 
-            LocalDate dataTempt = dataPoczatkowa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(dayCount);
-            Date dataKoncowa = Date.from(
+            LocalDate dataTempt = dataKoncowa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().minusDays(dayCount);
+            Date dataPoczatkowa = Date.from(
                     dataTempt.atStartOfDay(ZoneId.systemDefault()).toInstant()
             );
 
