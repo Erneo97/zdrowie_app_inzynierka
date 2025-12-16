@@ -201,4 +201,10 @@ interface ApiService {
     suspend fun getStatisticUserWeight( @Body interval: StatisticInterval )
             : Response<List<StatisticParameters>>
 
+    @GET("uzytkownicy/waga")
+    suspend fun getcUserWeights(
+        @Query("date") date: String,
+        @Query("countDays") countDays: Int
+    ): Response<List<PommiarWagii>>
+
 }

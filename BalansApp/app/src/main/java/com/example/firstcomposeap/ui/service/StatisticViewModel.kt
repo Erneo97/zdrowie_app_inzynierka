@@ -10,9 +10,13 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
+import com.example.balansapp.ui.service.data.PommiarWagii
+import com.example.firstcomposeap.ui.service.data.ChartPoint
+import com.example.firstcomposeap.ui.service.data.PomiarWagiOptions
 import com.example.firstcomposeap.ui.service.data.StatisticInterval
 import com.example.firstcomposeap.ui.service.data.StatisticParameters
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class StatisticViewModel : ViewModel() {
     var token by mutableStateOf<String?>(null)
@@ -20,30 +24,82 @@ class StatisticViewModel : ViewModel() {
     var message by mutableStateOf<String?>(null)
 
     var weightStats: SnapshotStateList<StatisticParameters?> = mutableStateListOf()
+    var weightData: SnapshotStateList<PommiarWagii> = mutableStateListOf()
 
-    fun downloadWeightsUserStatistic() {
-        Log.e("downloadWeightsUserStatistic", "called ${token ?: "brak token"}")
+    fun getCorrectStatisticParameters(option: PomiarWagiOptions) : StatisticParameters {
+        if( weightStats.isEmpty() )
+            return StatisticParameters(
+                min = 0.0,
+                max = 0.0,
+                average = 0.0,
+                median = 0.0,
+                a = 0.0,
+                b = 0.0
+            )
 
+        return weightStats[option.indexList]!!
+    }
+
+    fun downloadWeightsUserStatistic(days: Int = 90, date: LocalDate = LocalDate.now()) {
         val internal = StatisticInterval(
-            data = "2025-10-25",
-            countDays = 35
+            data = date.toString(),
+            countDays = days
         )
         viewModelScope.launch {
             try {
                 val response = ApiClient.getApi(token ?: "").getStatisticUserWeight( interval = internal)
                 if (response.isSuccessful) {
-                    response.body()?.let { weightStats = it.toMutableStateList()
-                        Log.e("downloadWeightsUserStatistic", "weightStats")
+                    response.body()?.let {
+                        weightStats.clear()
+                        weightStats = it.toMutableStateList()
                     }
-                    Log.e("downloadWeightsUserStatistic", "succes")
                 } else {
                     errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
-                    Log.e("downloadWeightsUserStatistic", "error:  ${response.code()}")
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage
             }
         }
+    }
+
+    fun downloadWeightsDataUser(days: Int = 90, date: LocalDate = LocalDate.now()) {
+        Log.e("downloadWeightsDataUser", "${date} ${days} ${token ?: "brak token"}")
+
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").getcUserWeights(
+                    date = date.toString(),
+                    countDays =  days
+                )
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        weightData.clear()
+                        weightData = it.toMutableStateList()
+                    }
+                } else {
+                    errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+    fun getDataByOption(option: PomiarWagiOptions) : List<ChartPoint> {
+        if( weightData.isEmpty() )
+            return emptyList()
+
+        if( option == PomiarWagiOptions.TK_MIESNIOWA ) {
+            return weightData.filter { it.miesnie > 0 }.mapIndexed {  index, it -> ChartPoint(
+                x = it.miesnie,
+                y = index.toDouble()
+            ) }
+        }
+        Log.e("getDataByOption", "${weightData.filter { it.wartosc > 0 }.toList()}")
+        return weightData.filter { it.wartosc > 0 }.mapIndexed {  index, it -> ChartPoint(
+            x = it.miesnie,
+            y = index.toDouble()
+        ) }
     }
 
 }
