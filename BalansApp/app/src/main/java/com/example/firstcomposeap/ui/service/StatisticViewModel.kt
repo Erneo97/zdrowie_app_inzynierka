@@ -13,8 +13,6 @@ import com.example.balansapp.ui.service.ApiClient
 import com.example.firstcomposeap.ui.service.data.StatisticInterval
 import com.example.firstcomposeap.ui.service.data.StatisticParameters
 import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.Date
 
 class StatisticViewModel : ViewModel() {
     var token by mutableStateOf<String?>(null)

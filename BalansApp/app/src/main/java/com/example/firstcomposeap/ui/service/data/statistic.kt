@@ -5,6 +5,10 @@ data class StatisticInterval(
     var countDays: Int
 )
 
+data class ChartPoint(
+    val x: Double,
+    val y: Double
+)
 
 data class StatisticParameters(
     var min: Double = 0.0,
