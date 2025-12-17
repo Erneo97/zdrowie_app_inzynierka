@@ -27,10 +27,11 @@ import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.profile.ProfilTab
 import com.example.firstcomposeap.ui.components.profile.StatystykiTab
 import com.example.firstcomposeap.ui.components.profile.ZnajomiTab
+import com.example.firstcomposeap.ui.service.StatisticViewModel
 
 
 @Composable
-fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewModel) {
+fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewModel, statisticViewModel: StatisticViewModel) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_profil)) }
 
@@ -60,7 +61,8 @@ fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewMod
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+//                    .verticalScroll(rememberScrollState())
+                ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TabRow(selectedTabIndex = selectedTabIndex) {
@@ -75,7 +77,7 @@ fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewMod
 
                 when (selectedTabIndex) {
                     0 -> ProfilTab(loginViewModel)
-                    1 -> StatystykiTab(loginViewModel)
+                    1 -> StatystykiTab(loginViewModel, statisticViewModel = statisticViewModel)
                     2 -> ZnajomiTab(loginViewModel)
                 }
             }

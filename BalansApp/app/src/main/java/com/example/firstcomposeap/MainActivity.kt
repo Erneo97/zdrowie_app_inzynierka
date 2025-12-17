@@ -57,12 +57,12 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Test.route
+                    startDestination = Screen.Home.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
                     composable(Screen.Home.route) { MealScreen(navController, loginViewModel, productViewModel) }
-                    composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel) }
+                    composable(Screen.Profile.route) { ProfileScreen(navController, loginViewModel, statisticViewModel) }
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController, treningViewModel) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController, treningViewModel) }
 
