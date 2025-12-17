@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,7 @@ fun LineChartWithControls(
 ) {
     var showGrid by remember { mutableStateOf(true) }
     var showTrendLine by remember { mutableStateOf(false) }
+    var space by remember { mutableStateOf(4) }
 
     Column(modifier = modifier.background(Color.White)) {
         LineChart(
@@ -51,8 +54,12 @@ fun LineChartWithControls(
                 .height(260.dp),
             showTrendLine = showTrendLine,
             trendA = a,
-            trendB =  b
+            trendB =  b,
+            onSpace = { space = it }
         )
+
+        Spacer(Modifier.height(space.dp))
+
         Row {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
@@ -64,7 +71,7 @@ fun LineChartWithControls(
 
 
             if (a != null && b != null) {
-                Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.width(10.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = showTrendLine,
@@ -98,6 +105,7 @@ fun LineChart(
     showTrendLine: Boolean = false,
     trendA: Double? = null,
     trendB: Double? = null,
+    onSpace : (Int) -> Unit
 ) {
     if (points.isEmpty()) return
 
@@ -205,16 +213,29 @@ fun LineChart(
                 textAlign = android.graphics.Paint.Align.CENTER
             }
 
-            // X axis labels
+
             val stepX = (points.size / 5).coerceAtLeast(1)
-            indexedPoints.forEachIndexed { index, (xVal, p) ->
+
+            indexedPoints.forEachIndexed { index, (xLabel, p) ->
+                val textWidth = paint.measureText(p.x)
                 if (index % stepX == 0) {
-                    drawText(
-                        p.x,
-                        scaleX(xVal),
-                        size.height - padding.toFloat() + 32f,
-                        paint
-                    )
+
+                    val x = scaleX(xLabel)
+                    val y = size.height - padding.toFloat() + 32f
+
+                    drawIntoCanvas { canvas ->
+                        val nativeCanvas = canvas.nativeCanvas
+
+                        nativeCanvas.save()
+                        nativeCanvas.rotate(-90f, x, y)
+                        nativeCanvas.drawText(
+                            p.x,
+                            x - textWidth / 2,
+                            y,
+                            paint
+                        )
+                        nativeCanvas.restore()
+                    }
                 }
             }
 
@@ -240,6 +261,11 @@ fun LineChart(
             rotate(-90f, 18f, size.height / 2)
             drawText(yAxisLabel, 18f, size.height / 2, paint)
             restore()
+
+            val textWidth = (paint.measureText(points.get(0).x)/ 3).toInt()
+            onSpace(textWidth)
+
         }
+
     }
 }
