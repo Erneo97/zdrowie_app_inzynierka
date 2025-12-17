@@ -205,25 +205,30 @@ fun LineChart(
                 textAlign = android.graphics.Paint.Align.CENTER
             }
 
-            // X axis labels (STRING)
-            indexedPoints.forEach { (xVal, p) ->
-                drawText(
-                    p.x,
-                    scaleX(xVal),
-                    size.height - padding.toFloat() + 32f,
-                    paint
-                )
+            // X axis labels
+            val stepX = (points.size / 5).coerceAtLeast(1)
+            indexedPoints.forEachIndexed { index, (xVal, p) ->
+                if (index % stepX == 0) {
+                    drawText(
+                        p.x,
+                        scaleX(xVal),
+                        size.height - padding.toFloat() + 32f,
+                        paint
+                    )
+                }
             }
 
             // Y axis values
-            paint.textAlign = android.graphics.Paint.Align.RIGHT
-            points.forEach { p ->
-                drawText(
-                    "%.2f".format(p.y),
-                    padding.toFloat() - 12f,
-                    scaleY(p.y) + 8f,
-                    paint
-                )
+            val stepY = (points.size / 5).coerceAtLeast(1)
+            points.forEachIndexed { index, p ->
+                if (index % stepY == 0) {
+                    drawText(
+                        "%.2f".format(p.y),
+                        padding.toFloat() - 12f,
+                        scaleY(p.y) + 8f,
+                        paint
+                    )
+                }
             }
 
             paint.textAlign = android.graphics.Paint.Align.CENTER
