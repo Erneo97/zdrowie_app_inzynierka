@@ -4,6 +4,7 @@ import com.example.kolekcje.enumy.Jednostki;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.PoraDnia;
 import com.example.kolekcje.posilki.*;
+import com.example.kolekcje.statistic.ChartPoint;
 import com.example.repositories.MealRepository;
 import com.example.repositories.PotwierdzProduktyRepository;
 import com.example.repositories.ProduktRepository;
@@ -161,8 +162,8 @@ public class ProduktService {
         return true;
     }
 
-    public AllMealsInDay getAllUserMealsInDay(String input, int userId, ProduktService produktService) {
-        LocalDate localDate = LocalDate.parse(input);
+    public AllMealsInDay getAllUserMealsInDay(String dateStr, int userId) {
+        LocalDate localDate = LocalDate.parse(dateStr);
         Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         AllMealsInDay userMeal = new AllMealsInDay();
@@ -175,7 +176,7 @@ public class ProduktService {
 
         if (sniadanieOpt.isPresent()) {
             List<MealInfo> sniadanie =
-                    mapSpozyteProduktyToMealInfoList(sniadanieOpt.get().getProdukty(), produktService);
+                    mapSpozyteProduktyToMealInfoList(sniadanieOpt.get().getProdukty());
             userMeal.setSniadanie(sniadanie);
         } else {
             userMeal.setSniadanie(Collections.emptyList());
@@ -188,7 +189,7 @@ public class ProduktService {
 
         if (lunchOpt.isPresent()) {
             List<MealInfo> lunch =
-                    mapSpozyteProduktyToMealInfoList(lunchOpt.get().getProdukty(), produktService);
+                    mapSpozyteProduktyToMealInfoList(lunchOpt.get().getProdukty());
             userMeal.setLunch(lunch);
         } else {
             userMeal.setLunch(Collections.emptyList());
@@ -201,7 +202,7 @@ public class ProduktService {
 
         if (obiadOpt.isPresent()) {
             List<MealInfo> obiad =
-                    mapSpozyteProduktyToMealInfoList(obiadOpt.get().getProdukty(), produktService);
+                    mapSpozyteProduktyToMealInfoList(obiadOpt.get().getProdukty());
             userMeal.setObiad(obiad);
         } else {
             userMeal.setObiad(Collections.emptyList());
@@ -214,7 +215,7 @@ public class ProduktService {
 
         if (kolacjaOpt.isPresent()) {
             List<MealInfo> kolacja =
-                    mapSpozyteProduktyToMealInfoList(kolacjaOpt.get().getProdukty(), produktService);
+                    mapSpozyteProduktyToMealInfoList(kolacjaOpt.get().getProdukty());
             userMeal.setKolacja(kolacja);
         } else {
             userMeal.setKolacja(Collections.emptyList());
@@ -227,7 +228,7 @@ public class ProduktService {
 
         if (inneOpt.isPresent()) {
             List<MealInfo> inne =
-                    mapSpozyteProduktyToMealInfoList(inneOpt.get().getProdukty(), produktService);
+                    mapSpozyteProduktyToMealInfoList(inneOpt.get().getProdukty());
             userMeal.setInne(inne);
         } else {
             userMeal.setInne(Collections.emptyList());
@@ -238,10 +239,10 @@ public class ProduktService {
         return userMeal;
     }
 
-    private List<MealInfo> mapSpozyteProduktyToMealInfoList(List<SpozyteProdukty> produkty, ProduktService produktService) {
+    private List<MealInfo> mapSpozyteProduktyToMealInfoList(List<SpozyteProdukty> produkty) {
         return produkty.stream()
                 .map(p -> {
-                    Produkt produkt = produktService.findById((int)p.getId())
+                    Produkt produkt = produktyRepository.findById((int)p.getId())
                             .orElseThrow(() -> new RuntimeException(
                                     "Produkt o id=" + p.getId() + " nie istnieje"));
 
@@ -257,4 +258,87 @@ public class ProduktService {
                 .toList();
     }
 
+    private ChartPoint getUSerCaloriesByDate(int usrId , Date date) {
+        ChartPoint chartPoint = new ChartPoint(date.toString(), 0.0);
+        double sum = 0.0;
+
+        AllMealsInDay dane = getAllUserMealsInDay(date.toString(), usrId);
+
+        for (MealInfo pos : dane.getSniadanie()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+        for (MealInfo pos : dane.getLunch()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+        for (MealInfo pos : dane.getObiad()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+        for (MealInfo pos : dane.getKolacja()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+        for (MealInfo pos : dane.getInne()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+
+        chartPoint.setY(sum);
+
+        return chartPoint;
+    }
+
+
+    private List<ChartPoint> getUserMakrosByDate(int usrId , Date date) {
+        List<ChartPoint> chartPoint = new ArrayList<>();
+        double sumBialko = 0.0, sumTluszcz = 0.0, sumWeglo  = 0.0, sumBlonnik = 0.0;
+
+        AllMealsInDay dane = getAllUserMealsInDay(date.toString(), usrId);
+
+        for (MealInfo pos : dane.getSniadanie()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+        for (MealInfo pos : dane.getLunch()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+        for (MealInfo pos : dane.getObiad()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+        for (MealInfo pos : dane.getKolacja()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+        for (MealInfo pos : dane.getInne()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+
+        chartPoint.add(new ChartPoint(date.toString(), sumBialko));
+        chartPoint.add(new ChartPoint(date.toString(), sumWeglo));
+        chartPoint.add(new ChartPoint(date.toString(), sumTluszcz));
+        chartPoint.add(new ChartPoint(date.toString(), sumBlonnik));
+
+
+        return chartPoint;
+    }
 }
