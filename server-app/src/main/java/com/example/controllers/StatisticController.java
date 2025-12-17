@@ -36,16 +36,14 @@ public class StatisticController {
 
     @PostMapping("/weight")
     public ResponseEntity<?> getUserWeight(@RequestBody StatisticInterval interval, Authentication authentication) {
-       log.info("getUserWeight authentication {}", authentication);
 
         if( authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
         String userEmail = authentication.getName();
-        log.info("getUserWeight dane  - {} {}: {} {}", userEmail, interval, interval.getData(), interval.getCountDays());
 
         List<PommiarWagii> wagi = uzytkownikService.getUserWeightsByDate(userEmail, interval.getData(), interval.getCountDays());
-        log.info("getUserWeight weight size {} ", wagi.size());
+
         if(!wagi.isEmpty() )
             return ResponseEntity.ok(statisticService.getStatisticsForWeight(wagi));
 
@@ -66,7 +64,7 @@ public class StatisticController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
         String userEmail = authentication.getName();
-        
+
         Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
         if(optUsr.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
