@@ -98,7 +98,7 @@ public class ProduktController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
 
-        AllMealsInDay userMealDay = produktService.getAllUserMealsInDay(date, usrSearch.getId(), produktService);
+        AllMealsInDay userMealDay = produktService.getAllUserMealsInDay(date, usrSearch.getId());
 
         return ResponseEntity.ok(userMealDay);
     }
@@ -148,7 +148,7 @@ public class ProduktController {
         Uzytkownik usr = optUsr.get();
 
 
-        AllMealsInDay userMealDay = produktService.getAllUserMealsInDay(date, usr.getId(), produktService);
+        AllMealsInDay userMealDay = produktService.getAllUserMealsInDay(date, usr.getId());
 
         return ResponseEntity.ok(userMealDay);
     }
