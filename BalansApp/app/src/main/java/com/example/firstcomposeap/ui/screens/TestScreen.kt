@@ -4,7 +4,6 @@ package com.example.balansapp.ui.screens
 import android.annotation.SuppressLint
 import android.os.SystemClock
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -24,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +29,6 @@ import com.example.balansapp.ui.navigation.main.BottomMenu
 import com.example.balansapp.ui.components.input.LogoBackGround
 
 import androidx.compose.ui.unit.dp
-import com.example.firstcomposeap.ui.components.meal.SelectBox
 import com.example.firstcomposeap.ui.components.meal.SelectPomiarWagiOptionBox
 import com.example.firstcomposeap.ui.components.statistic.LineChartWithControls
 import com.example.firstcomposeap.ui.service.StatisticViewModel
@@ -41,7 +37,6 @@ import com.example.firstcomposeap.ui.service.data.PomiarWagiOptions
 import com.example.firstcomposeap.ui.service.data.StatisticParameters
 import com.example.firstcomposeap.ui.service.data.StatisticPeriod
 import kotlinx.coroutines.delay
-import okhttp3.internal.format
 import java.time.LocalDate
 
 
@@ -59,24 +54,23 @@ fun TestScreen(statisticViewModel: StatisticViewModel) {
     var selectOption by remember {  mutableStateOf(PomiarWagiOptions.WAGA) }
     var selectedValue by remember {  mutableStateOf<StatisticParameters?>(null) }
     var selectedLabel by remember {  mutableStateOf<String?>(null) }
-    var points = remember { mutableStateListOf<ChartPoint>() }
+    var points by remember { mutableStateOf<List<ChartPoint>>(emptyList()) }
 
 
-    LaunchedEffect(statisticViewModel.token, days, localDate) {
+    LaunchedEffect(Unit, statisticViewModel.token,  selectOption, days, localDate) {
         statisticViewModel.downloadWeightsUserStatistic(days, localDate)
-        statisticViewModel.downloadWeightsDataUser(days, localDate)
-    }
 
-    LaunchedEffect(Unit, selectOption, days, localDate) {
-        selectedLabel = selectOption.label
+        selectedLabel = "Statystyki ${selectOption.label}"
         selectedValue = statisticViewModel.getCorrectStatisticParameters(selectOption)
-
-        points.apply {
-            points.clear()
-            points.addAll(statisticViewModel.getDataByOption(selectOption))
-        }
     }
 
+    LaunchedEffect(statisticViewModel.loaded) {
+        if( statisticViewModel.loaded) {
+            selectedValue = statisticViewModel.getCorrectStatisticParameters(selectOption)
+            points = statisticViewModel.getDataByOption(selectOption)
+        }
+
+    }
 
     LaunchedEffect(isRunning) {
         if (isRunning) {
@@ -133,7 +127,7 @@ fun TestScreen(statisticViewModel: StatisticViewModel) {
                     Spacer(Modifier.height(15.dp))
 
                     LineChartWithControls(
-                        points = points.toList(),
+                        points = points,
                         xAxisLabel = "Dni",
                         yAxisLabel = "Wartość",
                         modifier = Modifier.padding(16.dp),

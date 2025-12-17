@@ -59,12 +59,16 @@ class StatisticViewModel : ViewModel() {
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage
             }
+            finally {
+                downloadWeightsDataUser(days, date)
+            }
         }
     }
 
+    var loaded by mutableStateOf(false)
     fun downloadWeightsDataUser(days: Int = 90, date: LocalDate = LocalDate.now()) {
         Log.e("downloadWeightsDataUser", "${date} ${days} ${token ?: "brak token"}")
-
+        loaded = false
         viewModelScope.launch {
             try {
                 val response = ApiClient.getApi(token ?: "").getcUserWeights(
@@ -84,6 +88,9 @@ class StatisticViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage
+            }
+            finally {
+                loaded = true
             }
         }
     }
