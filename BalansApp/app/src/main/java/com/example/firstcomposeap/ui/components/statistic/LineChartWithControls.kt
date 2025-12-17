@@ -185,8 +185,8 @@ fun LineChart(
         if (showTrendLine && trendA != null && trendB != null) {
             val x1 = 0.0
             val x2 = maxX
-            val y1 = trendA * x1 + trendB
-            val y2 = trendA * x2 + trendB
+            val y1 = (trendA * x1 + trendB).coerceIn(minY, maxY)
+            val y2 = (trendA * x2 + trendB).coerceIn(minY, maxY)
 
             drawLine(
                 color = Color.Magenta,
