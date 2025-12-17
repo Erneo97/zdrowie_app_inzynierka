@@ -100,6 +100,8 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
         }
     )
 
+//     Poczatek treści statystyk
+
     Column (modifier = Modifier
         .fillMaxSize()
         .verticalScroll(rememberScrollState()),

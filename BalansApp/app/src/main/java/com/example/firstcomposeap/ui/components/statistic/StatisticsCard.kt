@@ -1,6 +1,8 @@
 package com.example.firstcomposeap.ui.components.statistic
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
@@ -15,6 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,18 +35,41 @@ fun StatisticsCard(
     modifier: Modifier = Modifier,
     label: String = "Statystyki"
 ) {
-
-    Card(
-        modifier = modifier.padding(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    val shadowColor = MaterialTheme.colorScheme.primary
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp)
+        .drawBehind {
+            val shadowOffsetX = 8f
+            val shadowOffsetY = 8f
+            val shadowColor = shadowColor.copy(alpha = 0.25f)
+            drawRoundRect(
+                color = shadowColor,
+                topLeft = Offset(shadowOffsetX, shadowOffsetY),
+                size = size,
+                cornerRadius = CornerRadius(25f, 25f),
+            )
+        }
+        .shadow(
+            elevation = 10.dp,
+            shape = RoundedCornerShape(25.dp),
+            ambientColor = shadowColor.copy(alpha = 0.8f),
+            spotColor = shadowColor.copy(alpha = 0.8f)
+        )
+        .border(
+            width = 2.dp,
+            color = Color.Gray.copy(alpha = 0.4f),
+            shape = RoundedCornerShape(25.dp)
+        )
+        .background(Color.White, RoundedCornerShape(16.dp))
+        .padding(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column (modifier = Modifier.background(Color.White)){
 
             Text(
                 text = label,
                 style = MaterialTheme.typography.titleLarge
             )
-
 
             Spacer(modifier = Modifier.height(16.dp))
 
