@@ -5,9 +5,7 @@ import com.example.kolekcje.statistic.ChartPoint;
 import com.example.kolekcje.statistic.StatisticInterval;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
-import com.example.services.ProduktService;
 import com.example.services.StatisticService;
-import com.example.services.TreningService;
 import com.example.services.UzytkownikService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +23,12 @@ import java.util.Optional;
 @RequestMapping("/api/statistic")
 public class StatisticController {
     private final UzytkownikService uzytkownikService;
-    private final TreningService treningService;
     private final StatisticService statisticService;
     private static final Logger log = LoggerFactory.getLogger(StatisticController.class);
 
     public StatisticController(UzytkownikService uzytkownikService,
-                               TreningService treningService,
                                StatisticService statisticService) {
         this.uzytkownikService = uzytkownikService;
-        this.treningService = treningService;
         this.statisticService = statisticService;
     }
 
