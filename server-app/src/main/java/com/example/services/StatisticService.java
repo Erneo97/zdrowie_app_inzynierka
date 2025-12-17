@@ -139,12 +139,24 @@ public class StatisticService {
     public List<ChartPoint> getUserCaloriesSdata(int usrId, Date dataKoncowa, int dayCount ) {
         List<ChartPoint> calories = new ArrayList<>();
 
-        LocalDate dataTempt = dataKoncowa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().minusDays(dayCount);
-        Date dataPoczatkowa = Date.from(
-                dataTempt.atStartOfDay(ZoneId.systemDefault()).toInstant()
-        );
+        ZoneId zone = ZoneId.systemDefault();
 
+        LocalDate endDate = dataKoncowa
+                .toInstant()
+                .atZone(zone)
+                .toLocalDate();
 
+        LocalDate startDate = endDate.minusDays(dayCount);
+
+        for (LocalDate date = startDate; !date.isAfter(endDate);  date = date.plusDays(1) ) {
+
+            Date currentDate = Date.from(
+                    date.atStartOfDay(zone).toInstant()
+            );
+
+            ChartPoint point = getUSerCaloriesByDate(usrId, currentDate);
+            calories.add(point);
+        }
 
         return calories;
     }
