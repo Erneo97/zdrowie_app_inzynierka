@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -155,17 +156,21 @@ public class StatisticService {
             );
 
             ChartPoint point = getUSerCaloriesByDate(usrId, currentDate);
-            calories.add(point);
+            if( point.getY() > 0 )
+                calories.add(point);
         }
 
         return calories;
     }
 
     private ChartPoint getUSerCaloriesByDate(int usrId , Date date) {
-        ChartPoint chartPoint = new ChartPoint(date.toString(), 0.0);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = formatter.format(date);
+        ChartPoint chartPoint = new ChartPoint(dateStr, 0.0);
         double sum = 0.0;
 
-        AllMealsInDay dane = produktService.getAllUserMealsInDay(date.toString(), usrId);
+
+        AllMealsInDay dane = produktService.getAllUserMealsInDay(dateStr, usrId);
 
         for (MealInfo pos : dane.getSniadanie()) {
             sum += pos.getObjetosc().getKcal();
