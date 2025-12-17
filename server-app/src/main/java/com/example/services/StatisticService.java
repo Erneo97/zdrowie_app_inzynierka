@@ -1,12 +1,19 @@
 package com.example.services;
 
+import com.example.kolekcje.posilki.AllMealsInDay;
+import com.example.kolekcje.posilki.Dawka;
+import com.example.kolekcje.posilki.MealInfo;
+import com.example.kolekcje.statistic.ChartPoint;
 import com.example.kolekcje.statistic.StatisticParameters;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +21,13 @@ import java.util.stream.IntStream;
 
 @Component
 public class StatisticService {
+    private final TreningService treningService;
+    private final ProduktService produktService;
+
+    public StatisticService(TreningService treningService, ProduktService produktService) {
+        this.treningService = treningService;
+        this.produktService = produktService;
+    }
 
     private static final Logger log = LoggerFactory.getLogger(StatisticService.class);
 
@@ -118,6 +132,105 @@ public class StatisticService {
         double b = (sumY - a * sumX) / n;
 
         return new double[]{a, b};
+    }
+
+
+
+    public List<ChartPoint> getUserCaloriesSdata(int usrId, Date dataKoncowa, int dayCount ) {
+        List<ChartPoint> calories = new ArrayList<>();
+
+        LocalDate dataTempt = dataKoncowa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().minusDays(dayCount);
+        Date dataPoczatkowa = Date.from(
+                dataTempt.atStartOfDay(ZoneId.systemDefault()).toInstant()
+        );
+
+
+
+        return calories;
+    }
+
+    private ChartPoint getUSerCaloriesByDate(int usrId , Date date) {
+        ChartPoint chartPoint = new ChartPoint(date.toString(), 0.0);
+        double sum = 0.0;
+
+        AllMealsInDay dane = produktService.getAllUserMealsInDay(date.toString(), usrId);
+
+        for (MealInfo pos : dane.getSniadanie()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+        for (MealInfo pos : dane.getLunch()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+        for (MealInfo pos : dane.getObiad()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+        for (MealInfo pos : dane.getKolacja()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+        for (MealInfo pos : dane.getInne()) {
+            sum += pos.getObjetosc().getKcal();
+        }
+
+        chartPoint.setY(sum);
+
+        return chartPoint;
+    }
+
+
+    private List<ChartPoint> getUserMakrosByDate(int usrId , Date date) {
+        List<ChartPoint> chartPoint = new ArrayList<>();
+        double sumBialko = 0.0, sumTluszcz = 0.0, sumWeglo  = 0.0, sumBlonnik = 0.0;
+
+        AllMealsInDay dane = produktService.getAllUserMealsInDay(date.toString(), usrId);
+
+        for (MealInfo pos : dane.getSniadanie()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+        for (MealInfo pos : dane.getLunch()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+        for (MealInfo pos : dane.getObiad()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+        for (MealInfo pos : dane.getKolacja()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+        for (MealInfo pos : dane.getInne()) {
+            Dawka dawka = pos.getObjetosc();
+
+            sumBlonnik += dawka.getBlonnik();
+            sumBialko += dawka.getBialko();
+            sumWeglo += dawka.getWeglowodany();
+            sumTluszcz += dawka.getTluszcze();
+        }
+
+        chartPoint.add(new ChartPoint(date.toString(), sumBialko));
+        chartPoint.add(new ChartPoint(date.toString(), sumWeglo));
+        chartPoint.add(new ChartPoint(date.toString(), sumTluszcz));
+        chartPoint.add(new ChartPoint(date.toString(), sumBlonnik));
+
+
+        return chartPoint;
     }
 
 }
