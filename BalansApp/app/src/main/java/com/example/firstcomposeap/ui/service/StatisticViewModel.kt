@@ -75,6 +75,9 @@ class StatisticViewModel : ViewModel() {
                     response.body()?.let {
                         weightData.clear()
                         weightData = it.toMutableStateList()
+                        weightData.forEach { it ->
+                            it.data = it.data.substring(0,10)
+                        }
                     }
                 } else {
                     errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"

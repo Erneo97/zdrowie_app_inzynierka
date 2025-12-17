@@ -53,7 +53,7 @@ fun <T> SnapshotStateList<T>.replaceWith(newList: List<T>) {
 
 data class PommiarWagii(
     var wartosc: Double,
-    val data: String,
+    var data: String,
     val tluszcz: Double,
     val miesnie: Double,
     val nawodnienie: Double
