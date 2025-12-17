@@ -3,6 +3,8 @@ package com.example.controllers;
 
 import com.example.kolekcje.statistic.ChartPoint;
 import com.example.kolekcje.statistic.StatisticInterval;
+import com.example.kolekcje.statistic.StatisticParameters;
+import com.example.kolekcje.statistic.StatsResponse;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.services.StatisticService;
@@ -15,9 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/api/statistic")
@@ -59,14 +61,12 @@ public class StatisticController {
             Date date,
             @RequestParam int countDays,
             Authentication authentication) {
-        log.info("getUserCalories authentication {}", authentication);
 
         if( authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
         String userEmail = authentication.getName();
-        log.info("getUserWeight dane  - {} {}: {}", userEmail, date, countDays);
-
+        
         Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
         if(optUsr.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
@@ -77,10 +77,19 @@ public class StatisticController {
                 date,
                 countDays
         );
-        log.info("getUserWeight weight size {} ", kalorie.size());
 
+        List<Double> xList = IntStream.rangeClosed(1, kalorie.size()).asDoubleStream().boxed().collect(Collectors.toList());
 
+        double[] val = StatisticService.linearRegression(
+                xList,
+                kalorie.stream().mapToDouble(ChartPoint::getY).boxed().toList()
+        );
 
-        return ResponseEntity.ok(kalorie);
+        StatisticParameters sp = new StatisticParameters();
+        sp.setTrendLine(val[0], val[1]);
+
+        StatsResponse<ChartPoint> ret = new StatsResponse<>(kalorie, sp );
+
+        return ResponseEntity.ok(ret);
     }
 }

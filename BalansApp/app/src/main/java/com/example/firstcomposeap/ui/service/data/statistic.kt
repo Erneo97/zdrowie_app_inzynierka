@@ -32,3 +32,8 @@ data class StatisticParameters(
     var a: Double,
     var b: Double
 )
+
+data class StatsResponse<T>(
+    var data: List<T>,
+    var stats: StatisticParameters
+)

@@ -1,6 +1,7 @@
 package com.example.firstcomposeap.ui.service
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +55,7 @@ class StatisticViewModel : ViewModel() {
     }
 
     var caloriesData: SnapshotStateList<ChartPoint> = mutableStateListOf()
+    var caloriesStats by mutableStateOf<StatisticParameters?>(null)
     fun downloadCaloriesUserStatistic(days: Int = 90, date: LocalDate = LocalDate.now()) {
         val internal = StatisticInterval(
             data = date.toString(),
@@ -68,7 +70,8 @@ class StatisticViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let {
                         caloriesData.clear()
-                        caloriesData = it.toMutableStateList()
+                        caloriesData = it.data.toMutableStateList()
+                        caloriesStats = it.stats
                     }
                 } else {
                     errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"

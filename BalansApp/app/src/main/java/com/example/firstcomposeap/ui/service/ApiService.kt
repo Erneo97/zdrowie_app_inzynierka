@@ -19,6 +19,7 @@ import com.example.firstcomposeap.ui.service.data.PlanTreningowy
 import com.example.firstcomposeap.ui.service.data.Produkt
 import com.example.firstcomposeap.ui.service.data.StatisticInterval
 import com.example.firstcomposeap.ui.service.data.StatisticParameters
+import com.example.firstcomposeap.ui.service.data.StatsResponse
 import com.example.firstcomposeap.ui.service.data.Trening
 import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowegoResponse
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
@@ -213,5 +214,5 @@ interface ApiService {
     suspend fun getUserCalories(
         @Query("date") date: String,
         @Query("countDays") countDays: Int
-    ): Response<List<ChartPoint>>
+    ): Response<StatsResponse<ChartPoint>>
 }

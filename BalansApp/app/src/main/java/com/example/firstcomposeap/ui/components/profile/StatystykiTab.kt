@@ -166,8 +166,8 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
                 xAxisLabel = "Dni",
                 yAxisLabel = "Kalorie",
                 modifier = Modifier.padding(16.dp),
-                a = value.a,
-                b = value.b
+                a = statisticViewModel.caloriesStats?.a ?: 0.0,
+                b = statisticViewModel.caloriesStats?.b ?: 0.0
             )
 
             LineChartWithControls(

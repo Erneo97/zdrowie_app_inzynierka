@@ -110,7 +110,7 @@ public class StatisticService {
         }
     }
 
-    private static double[] linearRegression(List<Double> x, List<Double> y) {
+    public static double[] linearRegression(List<Double> x, List<Double> y) {
         if (x.size() != y.size()) {
             throw new IllegalArgumentException("Tablice muszą mieć tę samą długość");
         }
