@@ -107,23 +107,8 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
         .verticalScroll(rememberScrollState()),
 
         ) {
-        selectedValue?.let { value ->
-            StatisticsCard(
-                stats = value,
-                label = selectedLabel ?: "Statystyki"
-            )
-            Spacer(Modifier.height(15.dp))
 
-            LineChartWithControls(
-                points = points,
-                xAxisLabel = "Dni",
-                yAxisLabel = "Wartość",
-                modifier = Modifier.padding(16.dp),
-                a = value.a,
-                b = value.b
-            )
-        }
-
+        //**** PPM ****//
 
         UniversalEditCard(
             data = {
@@ -138,6 +123,9 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
 
         var aktywnosc by remember { mutableStateOf<Double>(1.4) }
         var cpm by remember { mutableStateOf(loginViewModel.ppm * aktywnosc) }
+
+
+        //**** CPM ****//
 
         UniversalEditCard(
             data = {
@@ -163,6 +151,24 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
             icon = Question_mark
         )
 
+        //**** Info statystyczne + Wykres ****//
+
+        selectedValue?.let { value ->
+            StatisticsCard(
+                stats = value,
+                label = selectedLabel ?: "Statystyki"
+            )
+            Spacer(Modifier.height(15.dp))
+
+            LineChartWithControls(
+                points = points,
+                xAxisLabel = "Dni",
+                yAxisLabel = "Wartość",
+                modifier = Modifier.padding(16.dp),
+                a = value.a,
+                b = value.b
+            )
+        }
     }
 
 
