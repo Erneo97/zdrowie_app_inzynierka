@@ -42,7 +42,7 @@ class StatisticViewModel : ViewModel() {
 
     fun downloadUserStatistic(days: Int = 90, date: LocalDate = LocalDate.now()) {
         downloadWeightsUserStatistic(days, date)
-
+        downloadCaloriesUserStatistic(days, date)
         downloadWeightsDataUser(days, date)
 
     }
