@@ -10,7 +10,7 @@ enum class StatisticPeriod(val label: String, val days: Int) {
 enum class PomiarWagiOptions(val label: String, val indexList: Int) {
     WAGA("waga", 0),
     TK_MIESNIOWA("Tk. mięśniowa", 1),
-    TK_TLUSZCZOWA("Th. tłuszczowa", 2),
+    TK_TLUSZCZOWA("Tk. tłuszczowa", 2),
     NAWODNIENIE("Nawodnienie", 3)
 }
 
