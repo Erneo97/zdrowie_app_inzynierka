@@ -60,7 +60,7 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
 
 
     LaunchedEffect(Unit, statisticViewModel.token,  selectOption, days, localDate) {
-        statisticViewModel.downloadWeightsUserStatistic(days, localDate)
+        statisticViewModel.downloadUserStatistic(days, localDate)
 
         selectedLabel = "Statystyki ${selectOption.label}"
         selectedValue = statisticViewModel.getCorrectStatisticParameters(selectOption)
@@ -71,7 +71,6 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
             selectedValue = statisticViewModel.getCorrectStatisticParameters(selectOption)
             points = statisticViewModel.getDataByOption(selectOption)
         }
-
     }
 
     LaunchedEffect(isRunning) {
@@ -161,9 +160,18 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
             Spacer(Modifier.height(15.dp))
 
             LineChartWithControls(
+                points = statisticViewModel.caloriesData,
+                xAxisLabel = "Dni",
+                yAxisLabel = "Kalorie",
+                modifier = Modifier.padding(16.dp),
+                a = value.a,
+                b = value.b
+            )
+
+            LineChartWithControls(
                 points = points,
                 xAxisLabel = "Dni",
-                yAxisLabel = "Wartość",
+                yAxisLabel = "Waga",
                 modifier = Modifier.padding(16.dp),
                 a = value.a,
                 b = value.b

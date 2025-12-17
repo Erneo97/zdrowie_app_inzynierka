@@ -40,6 +40,39 @@ class StatisticViewModel : ViewModel() {
         return weightStats[option.indexList]!!
     }
 
+    fun downloadUserStatistic(days: Int = 90, date: LocalDate = LocalDate.now()) {
+        downloadWeightsUserStatistic(days, date)
+
+        downloadWeightsDataUser(days, date)
+
+    }
+
+    var caloriesData: SnapshotStateList<ChartPoint> = mutableStateListOf()
+    fun downloadCaloriesUserStatistic(days: Int = 90, date: LocalDate = LocalDate.now()) {
+        val internal = StatisticInterval(
+            data = date.toString(),
+            countDays = days
+        )
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").getUserCalories(
+                    date = date.toString(),
+                    countDays =  days
+                )
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        caloriesData.clear()
+                        caloriesData = it.toMutableStateList()
+                    }
+                } else {
+                    errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
     fun downloadWeightsUserStatistic(days: Int = 90, date: LocalDate = LocalDate.now()) {
         val internal = StatisticInterval(
             data = date.toString(),
@@ -58,9 +91,6 @@ class StatisticViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage
-            }
-            finally {
-                downloadWeightsDataUser(days, date)
             }
         }
     }

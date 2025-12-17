@@ -12,6 +12,7 @@ import com.example.balansapp.ui.service.data.SimpleMessage
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.service.data.AllMealsInDay
+import com.example.firstcomposeap.ui.service.data.ChartPoint
 import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.PlanTreningowy
@@ -207,4 +208,10 @@ interface ApiService {
         @Query("countDays") countDays: Int
     ): Response<List<PommiarWagii>>
 
+
+    @GET("statistic/kcal")
+    suspend fun getUserCalories(
+        @Query("date") date: String,
+        @Query("countDays") countDays: Int
+    ): Response<List<ChartPoint>>
 }
