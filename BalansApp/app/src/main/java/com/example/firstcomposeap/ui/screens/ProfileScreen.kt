@@ -9,8 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -61,7 +59,6 @@ fun ProfileScreen(navController: NavHostController, loginViewModel: LoginViewMod
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-//                    .verticalScroll(rememberScrollState())
                 ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

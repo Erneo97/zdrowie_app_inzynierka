@@ -3,6 +3,7 @@ package com.example.firstcomposeap.ui.components.profile
 
 import android.os.SystemClock
 import android.util.Log
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -33,7 +35,6 @@ import com.example.firstcomposeap.ui.service.StatisticViewModel
 import com.example.firstcomposeap.ui.service.data.ChartPoint
 import com.example.firstcomposeap.ui.service.data.PomiarWagiOptions
 import com.example.firstcomposeap.ui.service.data.StatisticParameters
-import com.example.firstcomposeap.ui.service.data.StatisticPeriod
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 
@@ -49,27 +50,28 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
     var startTime by remember { mutableStateOf(0L) }
     var elapsedMs by remember { mutableStateOf(0L) }
 
-    var selectedPeriod by remember { mutableStateOf(StatisticPeriod.SIX_MONTHS) }
-    var days by remember { mutableStateOf(StatisticPeriod.SIX_MONTHS.days) }
     var localDate by remember {  mutableStateOf<LocalDate>(LocalDate.now()) }
 
-    var selectOption by remember {  mutableStateOf(PomiarWagiOptions.WAGA) }
+
     var selectedValue by remember {  mutableStateOf<StatisticParameters?>(null) }
     var selectedLabel by remember {  mutableStateOf<String?>(null) }
     var points by remember { mutableStateOf<List<ChartPoint>>(emptyList()) }
 
+    val scrollState = rememberSaveable(saver = ScrollState.Saver) {
+        ScrollState(0)
+    }
 
-    LaunchedEffect(Unit, statisticViewModel.token,  selectOption, days, localDate) {
-        statisticViewModel.downloadUserStatistic(days, localDate)
+    LaunchedEffect(Unit, statisticViewModel.token,  statisticViewModel.selectOption, statisticViewModel.days, localDate) {
+        statisticViewModel.downloadUserStatistic(statisticViewModel.days, localDate)
 
-        selectedLabel = "Statystyki ${selectOption.label}"
-        selectedValue = statisticViewModel.getCorrectStatisticParameters(selectOption)
+        selectedLabel = "Statystyki ${statisticViewModel.selectOption.label}"
+        selectedValue = statisticViewModel.getCorrectStatisticParameters(statisticViewModel.selectOption)
     }
 
     LaunchedEffect(statisticViewModel.loaded) {
         if( statisticViewModel.loaded) {
-            selectedValue = statisticViewModel.getCorrectStatisticParameters(selectOption)
-            points = statisticViewModel.getDataByOption(selectOption)
+            selectedValue = statisticViewModel.getCorrectStatisticParameters(statisticViewModel.selectOption)
+            points = statisticViewModel.getDataByOption(statisticViewModel.selectOption)
         }
     }
 
@@ -86,16 +88,16 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
 
     SelectPomiarWagiOptionBox(
         options = PomiarWagiOptions.entries,
-        selectedOption = selectOption,
-        onOptionSelected = {selectOption = it}
+        selectedOption = statisticViewModel.selectOption,
+        onOptionSelected = {statisticViewModel.selectOption = it}
     )
 
     StatisticPeriodSelector(
-        selectedPeriod = selectedPeriod,
+        selectedPeriod = statisticViewModel.selectedPeriod,
         onSelected = {
-            Log.e("downloadWeightsUserStatistic", "czas wybrany: ${it} - ${selectedPeriod}")
-            selectedPeriod = it
-            days = it.days
+            Log.e("downloadWeightsUserStatistic", "czas wybrany: ${it} - ${statisticViewModel.selectedPeriod}")
+            statisticViewModel.selectedPeriod = it
+            statisticViewModel.days = it.days
         }
     )
 
@@ -103,7 +105,7 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
 
     Column (modifier = Modifier
         .fillMaxSize()
-        .verticalScroll(rememberScrollState()),
+        .verticalScroll(scrollState),
 
         ) {
 

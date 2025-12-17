@@ -15,6 +15,7 @@ import com.example.firstcomposeap.ui.service.data.ChartPoint
 import com.example.firstcomposeap.ui.service.data.PomiarWagiOptions
 import com.example.firstcomposeap.ui.service.data.StatisticInterval
 import com.example.firstcomposeap.ui.service.data.StatisticParameters
+import com.example.firstcomposeap.ui.service.data.StatisticPeriod
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -22,6 +23,11 @@ class StatisticViewModel : ViewModel() {
     var token by mutableStateOf<String?>(null)
     var errorMessage by mutableStateOf<String?>(null)
     var message by mutableStateOf<String?>(null)
+
+    var selectedPeriod by mutableStateOf(StatisticPeriod.WEEK)
+    var days by mutableStateOf(StatisticPeriod.WEEK.days)
+    var selectOption by  mutableStateOf(PomiarWagiOptions.WAGA)
+
 
     var weightStats: SnapshotStateList<StatisticParameters?> = mutableStateListOf()
     var weightData: SnapshotStateList<PommiarWagii> = mutableStateListOf()
