@@ -41,7 +41,7 @@ public class StatisticController {
 
         List<PommiarWagii> wagi = uzytkownikService.getUserWeightsByDate(userEmail, interval.getData(), interval.getCountDays());
         log.info("getUserWeight weight size {} ", wagi.size());
-        if(wagi.size() > 3)
+        if(!wagi.isEmpty() )
             return ResponseEntity.ok(statisticService.getStatisticsForWeight(wagi));
 
 

@@ -161,9 +161,9 @@ public class UzytkownikService {
 
 
             return wagii.stream().filter(
-                    pomiarWagi -> {
-                        return pomiarWagi.data.compareTo(dataPoczatkowa) >= 0 && pomiarWagi.data.compareTo(dataKoncowa) <= 0;
-                    }
+                    pomiarWagi ->
+                         pomiarWagi.data.compareTo(dataPoczatkowa) >= 0 && pomiarWagi.data.compareTo(dataKoncowa) <= 0
+
             ).toList();
         }
         return null;
