@@ -26,7 +26,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.firstcomposeap.ui.service.data.ChartPoint
 
 @Composable
@@ -34,6 +36,7 @@ fun LineChartWithControls(
     points: List<ChartPoint>,
     xAxisLabel: String,
     yAxisLabel: String,
+    chartLabel : String,
     a: Double? = null,
     b: Double? = null,
     modifier: Modifier = Modifier
@@ -43,6 +46,8 @@ fun LineChartWithControls(
     var space by remember { mutableStateOf(4) }
 
     Column(modifier = modifier.background(Color.White)) {
+        Text(text = chartLabel, color = Color.Black, fontSize = 25.sp, fontWeight = FontWeight.Bold )
+
         LineChart(
             points = points,
             showGrid = showGrid,
