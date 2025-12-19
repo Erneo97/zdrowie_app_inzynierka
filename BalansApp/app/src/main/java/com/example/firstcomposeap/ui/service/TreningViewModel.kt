@@ -23,9 +23,12 @@ import kotlinx.coroutines.launch
 
 
 class TreningViewModel : ViewModel() {
+    var spaloneKcal by mutableStateOf(0f)
     var selectedPeriod by mutableStateOf(StatisticPeriod.WEEK)
     var days by mutableStateOf(StatisticPeriod.WEEK.days)
     var selectedTabIndex by mutableStateOf(0)
+    var userWeight by mutableStateOf(0.0f)
+
 
     var nazwa by   mutableStateOf("")
     var cel by  mutableStateOf("Wybierz cel")
@@ -207,12 +210,13 @@ class TreningViewModel : ViewModel() {
     fun updateTrening() {
         if( trening == null )
             return
-        Log.e("trening", "${trening!!.idTrening} ${trening!!.idPlanu} ${trening!!.idUser} ${trening!!.cwiczenia} ${trening!!.data} ")
+        trening!!.spaloneKalorie = spaloneKcal
         viewModelScope.launch {
             try {
                 val response = ApiClient.getApi(token ?: "").updateNewTrening( trening!! )
                 if (response.isSuccessful) {
                     message = "Zaktualizowano trening w baza danych"
+                    spaloneKcal = 0f
                     trening = null
                 } else {
                     errorMessage = "Błąd dodania planu treningowego do bazy danych: ${response.code()}"

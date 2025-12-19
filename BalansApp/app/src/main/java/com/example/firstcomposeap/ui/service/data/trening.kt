@@ -150,7 +150,7 @@ data class Trening(
     var idPlanu: Int,
     var data: String,
     var cwiczenia: SnapshotStateList <CwiczenieWTreningu>,
-    var spaloneKalorie: Float = 0f
+    var spaloneKalorie: Float
 )
 
 data class TreningCardInformation(
@@ -165,5 +165,6 @@ data class CwiczenieWTreningu(
     var id: Int,
     var nazwa: String,
     var czas: String, // format mm:ss
-    var serie: SnapshotStateList<Seria>
+    var serie: SnapshotStateList<Seria>,
+    val met: Float
 )

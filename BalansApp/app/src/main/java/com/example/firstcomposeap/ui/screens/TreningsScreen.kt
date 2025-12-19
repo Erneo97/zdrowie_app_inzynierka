@@ -2,6 +2,7 @@ package com.example.balansapp.ui.screens
 
 
 import android.os.SystemClock
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,7 @@ import com.example.balansapp.R
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayout
+import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.components.statistic.StatisticPeriodSelector
 import com.example.firstcomposeap.ui.components.treningplans.TrainingSeasonCard
@@ -49,11 +51,15 @@ import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.CwiczenieWTreningu
 import com.example.firstcomposeap.ui.service.data.Seria
 import kotlinx.coroutines.delay
+import kotlin.collections.sum
 
 @Composable
-fun TreningsScreen(navController: NavHostController, treningViewModel: TreningViewModel) {
+fun TreningsScreen(navController: NavHostController, treningViewModel: TreningViewModel, loginViewModel: LoginViewModel) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.menu_trenings) ) }
+
+    if( loginViewModel.user != null)
+        treningViewModel.userWeight = loginViewModel.user!!.waga.last().wartosc.toFloat()
 
     val tabs = listOf(
         "Nowy trening",
@@ -130,11 +136,23 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
 
 @Composable
 fun newTreningTab (treningViewModel: TreningViewModel) {
+    LaunchedEffect(treningViewModel.trening) {
+
+        while (treningViewModel.trening != null ) {
+            delay(1000L)
+            var sum = 0.0f
+            treningViewModel.trening!!.cwiczenia.forEach {
+                sum += it.met * treningViewModel.userWeight * parseTimeToHours(it.czas)
+            }
+            treningViewModel.spaloneKcal = sum
+        }
+    }
+
     if( treningViewModel.trening == null ) {
         Text("Rozpocznij trening by kontynułować")
     }
     else {
-        Text("${treningViewModel.trening!!.data}, spalone kcal: ${treningViewModel.trening!!.spaloneKalorie} kcal",
+        Text("${treningViewModel.trening!!.data}, spalone kcal: ${String.format("%.2f", treningViewModel.spaloneKcal)} kcal",
             fontWeight = FontWeight.SemiBold, fontSize = 25.sp
         )
         Spacer(Modifier.height(5.dp))
@@ -145,12 +163,15 @@ fun newTreningTab (treningViewModel: TreningViewModel) {
                 CwiczenieTreningItem(
                     cwiczenie = it,
                     onRemove = { treningViewModel.trening!!.cwiczenia.remove(it) },
-                    updateTime = { nowyCzas -> it.czas = nowyCzas}
+                    updateTime = {
+                        nowyCzas -> it.czas = nowyCzas
+                    }
                 )
             }
         }
     }
 }
+
 
 @Composable
 fun CwiczenieTreningItem(
@@ -366,6 +387,14 @@ fun parseTimeToMs(time: String): Long {
     val minutes = parts[0].toLongOrNull() ?: 0L
     val seconds = parts[1].toLongOrNull() ?: 0L
     return (minutes * 60 + seconds) * 1000
+}
+
+fun parseTimeToHours(time: String): Float {
+    val parts = time.split(":")
+    if (parts.size != 2) return 0.0f
+    val minutes = parts[0].toLongOrNull() ?: 0L
+    val seconds = parts[1].toLongOrNull() ?: 0L
+    return (minutes * 60 + seconds) / 3600f
 }
 
 

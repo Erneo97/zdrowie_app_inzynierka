@@ -210,6 +210,7 @@ public class TreningService {
 
             nowe.setId(item.getId());
             nowe.setNazwa(optCw.get().getNazwa());
+            nowe.setMet(optCw.get().getMet());
 
             nowe.setSerie(item.getSerie());
             nowe.setCzas("00:00");
