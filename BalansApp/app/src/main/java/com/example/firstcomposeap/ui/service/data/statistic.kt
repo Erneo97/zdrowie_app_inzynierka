@@ -45,6 +45,6 @@ data class TreningStatisticUiState(
     val datePrevious: String = "",
     val trening: List<CwiczenieWTreningu> = emptyList(),
     val spaloneKalorie: Float = 0f,
-    val current: Map<GrupaMiesniowa, Float> = emptyList(),
-    val previous: Map<GrupaMiesniowa, Float> = emptyList()
+    val current: Map<GrupaMiesniowa, Float> ,
+    val previous: Map<GrupaMiesniowa, Float>
 )
