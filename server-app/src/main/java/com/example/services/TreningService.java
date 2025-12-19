@@ -163,10 +163,16 @@ public class TreningService {
             nowy.setGoal(item.getCel());
             nowy.setStartDate(item.getDataUtworzenia().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString());
 
-            nowy.setEndDate(item.getDataUtworzenia().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString()); // TODO: zmienić na datę ostatniego treningu
-
             List<Trening> trenings = treningRepository.findAllByIdUser(uzytkownik.getId()).stream().filter( it -> it.getIdPlanu() == item.getId()).toList();
 
+            Optional<Trening> optLastTrening = trenings.stream().max(Comparator.comparing(Trening::getData));
+
+            String endDate = item.getDataUtworzenia().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString();
+            if( optLastTrening.isPresent() ) {
+                endDate = optLastTrening.get().getData().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString();
+            }
+
+            nowy.setEndDate(endDate);
 
             nowy.setTrainingCount(trenings.size());
 
