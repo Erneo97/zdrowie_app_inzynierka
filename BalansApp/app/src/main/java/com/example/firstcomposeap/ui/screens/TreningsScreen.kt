@@ -43,6 +43,7 @@ import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayout
 import com.example.firstcomposeap.ui.components.icon.Delete
+import com.example.firstcomposeap.ui.components.treningplans.TrainingSeasonCard
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.CwiczenieWTreningu
 import com.example.firstcomposeap.ui.service.data.Seria
@@ -117,7 +118,7 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
 
                 when (selectedTabIndex) {
                     0 -> newTreningTab(treningViewModel = treningViewModel)
-                    1 -> TreningsTab()
+                    1 -> TreningsTab(treningViewModel = treningViewModel)
                 }
 
             }
@@ -368,6 +369,16 @@ fun parseTimeToMs(time: String): Long {
 
 
 @Composable
-fun TreningsTab () {
+fun TreningsTab (treningViewModel: TreningViewModel) {
+    LaunchedEffect(Unit) {
+        treningViewModel.downloadTreningsCard()
+    }
 
+    treningViewModel.treningsCard.forEach {
+        TrainingSeasonCard(
+            trening = it,
+            onClick = { } // TODO: dodać przekierowanie do okna statystyk treningu
+        )
+    }
 }
+

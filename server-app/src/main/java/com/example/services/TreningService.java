@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Component
@@ -34,6 +35,7 @@ public class TreningService {
     private final SequenceGeneratorService sequenceGenerator;
     private final UzytkownikService uzytkownikService;
     private final TreningRepository treningRepository;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public TreningService(CwiczeniaRepository cwiczeniaRepository,
                           TreningPlanRepository treningPlanRepository,
@@ -257,7 +259,10 @@ public class TreningService {
            treningCards.add(treningCard);
         });
 
-        return treningCards;
+        return treningCards.stream().sorted(Comparator.comparing(
+                tc -> LocalDate.parse(tc.getDate(), formatter ), Comparator.reverseOrder()))
+                .toList();
     }
+
 
 }

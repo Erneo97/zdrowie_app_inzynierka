@@ -14,6 +14,7 @@ import com.example.firstcomposeap.ui.service.data.GOAL
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import com.example.firstcomposeap.ui.service.data.PlanTreningowy
 import com.example.firstcomposeap.ui.service.data.Trening
+import com.example.firstcomposeap.ui.service.data.TreningCardInformation
 import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowego
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
 import kotlinx.coroutines.launch
@@ -179,6 +180,24 @@ class TreningViewModel : ViewModel() {
          }
     }
 
+    var treningsCard by mutableStateOf<List<TreningCardInformation>>(emptyList())
+
+    fun downloadTreningsCard() {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").getUserTreningCard(  )
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        treningsCard = it
+                    }
+                } else {
+                    errorMessage = "Błąd dodania planu treningowego do bazy danych: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
     fun updateTrening() {
         if( trening == null )
             return

@@ -153,6 +153,14 @@ data class Trening(
     var spaloneKalorie: Float = 0f
 )
 
+data class TreningCardInformation(
+    var idTrening: Int,
+    var nazwa: String,
+    var iloscCwiczen: Int,
+    var date: String,
+    var spaloneKalorie: Float = 0f
+)
+
 data class CwiczenieWTreningu(
     var id: Int,
     var nazwa: String,
