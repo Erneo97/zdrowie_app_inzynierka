@@ -185,6 +185,21 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningService.getTreningCards(optUsr.get().getId()));
     }
 
+    @PostMapping("/trening/statistic/{id}")
+    public ResponseEntity<?> getStatsTrening(@RequestParam int id,  Authentication authentication) {
+        if( authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty()  ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+
+        return ResponseEntity.status(201).body(treningService.getTreningStats(optUsr.get().getId(), id));
+    }
+
 
 
 }
