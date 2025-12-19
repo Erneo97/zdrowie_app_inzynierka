@@ -7,6 +7,8 @@ import java.util.List;
 public class CwiczenieWTreningu {
     int id; // id ćwiczenia w bazie
     String nazwa, czas; //  czas w formacie mm:ss
+    private float met;
+
     List<Seria> serie;
 
     public int getId() {
@@ -22,4 +24,7 @@ public class CwiczenieWTreningu {
 
     public List<Seria> getSerie() {return serie;}
     public void setSerie(List<Seria> serie) {this.serie = serie;}
+
+    public float getMet() {return met;}
+    public void setMet(float met) {this.met = met;}
 }

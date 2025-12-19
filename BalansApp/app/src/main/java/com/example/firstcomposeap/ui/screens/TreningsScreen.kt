@@ -403,13 +403,13 @@ fun TreningsTab (treningViewModel: TreningViewModel) {
     LaunchedEffect(Unit) {
         treningViewModel.downloadTreningsCard()
     }
-    StatisticPeriodSelector(
-        selectedPeriod = treningViewModel.selectedPeriod,
-        onSelected = {
-            treningViewModel.selectedPeriod = it
-            treningViewModel.days = it.days
-        }
-    )
+//    StatisticPeriodSelector(
+//        selectedPeriod = treningViewModel.selectedPeriod,
+//        onSelected = {
+//            treningViewModel.selectedPeriod = it
+//            treningViewModel.days = it.days
+//        }
+//    )
     Column (modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())){
         treningViewModel.treningsCard.forEach {
             TrainingSeasonCard(
