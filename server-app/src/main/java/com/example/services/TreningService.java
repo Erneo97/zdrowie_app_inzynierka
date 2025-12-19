@@ -25,6 +25,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class TreningService {
@@ -163,7 +164,11 @@ public class TreningService {
             nowy.setStartDate(item.getDataUtworzenia().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString());
 
             nowy.setEndDate(item.getDataUtworzenia().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString()); // TODO: zmienić na datę ostatniego treningu
-            nowy.setTrainingCount(0); // TODO; dodać zliczanie treningów danego planu
+
+            List<Trening> trenings = treningRepository.findAllByIdUser(uzytkownik.getId()).stream().filter( it -> it.getIdPlanu() == item.getId()).toList();
+
+
+            nowy.setTrainingCount(trenings.size());
 
             treningPlanCards.add(nowy);
         });
