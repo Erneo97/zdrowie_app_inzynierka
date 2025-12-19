@@ -43,7 +43,7 @@ fun TrainingSeasonCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(8.dp)
             .drawBehind {
                 val shadowOffsetX = 8f
                 val shadowOffsetY = 8f
@@ -67,7 +67,7 @@ fun TrainingSeasonCard(
                 shape = RoundedCornerShape(25.dp)
             )
             .background(Color.White, RoundedCornerShape(16.dp))
-            .padding(16.dp)
+            .padding(8.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
