@@ -94,7 +94,6 @@ fun StatystykiTab (loginViewModel: LoginViewModel, statisticViewModel: Statistic
     StatisticPeriodSelector(
         selectedPeriod = statisticViewModel.selectedPeriod,
         onSelected = {
-            Log.e("downloadWeightsUserStatistic", "czas wybrany: ${it} - ${statisticViewModel.selectedPeriod}")
             statisticViewModel.selectedPeriod = it
             statisticViewModel.days = it.days
         }

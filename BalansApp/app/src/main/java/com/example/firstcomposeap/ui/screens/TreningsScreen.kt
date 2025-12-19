@@ -43,6 +43,7 @@ import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayout
 import com.example.firstcomposeap.ui.components.icon.Delete
+import com.example.firstcomposeap.ui.components.statistic.StatisticPeriodSelector
 import com.example.firstcomposeap.ui.components.treningplans.TrainingSeasonCard
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.CwiczenieWTreningu
@@ -58,7 +59,7 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
         "Nowy trening",
         "Odbyte treningi"
     )
-    var selectedTabIndex by remember { mutableStateOf(0) }
+
 
     MainLayout(
         navController = navController,
@@ -106,17 +107,17 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
                     }
                 }
 
-                TabRow(selectedTabIndex = selectedTabIndex) {
+                TabRow(selectedTabIndex = treningViewModel.selectedTabIndex) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
-                            selected = selectedTabIndex == index,
-                            onClick = { selectedTabIndex = index },
+                            selected = treningViewModel.selectedTabIndex == index,
+                            onClick = { treningViewModel.selectedTabIndex = index },
                             text = { Text(title, fontSize = 22.sp) }
                         )
                     }
                 }
 
-                when (selectedTabIndex) {
+                when (treningViewModel.selectedTabIndex) {
                     0 -> newTreningTab(treningViewModel = treningViewModel)
                     1 -> TreningsTab(treningViewModel = treningViewModel)
                 }
@@ -373,12 +374,22 @@ fun TreningsTab (treningViewModel: TreningViewModel) {
     LaunchedEffect(Unit) {
         treningViewModel.downloadTreningsCard()
     }
-
-    treningViewModel.treningsCard.forEach {
-        TrainingSeasonCard(
-            trening = it,
-            onClick = { } // TODO: dodać przekierowanie do okna statystyk treningu
-        )
+    StatisticPeriodSelector(
+        selectedPeriod = treningViewModel.selectedPeriod,
+        onSelected = {
+            treningViewModel.selectedPeriod = it
+            treningViewModel.days = it.days
+        }
+    )
+    Column (modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())){
+        treningViewModel.treningsCard.forEach {
+            TrainingSeasonCard(
+                trening = it,
+                onClick = { } // TODO: dodać przekierowanie do okna statystyk treningu
+            )
+        }
     }
+
+
 }
 

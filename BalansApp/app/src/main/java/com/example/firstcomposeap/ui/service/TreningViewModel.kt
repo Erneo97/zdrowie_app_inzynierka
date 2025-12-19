@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.GOAL
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import com.example.firstcomposeap.ui.service.data.PlanTreningowy
+import com.example.firstcomposeap.ui.service.data.StatisticPeriod
 import com.example.firstcomposeap.ui.service.data.Trening
 import com.example.firstcomposeap.ui.service.data.TreningCardInformation
 import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowego
@@ -21,6 +23,10 @@ import kotlinx.coroutines.launch
 
 
 class TreningViewModel : ViewModel() {
+    var selectedPeriod by mutableStateOf(StatisticPeriod.WEEK)
+    var days by mutableStateOf(StatisticPeriod.WEEK.days)
+    var selectedTabIndex by mutableStateOf(0)
+
     var nazwa by   mutableStateOf("")
     var cel by  mutableStateOf("Wybierz cel")
     var aktualny by mutableStateOf(false)
