@@ -22,6 +22,7 @@ import com.example.balansapp.R
 import com.example.balansapp.ui.components.FullSizeButton
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayout
+import com.example.balansapp.ui.navigation.main.Screen
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.firstcomposeap.ui.components.treningplans.NewTreningTab
 import com.example.firstcomposeap.ui.components.treningplans.TreningsTab
@@ -99,7 +100,8 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
 
                 when (treningViewModel.selectedTabIndex) {
                     0 -> NewTreningTab(treningViewModel = treningViewModel)
-                    1 -> TreningsTab(treningViewModel = treningViewModel)
+                    1 -> TreningsTab(treningViewModel = treningViewModel, onTreningStats = {navController.navigate(
+                        Screen.TreningStats.route)})
                 }
 
             }

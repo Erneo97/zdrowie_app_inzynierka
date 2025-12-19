@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.example.firstcomposeap.ui.service.TreningViewModel
 
 @Composable
-fun TreningsTab (treningViewModel: TreningViewModel) {
+fun TreningsTab (treningViewModel: TreningViewModel, onTreningStats: () -> Unit) {
     LaunchedEffect(Unit) {
         treningViewModel.downloadTreningsCard()
     }
@@ -25,7 +25,9 @@ fun TreningsTab (treningViewModel: TreningViewModel) {
         treningViewModel.treningsCard.forEach {
             TrainingSeasonCard(
                 trening = it,
-                onClick = { } // TODO: dodać przekierowanie do okna statystyk treningu
+                onClick = { treningViewModel.getTreningsStat(it.idTrening)
+                    onTreningStats()
+                }
             )
         }
     }

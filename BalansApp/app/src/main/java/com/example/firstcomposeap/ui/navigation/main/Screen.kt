@@ -21,6 +21,7 @@ sealed class Screen(val route: String) {
         }
     }
 
+    object TreningStats: Screen("TreningStats")
     object ExerciseSearch : Screen("exerciseSearch")
 
     object ProductConsumedDetails : Screen("productConsumedDetails")

@@ -28,6 +28,7 @@ import com.example.firstcomposeap.ui.screens.NewTreningPlanScreen
 import com.example.firstcomposeap.ui.screens.ProductConsumedDetails
 import com.example.firstcomposeap.ui.screens.SearchExerciseScreen
 import com.example.firstcomposeap.ui.screens.SearchProductScreen
+import com.example.firstcomposeap.ui.screens.TreningStatsScreen
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.StatisticViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
@@ -66,6 +67,10 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.TreningPlan.route ){ TreningsPlanScreen(navController, treningViewModel) }
                     composable(Screen.Trenings.route) { TreningsScreen(navController,
                         treningViewModel, loginViewModel) }
+
+                    composable(Screen.TreningStats.route) {
+                        TreningStatsScreen(treningViewModel = treningViewModel, onClose = {navController.popBackStack() } )
+                    }
 
                     composable(Screen.Test.route) { TestScreen(statisticViewModel) }
 
