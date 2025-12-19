@@ -37,3 +37,14 @@ data class StatsResponse<T>(
     var data: List<T>,
     var stats: StatisticParameters
 )
+
+
+data class TreningStatisticUiState(
+    val nazwa: String = "",
+    val dateCurrent: String = "",
+    val datePrevious: String = "",
+    val trening: List<CwiczenieWTreningu> = emptyList(),
+    val spaloneKalorie: Float = 0f,
+    val current: Map<GrupaMiesniowa, Float> = emptyList(),
+    val previous: Map<GrupaMiesniowa, Float> = emptyList()
+)
