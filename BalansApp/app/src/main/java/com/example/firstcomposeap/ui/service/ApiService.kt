@@ -22,6 +22,7 @@ import com.example.firstcomposeap.ui.service.data.StatisticParameters
 import com.example.firstcomposeap.ui.service.data.StatsResponse
 import com.example.firstcomposeap.ui.service.data.Trening
 import com.example.firstcomposeap.ui.service.data.TreningCardInformation
+import com.example.firstcomposeap.ui.service.data.TreningStatisticUiState
 import com.example.firstcomposeap.ui.service.data.cwiczeniaPlanuTreningowegoResponse
 import com.example.firstcomposeap.ui.service.data.treningsPlanCard
 import okhttp3.ResponseBody
@@ -203,6 +204,12 @@ interface ApiService {
 
     @POST("trening/trening/card")
     suspend fun getUserTreningCard( ) : Response<List<TreningCardInformation>>
+
+    @POST("trening/trening/statistic/{id}")
+    suspend fun getTreningsStat(
+        @Query("id") id: Int
+    ) : Response<TreningStatisticUiState>
+
 
 //    STATYSTYKI
 
