@@ -195,7 +195,10 @@ interface ApiService {
     @GET("trening/new")
     suspend fun getAcctualTrening( ) : Response<Trening>
 
-
+    @POST("trening/trening/update")
+    suspend fun updateNewTrening(
+        @Body trening: Trening
+    ) : Response<Int>
 
 //    STATYSTYKI
 

@@ -147,30 +147,43 @@ public class TreningClontroller {
     }
 
     @PostMapping("/trening/update")
-    public ResponseEntity<?> updateTrening(Trening usrTrening,  Authentication authentication) {
-
+    public ResponseEntity<?> updateTrening(@RequestBody  Trening usrTrening,  Authentication authentication) {
         if( authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
-
         String userEmail = authentication.getName();
         Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
-        if( optUsr.isEmpty() || optUsr.get().getId() == usrTrening.getIdUser() ) {
+        if( optUsr.isEmpty()  ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
 
-        Uzytkownik usr = optUsr.get();
-        Optional<PlanTreningowy> optPT = treningService.getById(usr.getAktualnyPlan());
-        if( optPT.isEmpty() ) {
+
+        Optional<PlanTreningowy> optPT = treningService.getById(usrTrening.getIdPlanu());
+        if( optPT.isEmpty()  ) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Brak rzadanych danych");
         }
 
-        treningService.updateTrening(usrTrening, usr);
-
-        return ResponseEntity.status(201).body("");
+        Uzytkownik usr = optUsr.get();
+        int treningId = treningService.updateTrening(usrTrening, usr);
+        return ResponseEntity.status(201).body(treningId);
     }
 
+    @PostMapping("/trening/card")
+    public ResponseEntity<?> getUserTreningCard(Authentication authentication) {
+        if( authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty()  ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
 
+
+
+
+        return ResponseEntity.status(201).body(treningService.getTreningCards(optUsr.get().getId()));
+    }
 
 
 

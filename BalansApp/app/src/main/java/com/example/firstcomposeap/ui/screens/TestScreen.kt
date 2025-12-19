@@ -127,6 +127,7 @@ fun TestScreen(statisticViewModel: StatisticViewModel) {
                     Spacer(Modifier.height(15.dp))
 
                     LineChartWithControls(
+                        chartLabel = "Test",
                         points = points,
                         xAxisLabel = "Dni",
                         yAxisLabel = "Wartość",

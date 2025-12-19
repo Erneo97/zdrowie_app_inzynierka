@@ -8,6 +8,7 @@ import com.example.kolekcje.plan_treningowy.TreningsPlanCard;
 import com.example.kolekcje.posilki.ProduktyDoPotwierdzenia;
 import com.example.kolekcje.trening.CwiczenieWTreningu;
 import com.example.kolekcje.trening.Trening;
+import com.example.kolekcje.trening.TreningCard;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.repositories.CwiczeniaRepository;
 import com.example.repositories.PotwierdzProduktyRepository;
@@ -16,9 +17,9 @@ import com.example.repositories.TreningRepository;
 import com.example.requests.CwiczeniaPlanuTreningowegoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -208,12 +209,55 @@ public class TreningService {
         return trening;
     }
 
-    public void updateTrening(Trening trening, Uzytkownik uzytkownik) {
-        if( trening.getIdTrening() == -1 ) {
-            trening.setIdTrening(sequenceGenerator.getNextSequence(LicznikiDB.TRENINGI.getNazwa()));
+    public int updateTrening(Trening trening, Uzytkownik uzytkownik) {
+
+        if (trening.getIdUser() != uzytkownik.getId()) {
+            throw new RuntimeException("Brak uprawnień");
         }
+
+        if (trening.getIdTrening() == -1) {
+            trening.setIdTrening(
+                    sequenceGenerator.getNextSequence(LicznikiDB.TRENINGI.getNazwa())
+            );
+            treningRepository.save(trening);
+            return trening.getIdTrening();
+        }
+
+
+
         treningRepository.save(trening);
+
+        return trening.getIdTrening();
     }
 
+    public List<TreningCard> getTreningCards(int userId) {
+        List<TreningCard> treningCards = new ArrayList<>();
+
+        List<Trening> trenings = treningRepository.findAllByIdUser(userId);
+
+        trenings.forEach( trening -> {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String dateStr = formatter.format(trening.getData());
+
+
+            TreningCard treningCard = new TreningCard();
+
+            treningCard.setIdTrening(trening.getIdTrening());
+            treningCard.setSpaloneKalorie(trening.getSpaloneKalorie());
+            treningCard.setDate(dateStr);
+
+            String nazwa = treningPlanRepository.findById(trening.getIdPlanu()).get().getNazwa();
+
+            treningCard.setNazwa(nazwa);
+            treningCard.setIloscCwiczen(
+                   trening.getCwiczenia().size()
+            );
+
+
+           treningCards.add(treningCard);
+        });
+
+        return treningCards;
+    }
 
 }

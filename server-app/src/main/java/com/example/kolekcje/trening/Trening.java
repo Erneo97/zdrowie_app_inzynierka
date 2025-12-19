@@ -1,6 +1,6 @@
 package com.example.kolekcje.trening;
 
-import dev.morphia.annotations.Id;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -9,7 +9,7 @@ import java.util.List;
 @Document(collection = "Treningi")
 public class Trening {
     @Id
-    int idTrening;
+    private Integer idTrening;
     int idUser, idPlanu;
     Date data;
     List<CwiczenieWTreningu> cwiczenia;
@@ -25,7 +25,14 @@ public class Trening {
     }
     public void setSpaloneKalorie(float spaloneKalorie) {this.spaloneKalorie = spaloneKalorie;}
 
-    public int getIdTrening() {return idTrening;}
+    public Integer getIdTrening() {
+        return idTrening;
+    }
+
+    public void setIdTrening(Integer idTrening) {
+        this.idTrening = idTrening;
+    }
+
     public int getIdUser() {return idUser;}
     public int getIdPlanu() {return idPlanu;}
     public Date getData() {return data;}

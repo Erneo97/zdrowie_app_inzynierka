@@ -96,7 +96,8 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
                         }
 
                         Button(
-                            onClick = {  }, // TODO: zapisanie podejścia
+                            onClick = { treningViewModel.updateTrening()
+                                      },
                             modifier = Modifier.weight(3f)
                         ) {
                             Text("Zapisz trening", fontSize = 15.sp)

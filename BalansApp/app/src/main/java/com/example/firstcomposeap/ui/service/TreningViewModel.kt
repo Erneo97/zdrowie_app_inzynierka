@@ -179,6 +179,25 @@ class TreningViewModel : ViewModel() {
          }
     }
 
+    fun updateTrening() {
+        if( trening == null )
+            return
+        Log.e("trening", "${trening!!.idTrening} ${trening!!.idPlanu} ${trening!!.idUser} ${trening!!.cwiczenia} ${trening!!.data} ")
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").updateNewTrening( trening!! )
+                if (response.isSuccessful) {
+                    message = "Zaktualizowano trening w baza danych"
+                    trening = null
+                } else {
+                    errorMessage = "Błąd dodania planu treningowego do bazy danych: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
     var treningsPlanCard = mutableStateListOf<treningsPlanCard>()
     fun getUserTreningPlansCard() {
         viewModelScope.launch {
