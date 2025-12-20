@@ -56,8 +56,8 @@ class ReminderWorker (
         Log.e("ReminderWorker", "showTreningNotification")
         val text = when (days) {
             2L -> "Minęły 2 dni bez treningu 💪"
-            3L -> "3 dni przerwy – czas wrócić!"
-            else -> "Nie trenowałeś od kilku dni"
+            3L -> "3 dni przerwy – czas skończyć przerwę!"
+            else -> "Jeszcze chwila i zapomnisz że trenowałeś"
         }
 
         val notification = NotificationCompat.Builder(
@@ -88,7 +88,7 @@ class ReminderWorker (
             "BalansApp Channel"
         )
             .setSmallIcon(R.drawable.balans_notification)
-            .setContentTitle("Czas jeść")
+            .setContentTitle("Czas zjeść")
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
