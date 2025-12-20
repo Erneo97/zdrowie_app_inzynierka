@@ -1,7 +1,7 @@
 package com.example.firstcomposeap.ui.notification
 
 import android.Manifest
-import android.R
+import com.example.balansapp.R
 import android.content.Context
 import android.util.Log
 import androidx.annotation.RequiresPermission
@@ -64,7 +64,7 @@ class ReminderWorker (
             applicationContext,
             "BalansApp Channel"
         )
-            .setSmallIcon(R.drawable.ic_notification_overlay)
+            .setSmallIcon(R.drawable.balans_notification)
             .setContentTitle("Czas na trening")
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -87,7 +87,7 @@ class ReminderWorker (
             applicationContext,
             "BalansApp Channel"
         )
-            .setSmallIcon(R.drawable.ic_notification_clear_all)
+            .setSmallIcon(R.drawable.balans_notification)
             .setContentTitle("Czas jeść")
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
