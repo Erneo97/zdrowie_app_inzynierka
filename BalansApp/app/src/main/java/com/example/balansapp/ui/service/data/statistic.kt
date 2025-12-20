@@ -1,0 +1,50 @@
+package com.example.firstcomposeap.ui.service.data
+
+enum class StatisticPeriod(val label: String, val days: Int) {
+    WEEK("1 tydzień", 7),
+    MONTH("Miesiąc", 30),
+    SIX_MONTHS("6 miesięcy", 180),
+    YEAR("Rok", 365)
+}
+
+enum class PomiarWagiOptions(val label: String, val indexList: Int) {
+    WAGA("waga", 0),
+    TK_MIESNIOWA("Tk. mięśniowa", 1),
+    TK_TLUSZCZOWA("Tk. tłuszczowa", 2),
+    NAWODNIENIE("Nawodnienie", 3)
+}
+
+data class StatisticInterval(
+    var data: String,
+    var countDays: Int
+)
+
+data class ChartPoint(
+    val x: String,
+    val y: Double
+)
+
+data class StatisticParameters(
+    var min: Double = 0.0,
+    var max: Double = 0.0,
+    var average: Double = 0.0,
+    var median: Double = 0.0,
+    var a: Double,
+    var b: Double
+)
+
+data class StatsResponse<T>(
+    var data: List<T>,
+    var stats: StatisticParameters
+)
+
+
+data class TreningStatisticUiState(
+    val nazwa: String = "",
+    val dateCurrent: String = "",
+    val datePrevious: String = "",
+    val trening: List<CwiczenieWTreningu> = emptyList(),
+    val spaloneKalorie: Float = 0f,
+    val current: Map<GrupaMiesniowa, Float> ,
+    val previous: Map<GrupaMiesniowa, Float>
+)
