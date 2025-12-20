@@ -70,7 +70,8 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screen.TreningStats.route) {
                         TreningStatsScreen(treningViewModel = treningViewModel
-                            , onClose = {navController.popBackStack()
+                            , onClose = {
+                                navController.popBackStack()
                                 treningViewModel.clearTreningScreen()
                             } )
                     }
