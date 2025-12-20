@@ -28,6 +28,7 @@ import com.example.firstcomposeap.ui.components.treningplans.NewTreningTab
 import com.example.firstcomposeap.ui.components.treningplans.TreningsTab
 import com.example.firstcomposeap.ui.notification.saveLastTreningAction
 import com.example.firstcomposeap.ui.service.TreningViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun TreningsScreen(navController: NavHostController, treningViewModel: TreningViewModel, loginViewModel: LoginViewModel) {
@@ -41,7 +42,7 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
         "Nowy trening",
         "Odbyte treningi"
     )
-
+    val scope = rememberCoroutineScope()
 
     MainLayout(
         navController = navController,
@@ -82,7 +83,7 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
                         Button(
                             onClick = {
                                 treningViewModel.updateTrening()
-                                suspend {
+                                scope.launch {
                                     saveLastTreningAction(context = context)
                                 }
                                       },

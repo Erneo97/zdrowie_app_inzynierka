@@ -49,6 +49,7 @@ import com.example.firstcomposeap.ui.components.meal.FriendsMealTab
 import com.example.firstcomposeap.ui.components.meal.UserMealTab
 import com.example.firstcomposeap.ui.notification.saveLastMealAction
 import com.example.firstcomposeap.ui.service.ProductViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +68,7 @@ fun MealScreen(navController: NavHostController,
         context.getString(R.string.friends)
         )
 
-
+    val scope = rememberCoroutineScope()
     
     CalendarDialoge(
         baseDate = productViewModel.wybranaData,
@@ -118,7 +119,7 @@ fun MealScreen(navController: NavHostController,
                     when (productViewModel.selectedTabIndex) {
                         0 -> UserMealTab(loginViewModel,
                             onAddClick = {showSearchSheet = true
-                                suspend {
+                                scope.launch {
                                     saveLastMealAction(context)
 
                                 }
