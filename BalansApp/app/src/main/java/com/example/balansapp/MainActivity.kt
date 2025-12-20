@@ -1,9 +1,12 @@
 package com.example.balansapp
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,9 +16,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.example.balansapp.ui.navigation.main.Screen
 import com.example.balansapp.ui.screens.MealScreen
 import com.example.balansapp.ui.screens.ProfileScreen
@@ -25,7 +25,6 @@ import com.example.balansapp.ui.screens.TreningsScreen
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.RegisterViewModel
 import com.example.balansapp.ui.theme.balansappTheme
-import com.example.firstcomposeap.ui.notification.ReminderWorker
 import com.example.firstcomposeap.ui.screens.NewExerciseScreen
 import com.example.firstcomposeap.ui.screens.NewProductScreen
 import com.example.firstcomposeap.ui.screens.NewRecipeScreen
@@ -37,11 +36,23 @@ import com.example.firstcomposeap.ui.screens.TreningStatsScreen
 import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.StatisticViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
-import java.util.concurrent.TimeUnit
+import android.Manifest
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1
+                )
+            }
+        }
 
         setContent {
             val loginViewModel: LoginViewModel = viewModel()
