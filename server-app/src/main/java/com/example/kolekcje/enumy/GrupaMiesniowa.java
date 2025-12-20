@@ -80,4 +80,8 @@ public enum GrupaMiesniowa {
     public GrupaMiesniowa getMainGroup() {
         return parent == null ? this : parent;
     }
+
+    public String getNazwa() {
+        return nazwa;
+    }
 }

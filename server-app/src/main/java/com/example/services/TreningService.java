@@ -292,32 +292,28 @@ public class TreningService {
             return treningStatistic;
         }
         Trening currentTrening = optTrening.get();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        treningStatistic.setCurrent( getStatsFoTrening(currentTrening) );
+        treningStatistic.setDateCurrent(
+                formatter.format(currentTrening.getData()));
+
+        treningStatistic.setSpaloneKalorie(currentTrening.getSpaloneKalorie());
+        treningStatistic.setTrening(currentTrening.getCwiczenia() );
+        treningStatistic.setDatePrevious("");
+        Optional<PlanTreningowy> optPT = treningPlanRepository.findById(currentTrening.getIdPlanu());
+        if( optPT.isPresent() ) {
+            PlanTreningowy plan = optPT.get();
+            treningStatistic.setNazwa(plan.getNazwa());
+        }
+
 
         List<Trening> trenings = treningRepository.findAllByIdUser(userId)
                 .stream().filter( it -> it.getData().before(optTrening.get().getData()))
                 .sorted(Comparator.comparing(Trening::getData, Comparator.reverseOrder()))
                 .toList();
 
-
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
         log.info("getTreningStats {}", trenings.size() );
-        if( !trenings.isEmpty() ) {
-            treningStatistic.setCurrent( getStatsFoTrening(currentTrening) );
-            treningStatistic.setDateCurrent(
-                    formatter.format(currentTrening.getData()));
-
-            treningStatistic.setSpaloneKalorie(currentTrening.getSpaloneKalorie());
-            treningStatistic.setTrening(currentTrening.getCwiczenia() );
-
-            Optional<PlanTreningowy> optPT = treningPlanRepository.findById(currentTrening.getIdPlanu());
-            if( optPT.isPresent() ) {
-                PlanTreningowy plan = optPT.get();
-                treningStatistic.setNazwa(plan.getNazwa());
-            }
-
-        }
-
 
         if( !trenings.isEmpty() ) {
             treningStatistic.setPrevious( getStatsFoTrening(trenings.getFirst()) );
@@ -336,29 +332,31 @@ public class TreningService {
      */
     private Map<GrupaMiesniowa, Float> getStatsFoTrening(Trening trening) {
 
-        List<GrupaMiesniowa> mainGroups = Arrays.stream(GrupaMiesniowa.values()).filter(GrupaMiesniowa::isMain).toList();
+        List<GrupaMiesniowa> mainGroups = Arrays
+                .stream(GrupaMiesniowa.values())
+                .filter(GrupaMiesniowa::isMain)
+                .sorted(Comparator.comparing(GrupaMiesniowa::getNazwa))
+                .toList();
+
         Map<GrupaMiesniowa, Float> treningStats = mainGroups
                 .stream()
                         .collect(Collectors.toMap(grupaMiesniowa -> grupaMiesniowa,
                                grupaMiesniowa -> 0f ));
 
-        log.info("getTreningStats {} {}", treningStats, treningStats.keySet() );
 
         trening.getCwiczenia().forEach(cwiczenieWTreningu -> {
-            log.info("getTreningStats cw {} ", cwiczenieWTreningu.getId() );
             Optional<Cwiczenie> optCw = cwiczeniaRepository.findCwiczenieById(cwiczenieWTreningu.getId());
             if( optCw.isPresent()) {
                 Cwiczenie cwiczenie = optCw.get();
                 cwiczenie.getGrupaMiesniowas().forEach(grupaMiesniowa -> {
                     if( grupaMiesniowa.isMain() ) {
-                        log.info("getTreningStats {} {}", grupaMiesniowa, grupaMiesniowa.isMain() );
                         treningStats.compute(grupaMiesniowa, (k, val) -> val + sumSeriesWeight(cwiczenieWTreningu.getSerie()));
                     }
 
                 });
             }
         });
-        log.info("getTreningStats {} {}", treningStats, treningStats.keySet() );
+        
         return treningStats;
     }
 

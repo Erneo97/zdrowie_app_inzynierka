@@ -40,7 +40,7 @@ fun TreningStatsScreen(onClose: () -> Unit, treningViewModel: TreningViewModel)
         derivedStateOf {
             statistics?.previous
                 ?.map { (g, v) -> RadarChartElement(g.grupaNazwa, v, Color.Red) }
-                ?: emptyList()
+                ?: null
         }
     }
 
@@ -63,8 +63,8 @@ fun TreningStatsScreen(onClose: () -> Unit, treningViewModel: TreningViewModel)
         if( statistics!= null ) {
             RadarChart(
                 currentScope =currentScope,
-                previousScope = previousScope,
-                legentText = legendText
+//                previousScope= previousScope,
+//                legentText = legendText
             )
 
             Text(
