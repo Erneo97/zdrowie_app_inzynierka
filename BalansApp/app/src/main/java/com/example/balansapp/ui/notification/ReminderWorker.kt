@@ -21,12 +21,16 @@ class ReminderWorker (
         Log.d("ReminderWorker", "🚀 Worker uruchomiony!")
 
         val prefs = applicationContext.dataStore.data.first()
-        val lastAction = prefs[UserAction.LAST_TRENING_DATE] ?: return Result.success()
-        val lastActionMeal = prefs[UserAction.LAST_MEAL_DATE] ?: return Result.success()
-        val daysDiff =
-            TimeUnit.MILLISECONDS.toDays(
-                System.currentTimeMillis() - lastAction
-            )
+
+
+        val lastAction = prefs[UserAction.LAST_TRENING_DATE] ?: 0L
+        val lastActionMeal = prefs[UserAction.LAST_MEAL_DATE] ?: 0L
+
+        val daysDiff = if (lastAction != 0L) {
+            TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastAction)
+        } else {
+            0
+        }
         Log.d("ReminderWorker", "daysDiff ${daysDiff}")
         if (daysDiff >= 2) {
             showTreningNotification(daysDiff)
@@ -34,10 +38,11 @@ class ReminderWorker (
 
 
 
-        val hoursDiff =
-            TimeUnit.MILLISECONDS.toSeconds(
-                System.currentTimeMillis() - lastActionMeal
-            )
+        val hoursDiff = if (lastActionMeal != 0L) {
+            TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastActionMeal)
+        } else {
+            0
+        }
         Log.d("ReminderWorker", "hoursDiff ${hoursDiff}")
         if (hoursDiff >= 12) {
             showMealNotification(hoursDiff)
@@ -48,6 +53,7 @@ class ReminderWorker (
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun showTreningNotification(days: Long) {
+        Log.e("ReminderWorker", "showTreningNotification")
         val text = when (days) {
             2L -> "Minęły 2 dni bez treningu 💪"
             3L -> "3 dni przerwy – czas wrócić!"
@@ -56,7 +62,7 @@ class ReminderWorker (
 
         val notification = NotificationCompat.Builder(
             applicationContext,
-            "REMINDER_CHANNEL"
+            "BalansApp Channel"
         )
             .setSmallIcon(R.drawable.ic_notification_overlay)
             .setContentTitle("Czas na trening")
@@ -70,6 +76,7 @@ class ReminderWorker (
     }
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun showMealNotification(hours: Long) {
+        Log.e("ReminderWorker", "showMealNotification")
         val text = when (hours) {
             12L -> "Mineło sporo czasu od posiłku - czas napełnić brzuch"
             13L -> "Zaczynam się martwić o twoją dietę"
@@ -78,9 +85,9 @@ class ReminderWorker (
 
         val notification = NotificationCompat.Builder(
             applicationContext,
-            "REMINDER_CHANNEL"
+            "BalansApp Channel"
         )
-            .setSmallIcon(R.drawable.ic_notification_overlay)
+            .setSmallIcon(R.drawable.ic_notification_clear_all)
             .setContentTitle("Czas jeść")
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

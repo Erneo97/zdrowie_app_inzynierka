@@ -4,14 +4,11 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.ApiClient
-import com.example.firstcomposeap.ui.notification.saveLastTreningAction
 import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.GOAL
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
