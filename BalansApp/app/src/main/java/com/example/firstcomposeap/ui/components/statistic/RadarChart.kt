@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,11 +37,28 @@ data class RadarChartElement(
 )
 
 @Composable
+fun RadarLegend(previousScope: List<RadarChartElement>? = null ,
+                legentText: List<String>? = listOf("Aktualne", "Poprzednie") ) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(top = 8.dp)
+    ) {
+
+        legentText?.getOrNull(0)?.let { LegendItem(color = Color.Green, label = it)}
+        if (previousScope != null) {
+            Spacer(modifier = Modifier.width(24.dp))
+            legentText?.getOrNull(1)?.let { LegendItem(color = Color.Red, label = it)}
+        }
+    }
+}
+
+@Composable
 fun RadarChart(
     currentScope: List<RadarChartElement>,
     previousScope: List<RadarChartElement>? = null ,
     modifier: Modifier = Modifier,
-    sizeChart: Dp = 700.dp,
+    sizeChart: Dp = 500.dp,
     radius: Float = 350f,
     textSize: Float = 60f,
     countCircle: Int = 5,
@@ -50,21 +67,11 @@ fun RadarChart(
 
     val sides = currentScope.size
     Column(
-        modifier = modifier.wrapContentHeight(),
+        modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 8.dp)
-        ) {
+        RadarLegend(previousScope = previousScope,legentText = legentText )
 
-            legentText?.getOrNull(0)?.let { LegendItem(color = Color.Green, label = it)}
-            if (previousScope != null) {
-                Spacer(modifier = Modifier.width(24.dp))
-                legentText?.getOrNull(1)?.let { LegendItem(color = Color.Red, label = it)}
-            }
-        }
         Canvas(modifier = modifier.size(sizeChart)) {
             val center = Offset(size.width / 2, size.height / 2)
 

@@ -8,25 +8,67 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.balansapp.ui.components.statistic.RadarChart
+import com.example.balansapp.ui.components.statistic.RadarChartElement
 import com.example.firstcomposeap.ui.service.TreningViewModel
 
 @Composable
 fun TreningStatsScreen(onClose: () -> Unit, treningViewModel: TreningViewModel)
 {
     val statistics = treningViewModel.statisticTrening
+
+    val currentScope by remember(statistics) {
+        derivedStateOf {
+            statistics?.current
+                ?.map { (g, v) -> RadarChartElement(g.grupaNazwa, v,  Color.Green) }
+                ?: emptyList()
+        }
+    }
+
+    val previousScope by remember(statistics) {
+        derivedStateOf {
+            statistics?.previous
+                ?.map { (g, v) -> RadarChartElement(g.grupaNazwa, v, Color.Red) }
+                ?: emptyList()
+        }
+    }
+
+    val legendText by remember(statistics) {
+        derivedStateOf {
+            statistics?.let {
+                listOf(it.dateCurrent, it.datePrevious)
+            } ?: emptyList()
+        }
+    }
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         if( statistics!= null ) {
+            RadarChart(
+                currentScope =currentScope,
+                previousScope = previousScope,
+                legentText = legendText
+            )
+
             Text(
-                text = statistics!!.nazwa,
+                text = statistics.nazwa,
                 style = MaterialTheme.typography.headlineSmall
             )
 
