@@ -1,11 +1,11 @@
 package com.example.services;
 
+import ch.qos.logback.core.joran.sanity.Pair;
+import com.example.kolekcje.enumy.GrupaMiesniowa;
 import com.example.kolekcje.enumy.LicznikiDB;
-import com.example.kolekcje.plan_treningowy.CwiczeniaPlanuTreningowego;
-import com.example.kolekcje.plan_treningowy.Cwiczenie;
-import com.example.kolekcje.plan_treningowy.PlanTreningowy;
-import com.example.kolekcje.plan_treningowy.TreningsPlanCard;
+import com.example.kolekcje.plan_treningowy.*;
 import com.example.kolekcje.posilki.ProduktyDoPotwierdzenia;
+import com.example.kolekcje.statistic.TreningStatistic;
 import com.example.kolekcje.trening.CwiczenieWTreningu;
 import com.example.kolekcje.trening.Trening;
 import com.example.kolekcje.trening.TreningCard;
@@ -26,6 +26,8 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.BooleanUtils.forEach;
 
 @Component
 public class TreningService {
@@ -274,6 +276,94 @@ public class TreningService {
         return treningCards.stream().sorted(Comparator.comparing(
                 tc -> LocalDate.parse(tc.getDate(), formatter ), Comparator.reverseOrder()))
                 .toList();
+    }
+
+    /**
+     * Zwraca ststysytki z danymi dwóhc ostatnich treningów
+     * @param userId
+     * @param treningId
+     * @return
+     */
+    public TreningStatistic getTreningStats(int userId, int treningId) {
+        TreningStatistic treningStatistic = new TreningStatistic();
+
+        Optional<Trening> optTrening = treningRepository.findByIdTrening(treningId);
+        if( optTrening.isEmpty() || optTrening.get().getIdUser() != userId ) {
+            return treningStatistic;
+        }
+        Trening currentTrening = optTrening.get();
+
+        List<Trening> trenings = treningRepository.findAllByIdUser(userId)
+                .stream().filter( it -> it.getData().before(optTrening.get().getData()))
+                .sorted(Comparator.comparing(Trening::getData, Comparator.reverseOrder()))
+                .toList();
+
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        log.info("getTreningStats {}", trenings.size() );
+        if( !trenings.isEmpty() ) {
+            treningStatistic.setCurrent( getStatsFoTrening(currentTrening) );
+            treningStatistic.setDateCurrent(
+                    formatter.format(currentTrening.getData()));
+
+            treningStatistic.setSpaloneKalorie(currentTrening.getSpaloneKalorie());
+            treningStatistic.setTrening(currentTrening.getCwiczenia() );
+
+            Optional<PlanTreningowy> optPT = treningPlanRepository.findById(currentTrening.getIdPlanu());
+            if( optPT.isPresent() ) {
+                PlanTreningowy plan = optPT.get();
+                treningStatistic.setNazwa(plan.getNazwa());
+            }
+
+        }
+
+
+        if( !trenings.isEmpty() ) {
+            treningStatistic.setPrevious( getStatsFoTrening(trenings.getFirst()) );
+            treningStatistic.setDatePrevious( formatter.format(trenings.getFirst().getData()));
+        }
+
+        log.info("getTreningStats {}", treningStatistic.getTrening() );
+        return treningStatistic;
+    }
+
+
+    /**
+     * Przyjmuje trening i oblicza ile użytkownik podniusł ciężaru (ilość powtórzeń * ciężar) na daną partię ciała.
+     * @param trening
+     * @return zwraca obiekt sum obciązenia do danych podstawowych grup mięśniowcyh
+     */
+    private Map<GrupaMiesniowa, Float> getStatsFoTrening(Trening trening) {
+
+        List<GrupaMiesniowa> mainGroups = Arrays.stream(GrupaMiesniowa.values()).filter(GrupaMiesniowa::isMain).toList();
+        Map<GrupaMiesniowa, Float> treningStats = mainGroups
+                .stream()
+                        .collect(Collectors.toMap(grupaMiesniowa -> grupaMiesniowa,
+                               grupaMiesniowa -> 0f ));
+
+        log.info("getTreningStats {} {}", treningStats, treningStats.keySet() );
+
+        trening.getCwiczenia().forEach(cwiczenieWTreningu -> {
+            log.info("getTreningStats cw {} ", cwiczenieWTreningu.getId() );
+            Optional<Cwiczenie> optCw = cwiczeniaRepository.findCwiczenieById(cwiczenieWTreningu.getId());
+            if( optCw.isPresent()) {
+                Cwiczenie cwiczenie = optCw.get();
+                cwiczenie.getGrupaMiesniowas().forEach(grupaMiesniowa -> {
+                    if( grupaMiesniowa.isMain() ) {
+                        log.info("getTreningStats {} {}", grupaMiesniowa, grupaMiesniowa.isMain() );
+                        treningStats.compute(grupaMiesniowa, (k, val) -> val + sumSeriesWeight(cwiczenieWTreningu.getSerie()));
+                    }
+
+                });
+            }
+        });
+        log.info("getTreningStats {} {}", treningStats, treningStats.keySet() );
+        return treningStats;
+    }
+
+    private float sumSeriesWeight(List<Seria> series) {
+        return (float) series.stream().mapToDouble(seria -> seria.getObciazenie() * seria.getLiczbaPowtorzen()).sum();
     }
 
 
