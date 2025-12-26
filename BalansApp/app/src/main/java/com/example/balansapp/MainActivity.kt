@@ -41,6 +41,8 @@ import com.example.balansapp.ui.screens.admin.ExerciseAdminScreen
 import com.example.balansapp.ui.screens.admin.ProductAdminScreen
 import com.example.balansapp.ui.screens.admin.ProfileAdminScreen
 import com.example.balansapp.ui.screens.admin.UserAdminScreen
+import com.example.balansapp.ui.service.AdminVievModel
+import kotlin.math.log
 
 
 class MainActivity : ComponentActivity() {
@@ -64,13 +66,14 @@ class MainActivity : ComponentActivity() {
             val statisticViewModel : StatisticViewModel = viewModel ()
             val productViewModel: ProductViewModel = viewModel ()
             val treningViewModel : TreningViewModel = viewModel ()
+            val adminVievModel : AdminVievModel = viewModel ()
 
             loginViewModel.login("michal@michal.michal", "michal")
 
             statisticViewModel.token = loginViewModel.token
             productViewModel.token = loginViewModel.token
             treningViewModel.token = loginViewModel.token
-
+            adminVievModel.token = loginViewModel.token
 
 
             balansappTheme {
@@ -155,7 +158,7 @@ class MainActivity : ComponentActivity() {
 
 //****************************      WIDOKI ADMINA *************************************************
                     composable(Screen.ProfileAdmin.route) { ProfileAdminScreen( navController, loginViewModel)}
-                    composable(Screen.UsersAdmin.route) { UserAdminScreen(navController = navController) }
+                    composable(Screen.UsersAdmin.route) { UserAdminScreen(navController = navController, adminVievModel) }
                     composable(Screen.ExerciseAdmin.route) { ExerciseAdminScreen(navController = navController) }
                     composable(Screen.ProductAdmin.route) { ProductAdminScreen(navController = navController) }
                 }

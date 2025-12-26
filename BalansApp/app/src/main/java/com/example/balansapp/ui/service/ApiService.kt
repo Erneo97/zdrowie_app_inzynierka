@@ -9,6 +9,7 @@ import com.example.balansapp.ui.service.data.PrzyjacieleInfo
 import com.example.balansapp.ui.service.data.RegisterRequest
 import com.example.balansapp.ui.service.data.RegisterResponse
 import com.example.balansapp.ui.service.data.SimpleMessage
+import com.example.balansapp.ui.service.data.UserCard
 import com.example.balansapp.ui.service.data.Uzytkownik
 import com.example.balansapp.ui.service.data.ZaproszenieInfo
 import com.example.firstcomposeap.ui.service.data.AllMealsInDay
@@ -47,6 +48,10 @@ interface ApiService {
     @GET("uzytkownicy/user")
     suspend fun getUser( @Header("Authorization") authHeader: String
     ): Response<Uzytkownik>
+
+    @GET("uzytkownicy/admin/users")
+    suspend fun getUsersCards(): Response<List<UserCard>>
+
 
     @POST("uzytkownicy/waga")
     suspend fun addUserWeigt(@Body body: PommiarWagii, @Header("Authorization") authorization: String)

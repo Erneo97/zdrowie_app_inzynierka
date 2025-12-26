@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -39,13 +40,17 @@ import androidx.navigation.NavHostController
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayoutAdmin
-import com.example.balansapp.ui.service.data.Plec
+import com.example.balansapp.ui.service.AdminVievModel
 import com.example.balansapp.ui.service.data.UserCard
 
 @Composable
-fun UserAdminScreen(navController: NavHostController ) {
+fun UserAdminScreen(navController: NavHostController, adminVievModel: AdminVievModel ) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.users)) }
+
+    LaunchedEffect(Unit) {
+        adminVievModel.downloadUserList()
+    }
 
     val tabs = listOf(
         context.getString(R.string.users),
@@ -84,8 +89,8 @@ fun UserAdminScreen(navController: NavHostController ) {
                 }
 
                 when (selectedTabIndex) {
-                    0 -> UsersTab(itemVisibilityCodition = false)
-                    1 -> UsersTab(itemVisibilityCodition = true)
+                    0 -> UsersTab(itemVisibilityCodition = false, adminVievModel)
+                    1 -> UsersTab(itemVisibilityCodition = true, adminVievModel)
                 }
             }
         }
@@ -94,57 +99,31 @@ fun UserAdminScreen(navController: NavHostController ) {
 
 
 @Composable
-fun UsersTab(itemVisibilityCodition: Boolean ) {
-    var value by remember { mutableStateOf(4f) }
+fun UsersTab(itemVisibilityCodition: Boolean, adminVievModel: AdminVievModel ) {
+    if( adminVievModel.loadingData ) {
+        CircularProgressIndicator()
+    }
+    else {
+        var value by remember { mutableStateOf(4f) }
 
 
-    Text("Dopuszczalna granica błędu : ${value.toInt()}", fontSize = 25.sp)
-    Slider(
-        value = value,
-        onValueChange = { value = it },
-        valueRange = 0f..25f
-    )
-
-    val user = UserCard(
-        id = 47,
-        imie = "Michał",
-        nazwisko = "Kaniewski",
-        email = "michalkaniewski1997@gmail.com",
-        plec = Plec.MEZCZYZNA,
-        role = "ADMIN",
-        failureCount = 8,
-        blocked = false
-    )
-
-    val user2 = UserCard(
-        id = 48,
-        imie = "Michał",
-        nazwisko = "Kaniewski",
-        email = "michalkaniewski1997@gmail.com",
-        plec = Plec.MEZCZYZNA,
-        role = "USER",
-        failureCount = 9,
-        blocked = true
-    )
-    val usersList = mutableListOf<UserCard>()
-    usersList.add(user2)
-    usersList.add(user)
-    usersList.add(user)
-    usersList.add(user2)
-    usersList.add(user)
-    usersList.add(user)
-    usersList.add(user)
-    usersList.add(user2)
+        Text("Dopuszczalna granica błędu : ${value.toInt()}", fontSize = 25.sp)
+        Slider(
+            value = value,
+            onValueChange = { value = it },
+            valueRange = 0f..25f
+        )
 
 
-    Column( modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        usersList.forEach {
-            userItem ->
-            if( itemVisibilityCodition == userItem.blocked)
-                UserItemCard(userItem,
-                    onBlockChange = {user.blocked = it }, //TODO: wysyłanie na serwer
-                    failureMaxCount = value.toInt()
-                )
+        Column( modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            adminVievModel.usersList.forEach {
+                    userItem ->
+                if( itemVisibilityCodition == userItem.blocked)
+                    UserItemCard(userItem,
+                        onBlockChange = {userItem.blocked = it }, //TODO: wysyłanie na serwer
+                        failureMaxCount = value.toInt()
+                    )
+            }
         }
     }
 }
