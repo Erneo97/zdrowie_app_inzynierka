@@ -7,10 +7,7 @@ import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.Makro;
 import com.example.kolekcje.enumy.Plec;
 import com.example.kolekcje.plan_treningowy.PlanTreningowy;
-import com.example.kolekcje.posilki.Dania;
-import com.example.kolekcje.posilki.DaniaDetail;
-import com.example.kolekcje.posilki.Produkt;
-import com.example.kolekcje.posilki.SpozyteProdukty;
+import com.example.kolekcje.posilki.*;
 import com.example.kolekcje.statistic.StatisticParameters;
 import com.example.kolekcje.uzytkownik.*;
 import com.example.repositories.TreningPlanRepository;
@@ -436,5 +433,29 @@ public class UzytkownikService {
 
     }
 
+
+    public List<UserCard> getAllUserCard( ) {
+        List<UserCard> us = new LinkedList<>();
+
+        uzytkownikRepository.findAll().forEach(
+                user -> {
+                    List<ProduktyDoPotwierdzenia> potwierdzenie = produktService.getAllProductById(user.getId());
+                    us.add(new UserCard(
+                            user.getId(),
+                            user.getImie(),
+                            user.getNazwisko(),
+                            user.getEmail(),
+                            user.getPlec(),
+                            user.getRole(),
+                            potwierdzenie.size(),
+                            user.isBlocked()
+                    ));
+                }
+        );
+
+
+
+        return us;
+    }
 
 }

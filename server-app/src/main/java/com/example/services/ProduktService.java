@@ -66,6 +66,7 @@ public class ProduktService {
             return product;
         }
 
+
 //         Produkt zostaje zaktualizowany
 
         product = Optprodukt.get();
@@ -96,6 +97,11 @@ public class ProduktService {
         }
 
         return produktyRepository.save(product);
+    }
+
+
+    public List<ProduktyDoPotwierdzenia> getAllProductById(int id) {
+        return potwierdzProduktyRepository.findAllByIdUzytkownika(id);
     }
 
     public Optional<Produkt> findById(int id) {

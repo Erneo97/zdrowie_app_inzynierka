@@ -7,6 +7,7 @@ import com.example.kolekcje.posilki.DaniaDetail;
 import com.example.kolekcje.statistic.StatisticInterval;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
 import com.example.kolekcje.uzytkownik.Przyjaciele;
+import com.example.kolekcje.uzytkownik.UserCard;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.repositories.LoginResponse;
 import com.example.requests.ChangePassword;
@@ -21,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -449,6 +451,18 @@ public class UzytkownikController {
 
 
         return ResponseEntity.ok().body(uzytkownikService.getAllUserRecipes(uzytkownik));
+    }
+
+    @GetMapping("/admin/users")
+    public ResponseEntity<?>  getAllUsers(Authentication authentication ) {
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        List<UserCard> us = uzytkownikService.getAllUserCard() ;
+        log.info("getAllUsers {}", us.size());
+
+        return ResponseEntity.ok(us);
     }
 
 }
