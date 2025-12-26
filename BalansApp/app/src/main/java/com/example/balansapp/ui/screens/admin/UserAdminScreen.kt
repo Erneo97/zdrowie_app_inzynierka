@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Tab
@@ -31,6 +32,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -86,8 +88,6 @@ fun UserAdminScreen(navController: NavHostController ) {
                     1 -> UsersTab(itemVisibilityCodition = true)
                 }
             }
-
-
         }
     }
 }
@@ -104,8 +104,6 @@ fun UsersTab(itemVisibilityCodition: Boolean ) {
         onValueChange = { value = it },
         valueRange = 0f..25f
     )
-
-
 
     val user = UserCard(
         id = 47,
@@ -144,15 +142,11 @@ fun UsersTab(itemVisibilityCodition: Boolean ) {
             userItem ->
             if( itemVisibilityCodition == userItem.blocked)
                 UserItemCard(userItem,
-                    onBlockChange = {user.blocked = it }, //TODO: wysyłąnie na serwer
+                    onBlockChange = {user.blocked = it }, //TODO: wysyłanie na serwer
                     failureMaxCount = value.toInt()
                 )
         }
-
-
     }
-
-
 }
 
 
@@ -202,9 +196,10 @@ fun UserItemCard(userCard: UserCard,
             .padding(8.dp)
     ) {
         Column {
-            Text("${userCard.id}      ${userCard.imie} ${userCard.nazwisko}")
+            Text("${userCard.id}      ${userCard.imie} ${userCard.nazwisko}", fontSize = 25.sp)
+            HorizontalDivider()
             Text("Email: ${userCard.email}")
-            Text("Błędnie wprowadzone dane: ${userCard.failureCount}")
+            Text("Błędnie wprowadzone dane: ${userCard.failureCount}", fontWeight = FontWeight.Bold)
 
             Row (verticalAlignment = Alignment.CenterVertically){
                 Text("Zablokować użytkownika: ")
