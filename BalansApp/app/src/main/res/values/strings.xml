@@ -33,4 +33,6 @@
     <string name="meal">danie</string>
     <string name="products">Produkty</string>
     <string name="mealHead">Danie</string>
+    <string name="users">Użytkownicy</string>
+    <string name="exercises">Ćwiczenia</string>
 </resources>

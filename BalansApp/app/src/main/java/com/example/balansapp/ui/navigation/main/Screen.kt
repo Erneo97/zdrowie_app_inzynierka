@@ -28,4 +28,14 @@ sealed class Screen(val route: String) {
 
     object NewProduct : Screen("newProduct")
     object NewRecipe : Screen("newRecipe")
+
+
+
+    object ProfileAdmin : Screen("profileAdmin")
+    object UsersAdmin : Screen("usersAdmin")
+    object ExerciseAdmin : Screen("exerciseAdmin")
+    object ProductAdmin : Screen("productAdmin")
+
+
+
 }

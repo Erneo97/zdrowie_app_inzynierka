@@ -18,7 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.balansapp.ui.navigation.main.Screen
 import com.example.balansapp.ui.screens.user.MealScreen
-import com.example.balansapp.ui.screens.ProfileScreen
+import com.example.balansapp.ui.screens.user.ProfileScreen
 import com.example.balansapp.ui.screens.TestScreen
 import com.example.balansapp.ui.screens.user.TreningsPlanScreen
 import com.example.balansapp.ui.screens.user.TreningsScreen
@@ -37,6 +37,10 @@ import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.StatisticViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import android.Manifest
+import com.example.balansapp.ui.screens.admin.ExerciseAdminScreen
+import com.example.balansapp.ui.screens.admin.ProductAdminScreen
+import com.example.balansapp.ui.screens.admin.ProfileAdminScreen
+import com.example.balansapp.ui.screens.admin.UserAdminScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -75,7 +79,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(
                     navController = navController,
 
-                    startDestination = if ( (loginViewModel.user?.role ?: "USER") == "ADMIN" ) Screen.Trenings.route  else Screen.Home.route
+                    startDestination = if ( (loginViewModel.user?.role ?: "USER") == "ADMIN" ) Screen.UsersAdmin.route  else Screen.Home.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
@@ -148,6 +152,12 @@ class MainActivity : ComponentActivity() {
                         onlyProduct = onlyProduct
                         ) }
 
+
+//****************************      WIDOKI ADMINA *************************************************
+                    composable(Screen.ProfileAdmin.route) { ProfileAdminScreen( navController, loginViewModel)}
+                    composable(Screen.UsersAdmin.route) { UserAdminScreen(navController = navController) }
+                    composable(Screen.ExerciseAdmin.route) { ExerciseAdminScreen(navController = navController) }
+                    composable(Screen.ProductAdmin.route) { ProductAdminScreen(navController = navController) }
                 }
             }
         }
