@@ -74,7 +74,8 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Home.route
+
+                    startDestination = if ( (loginViewModel.user?.role ?: "USER") == "ADMIN" ) Screen.Trenings.route  else Screen.Home.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
