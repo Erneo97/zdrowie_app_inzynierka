@@ -82,3 +82,14 @@ data class PrzyjacieleInfo (
     val email: String,
     var czyDozwolony: Boolean
 )
+
+data class UserCard (
+    var id: Int = -1,
+    var imie: String,
+    var nazwisko: String,
+    var email: String,
+    var plec: Plec,
+    val role: String = "",
+    val failureCount: Int = 0,
+    var blocked: Boolean = false
+)
