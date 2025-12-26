@@ -36,19 +36,24 @@ public class ProduktController {
 
 
     @PostMapping("/produkt")
-    public ResponseEntity<?> createProduct(@RequestBody Produkt nowyProdukt) {
+    public ResponseEntity<?> createProduct(@RequestBody Produkt nowyProdukt, Authentication authentication) {
         log.info("createProduct  " + nowyProdukt.getNazwa());
 
 
         if( nowyProdukt.getObjetosc().isEmpty() ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Brak przypisanych wartości odrzywczych");
         }
+        Optional<Uzytkownik> usrOpt = uzytkownikService.getUserByEmail(authentication.getName());
+        if( usrOpt.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
 
         Produkt created = produktService.createProducts(
                 nowyProdukt.getProducent(),
                 nowyProdukt.getNazwa(),
                 nowyProdukt.getKodKreskowy(),
-                nowyProdukt.getObjetosc()
+                nowyProdukt.getObjetosc(),
+                usrOpt.get().getId()
         );
 
         return ResponseEntity.status(201).body(created);

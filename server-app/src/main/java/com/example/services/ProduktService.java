@@ -9,6 +9,7 @@ import com.example.repositories.MealRepository;
 import com.example.repositories.PotwierdzProduktyRepository;
 import com.example.repositories.ProduktRepository;
 import com.example.requests.MealUpdate;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -36,8 +37,9 @@ public class ProduktService {
     
 
 
-    public Produkt createProducts(String producent, String nazwa, String kodkreskowy, List<Dawka> objetosc) {
+    public Produkt createProducts(String producent, String nazwa, String kodkreskowy, List<Dawka> objetosc, int usrInd) {
         Produkt product;
+
 
         Optional<Produkt> Optprodukt = produktyRepository.findByNazwaAndProducent(nazwa, producent);
         if (Optprodukt.isEmpty()) {
@@ -56,7 +58,9 @@ public class ProduktService {
             if (OptProdukt.isPresent()) {
                 Produkt fp = OptProdukt.get();
                 ProduktyDoPotwierdzenia pdp = new ProduktyDoPotwierdzenia(fp.getId());
+                pdp.setIdUzytkownika(usrInd);
                 potwierdzProduktyRepository.save(pdp);
+
 
             }
             return product;

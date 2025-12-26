@@ -1,6 +1,6 @@
 package com.example.services;
 
-import ch.qos.logback.core.joran.sanity.Pair;
+
 import com.example.kolekcje.enumy.GrupaMiesniowa;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.plan_treningowy.*;
@@ -58,7 +58,7 @@ public class TreningService {
         return treningPlanRepository.findById(id);
     }
 
-    public Cwiczenie createExercise(Cwiczenie cwiczenia) {
+    public Cwiczenie createExercise(Cwiczenie cwiczenia, int usrId) {
         Cwiczenie nowe = new Cwiczenie();
 
         nowe.setId(sequenceGenerator.getNextSequence(
@@ -70,6 +70,7 @@ public class TreningService {
         nowe.setGrupaMiesniowas(cwiczenia.getGrupaMiesniowas());
 
         ProduktyDoPotwierdzenia pdp = new ProduktyDoPotwierdzenia(nowe.getId());
+        pdp.setIdUzytkownika(usrId);
         potwierdzProduktyRepository.save(pdp);
 
         cwiczeniaRepository.save(nowe);

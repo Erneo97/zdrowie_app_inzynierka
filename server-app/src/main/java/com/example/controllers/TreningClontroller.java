@@ -33,12 +33,21 @@ public class TreningClontroller {
 
 
     @PostMapping("/exercise/new")
-    public ResponseEntity<?> createExercise(@RequestBody Cwiczenie noweCwiczenie) {
+    public ResponseEntity<?> createExercise(@RequestBody Cwiczenie noweCwiczenie, Authentication authentication) {
         log.info("createExercise " + noweCwiczenie.getNazwa());
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         if( noweCwiczenie.getGrupaMiesniowas().isEmpty() ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Brak przypisanych wartości odrzywczych");
         }
-        Cwiczenie created = treningService.createExercise(noweCwiczenie);
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(authentication.getName());
+        if( optUsr.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Cwiczenie created = treningService.createExercise(noweCwiczenie, optUsr.get().getId());
 
         return ResponseEntity.status(201).body(created);
     }

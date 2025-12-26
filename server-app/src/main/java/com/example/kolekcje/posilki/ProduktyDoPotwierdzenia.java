@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Document( collection = "PotwierdzProdukty")
 public class ProduktyDoPotwierdzenia {
-        private int idExercise;
+        private int idExercise, idUzytkownika;
         private long idProduct;
         private Date createdAt;
 
@@ -24,6 +24,11 @@ public class ProduktyDoPotwierdzenia {
             this.idExercise = -1;
             this.createdAt = new Date();
         }
+
+        public int getIdUzytkownika() {
+                return idUzytkownika;
+        }
+        public void setIdUzytkownika(int idUzytkownika) {this.idUzytkownika = idUzytkownika;}
 
         public ProduktyDoPotwierdzenia(int idExercise) {
                 this.idProduct = -1;
