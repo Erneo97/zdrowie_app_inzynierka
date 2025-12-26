@@ -82,8 +82,8 @@ fun UserAdminScreen(navController: NavHostController ) {
                 }
 
                 when (selectedTabIndex) {
-                    0 -> ActiveUsersTab()
-                    1 -> BlockUsersTab()
+                    0 -> UsersTab(itemVisibilityCodition = false)
+                    1 -> UsersTab(itemVisibilityCodition = true)
                 }
             }
 
@@ -94,7 +94,7 @@ fun UserAdminScreen(navController: NavHostController ) {
 
 
 @Composable
-fun ActiveUsersTab() {
+fun UsersTab(itemVisibilityCodition: Boolean ) {
     var value by remember { mutableStateOf(4f) }
 
 
@@ -118,23 +118,35 @@ fun ActiveUsersTab() {
         blocked = false
     )
 
+    val user2 = UserCard(
+        id = 48,
+        imie = "Michał",
+        nazwisko = "Kaniewski",
+        email = "michalkaniewski1997@gmail.com",
+        plec = Plec.MEZCZYZNA,
+        role = "USER",
+        failureCount = 9,
+        blocked = true
+    )
     val usersList = mutableListOf<UserCard>()
+    usersList.add(user2)
+    usersList.add(user)
+    usersList.add(user)
+    usersList.add(user2)
     usersList.add(user)
     usersList.add(user)
     usersList.add(user)
-    usersList.add(user)
-    usersList.add(user)
-    usersList.add(user)
-    usersList.add(user)
+    usersList.add(user2)
 
 
     Column( modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         usersList.forEach {
             userItem ->
-            UserItemCard(userItem,
-            onBlockChange = {user.blocked = it }, //TODO: wysyłąnie na serwer
-            failureMaxCount = value.toInt()
-        )
+            if( itemVisibilityCodition == userItem.blocked)
+                UserItemCard(userItem,
+                    onBlockChange = {user.blocked = it }, //TODO: wysyłąnie na serwer
+                    failureMaxCount = value.toInt()
+                )
         }
 
 
@@ -210,8 +222,3 @@ fun UserItemCard(userCard: UserCard,
     }
 }
 
-
-@Composable
-fun BlockUsersTab() {
-    Text("BlockUsersTab", fontSize = 22.sp)
-}
