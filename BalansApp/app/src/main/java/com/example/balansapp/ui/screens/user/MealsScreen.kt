@@ -1,4 +1,4 @@
-package com.example.balansapp.ui.screens
+package com.example.balansapp.ui.screens.user
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

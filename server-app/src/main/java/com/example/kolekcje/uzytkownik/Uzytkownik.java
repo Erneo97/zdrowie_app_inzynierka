@@ -20,7 +20,7 @@ public class Uzytkownik {
     int wzrost, zapotrzebowanieKcal;
     Plec plec;
     boolean blocked;
-    String role;
+    String role = "USER";
     Date dataUrodzenia;
     List<Przyjaciele> przyjaciele;
     List<Dania> dania;

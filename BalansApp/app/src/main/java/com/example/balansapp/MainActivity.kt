@@ -17,11 +17,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.balansapp.ui.navigation.main.Screen
-import com.example.balansapp.ui.screens.MealScreen
+import com.example.balansapp.ui.screens.user.MealScreen
 import com.example.balansapp.ui.screens.ProfileScreen
 import com.example.balansapp.ui.screens.TestScreen
-import com.example.balansapp.ui.screens.TreningsPlanScreen
-import com.example.balansapp.ui.screens.TreningsScreen
+import com.example.balansapp.ui.screens.user.TreningsPlanScreen
+import com.example.balansapp.ui.screens.user.TreningsScreen
 import com.example.balansapp.ui.service.LoginViewModel
 import com.example.balansapp.ui.service.RegisterViewModel
 import com.example.balansapp.ui.theme.balansappTheme
