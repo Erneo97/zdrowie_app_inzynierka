@@ -1,11 +1,15 @@
 package com.example.services;
 
+import com.example.kolekcje.enumy.GOAL;
+import com.example.kolekcje.enumy.Makro;
+import com.example.kolekcje.plan_treningowy.PlanTreningowy;
 import com.example.kolekcje.posilki.AllMealsInDay;
 import com.example.kolekcje.posilki.Dawka;
 import com.example.kolekcje.posilki.MealInfo;
 import com.example.kolekcje.statistic.ChartPoint;
 import com.example.kolekcje.statistic.StatisticParameters;
 import com.example.kolekcje.uzytkownik.PommiarWagii;
+import com.example.kolekcje.uzytkownik.Uzytkownik;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,10 +17,7 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -194,6 +195,7 @@ public class StatisticService {
     }
 
 
+
     private List<ChartPoint> getUserMakrosByDate(int usrId , Date date) {
         List<ChartPoint> chartPoint = new ArrayList<>();
         double sumBialko = 0.0, sumTluszcz = 0.0, sumWeglo  = 0.0, sumBlonnik = 0.0;
@@ -249,5 +251,79 @@ public class StatisticService {
 
         return chartPoint;
     }
+
+
+
+    /**
+     *  zwraca wartosc min, max dla daego użytkownika w zależnosci od celu w aktualnym planu treningowego.
+     *  min - minimalna wartosć do spożycia danego dnia
+     *  max - maxymalna wartość do spożycia danego dnia
+     *
+     *  Kolejność listy białko, węglowodany, tłuszcze
+     *  
+     * @param user
+     * @return
+     */
+    public List<StatisticParameters> getMakroStats(Uzytkownik user) {
+        List<StatisticParameters> stats = new ArrayList<>();
+
+        Optional<PlanTreningowy> optPT = treningService.getById(user.getAktualnyPlan());
+        GOAL cel;
+        if( optPT.isPresent() ) {
+            PlanTreningowy plan = optPT.get();
+            cel = plan.getCel();
+
+        }
+        else {
+            cel = GOAL.CONST;
+        }
+
+        for (Makro makro : Makro.values()) {
+            double[] minMax = getMinMaxGram(cel, user.getZapotrzebowanieKcal(), makro);
+
+            StatisticParameters stat = new StatisticParameters();
+            stat.setMin(minMax[0]);
+            stat.setMax(minMax[1]);
+
+            stats.add(stat);
+        }
+
+        return stats;
+    }
+
+    private static final Map<Makro, Integer> KCAL_NA_GRAM = Map.of(
+            Makro.BIALKO, 4,
+            Makro.WEGLOWODANY, 4,
+            Makro.TLUSZCZ, 9
+    );
+
+    private static final Map<GOAL, Map<Makro, double[]>> MAKRO_PROCENTY = Map.of(
+            GOAL.CONST, Map.of(
+                    Makro.BIALKO, new double[]{25, 30},
+                    Makro.WEGLOWODANY, new double[]{40, 50},
+                    Makro.TLUSZCZ, new double[]{25, 30}
+            ),
+            GOAL.MUSCLE, Map.of(
+                    Makro.BIALKO, new double[]{25, 30},
+                    Makro.WEGLOWODANY, new double[]{40, 50},
+                    Makro.TLUSZCZ, new double[]{25, 30}
+            ),
+            GOAL.REDUCE, Map.of(
+                    Makro.BIALKO, new double[]{30, 40},
+                    Makro.WEGLOWODANY, new double[]{30, 40},
+                    Makro.TLUSZCZ, new double[]{20, 30}
+            )
+    );
+
+    private double[] getMinMaxGram(GOAL cel, int kcal, Makro makro) {
+        double[] procent = MAKRO_PROCENTY.get(cel).get(makro);
+        int kcalNaGram = KCAL_NA_GRAM.get(makro);
+
+        double minGram = kcal * procent[0] / 100 / kcalNaGram;
+        double maxGram = kcal * procent[1] / 100 / kcalNaGram;
+
+        return new double[]{minGram, maxGram};
+    }
+
 
 }

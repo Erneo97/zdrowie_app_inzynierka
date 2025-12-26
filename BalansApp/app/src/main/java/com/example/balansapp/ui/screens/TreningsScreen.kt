@@ -64,7 +64,11 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
                 if( treningViewModel.trening == null ) {
                     FullSizeButton(
                         text = "Rozpocznij Trening",
-                        onClick = { treningViewModel.getAcctualTrening() }
+                        onClick = { treningViewModel.getAcctualTrening()
+                            scope.launch {
+                                saveLastTreningAction(context = context)
+                            }
+                        }
                     )
                 }
                 else {
@@ -83,9 +87,6 @@ fun TreningsScreen(navController: NavHostController, treningViewModel: TreningVi
                         Button(
                             onClick = {
                                 treningViewModel.updateTrening()
-                                scope.launch {
-                                    saveLastTreningAction(context = context)
-                                }
                                       },
                             modifier = Modifier.weight(3f)
                         ) {

@@ -356,7 +356,7 @@ public class TreningService {
                 });
             }
         });
-        
+
         return treningStats;
     }
 

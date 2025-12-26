@@ -2,13 +2,18 @@ package com.example.services;
 
 import com.example.kolekcje.Zaproszenie;
 import com.example.kolekcje.ZaproszenieInfo;
+import com.example.kolekcje.enumy.GOAL;
 import com.example.kolekcje.enumy.LicznikiDB;
+import com.example.kolekcje.enumy.Makro;
 import com.example.kolekcje.enumy.Plec;
+import com.example.kolekcje.plan_treningowy.PlanTreningowy;
 import com.example.kolekcje.posilki.Dania;
 import com.example.kolekcje.posilki.DaniaDetail;
 import com.example.kolekcje.posilki.Produkt;
 import com.example.kolekcje.posilki.SpozyteProdukty;
+import com.example.kolekcje.statistic.StatisticParameters;
 import com.example.kolekcje.uzytkownik.*;
+import com.example.repositories.TreningPlanRepository;
 import com.example.repositories.UzytkownikRepository;
 import com.example.repositories.ZaproszeniaRepository;
 import org.slf4j.Logger;
@@ -17,10 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -34,17 +36,19 @@ public class UzytkownikService {
     private final UzytkownikRepository uzytkownikRepository;
     private final ProduktService produktService;
     private static final Logger log = LoggerFactory.getLogger(UzytkownikService.class);
+    private final TreningPlanRepository treningPlanRepository;
 
     public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator
             , ZaproszeniaRepository zaproszeniaRepository
             , UzytkownikRepository uzytkownikRepository
-    , ProduktService produktService
-    ) {
+    , ProduktService produktService,
+                             TreningPlanRepository treningPlanRepository) {
         this.repository = repository;
         this.sequenceGenerator = sequenceGenerator;
         this.zaproszeniaRepository = zaproszeniaRepository;
         this.uzytkownikRepository = uzytkownikRepository;
         this.produktService = produktService;
+        this.treningPlanRepository = treningPlanRepository;
     }
 
     /**
@@ -431,7 +435,6 @@ public class UzytkownikService {
         }).collect(Collectors.toList());
 
     }
-
 
 
 }
