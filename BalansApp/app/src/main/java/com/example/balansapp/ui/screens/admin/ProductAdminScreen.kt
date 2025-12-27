@@ -12,12 +12,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.FullSizeButton
+import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayoutAdmin
 import com.example.balansapp.ui.navigation.main.Screen
 
@@ -42,6 +44,13 @@ fun ProductAdminScreen(navController: NavHostController ) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                LogoBackGround()
+            }
 
             Column {
                 FullSizeButton(
