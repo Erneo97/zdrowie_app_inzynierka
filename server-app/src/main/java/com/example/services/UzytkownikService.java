@@ -458,4 +458,9 @@ public class UzytkownikService {
         return us;
     }
 
+    public void changeStatusUser(Uzytkownik user, boolean status) {
+        user.setBlocked(status);
+        uzytkownikRepository.save(user);
+    }
+
 }

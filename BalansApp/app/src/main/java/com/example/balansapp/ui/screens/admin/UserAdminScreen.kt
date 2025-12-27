@@ -1,5 +1,6 @@
 package com.example.balansapp.ui.screens.admin
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -8,9 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -106,7 +107,6 @@ fun UsersTab(itemVisibilityCodition: Boolean, adminVievModel: AdminVievModel ) {
     else {
         var value by remember { mutableStateOf(4f) }
 
-
         Text("Dopuszczalna granica błędu : ${value.toInt()}", fontSize = 25.sp)
         Slider(
             value = value,
@@ -114,15 +114,20 @@ fun UsersTab(itemVisibilityCodition: Boolean, adminVievModel: AdminVievModel ) {
             valueRange = 0f..25f
         )
 
+        val filteredUsers = adminVievModel.usersList
+            .filter { it.blocked == itemVisibilityCodition }
 
-        Column( modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            adminVievModel.usersList.forEach {
-                    userItem ->
-                if( itemVisibilityCodition == userItem.blocked)
-                    UserItemCard(userItem,
-                        onBlockChange = {userItem.blocked = it }, //TODO: wysyłanie na serwer
-                        failureMaxCount = value.toInt()
-                    )
+        LazyColumn {
+            items(filteredUsers) { userItem ->
+                UserItemCard(
+                    userCard = userItem,
+                    onBlockChange = {
+                        userItem.blocked = it
+                        adminVievModel.changeStatsUser(userItem.id, it)
+                        adminVievModel.downloadUserList()
+                    },
+                    failureMaxCount = value.toInt()
+                )
             }
         }
     }

@@ -17,6 +17,8 @@ class AdminVievModel : ViewModel() {
 
 
     var loadingData by mutableStateOf(false)
+
+
     fun downloadUserList( ) {
         loadingData = true
         viewModelScope.launch {
@@ -29,7 +31,7 @@ class AdminVievModel : ViewModel() {
                         usersList.addAll(it)
                     }
                 } else {
-                    errorMessage = "Błąd dodania rekordu wagii: ${response.code()}"
+                    errorMessage = "Błąd pobierania listy użytkowników: ${response.code()}"
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage
@@ -39,4 +41,23 @@ class AdminVievModel : ViewModel() {
             }
         }
     }
+
+    fun changeStatsUser(id: Int, block: Boolean) {
+        viewModelScope.launch {
+            try {
+
+                val response = ApiClient.getApi(token ?: "").upadateStatusUser(id = id, status = block)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        message = it.message
+                    }
+                } else {
+                    errorMessage = "Błąd zmiany statusu użytkownika: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
 }

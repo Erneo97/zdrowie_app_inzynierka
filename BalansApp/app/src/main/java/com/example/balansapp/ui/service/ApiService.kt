@@ -52,6 +52,13 @@ interface ApiService {
     @GET("uzytkownicy/admin/users")
     suspend fun getUsersCards(): Response<List<UserCard>>
 
+    @PUT("uzytkownicy/admin/user/status")
+    suspend fun upadateStatusUser(
+        @Query("id") id: Int,
+        @Query("status") status: Boolean
+    ): Response<SimpleMessage>
+
+
 
     @POST("uzytkownicy/waga")
     suspend fun addUserWeigt(@Body body: PommiarWagii, @Header("Authorization") authorization: String)
