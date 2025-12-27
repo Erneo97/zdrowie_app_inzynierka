@@ -218,7 +218,7 @@ class ProductViewModel : ViewModel() {
     fun addNewProduct(product: Produkt) {
         viewModelScope.launch {
             try {
-                val response = ApiClient.api.addProductToDb(product)
+                val response = ApiClient.getApi(token ?: "").addProductToDb(product)
                 if (response.isSuccessful) {
                     message = "Dodano produkt do bazy danych"
                 } else {
