@@ -105,7 +105,7 @@ fun UsersTab(itemVisibilityCodition: Boolean, adminVievModel: AdminVievModel ) {
         CircularProgressIndicator()
     }
     else {
-        var value by remember { mutableStateOf(4f) }
+        var value by remember { mutableStateOf(1f) }
 
         Text("Dopuszczalna granica błędu : ${value.toInt()}", fontSize = 25.sp)
         Slider(

@@ -465,4 +465,22 @@ public class UzytkownikController {
         return ResponseEntity.ok(us);
     }
 
+    @PutMapping("/admin/user/status")
+    public ResponseEntity<?>  upadateStatusUser(@RequestParam int id, @RequestParam boolean status,  Authentication authentication ) {
+        log.info("upadateStatusUser");
+
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        Optional<Uzytkownik> usr = uzytkownikService.getUserById(id);
+        if( usr.isEmpty() ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        Uzytkownik uzytkownik = usr.get();
+        uzytkownikService.changeStatusUser(uzytkownik, status);
+
+        return ResponseEntity.ok("Zmieniono status użytkownika");
+    }
+
 }
