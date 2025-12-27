@@ -439,17 +439,20 @@ public class UzytkownikService {
 
         uzytkownikRepository.findAll().forEach(
                 user -> {
-                    List<ProduktyDoPotwierdzenia> potwierdzenie = produktService.getAllProductById(user.getId());
-                    us.add(new UserCard(
-                            user.getId(),
-                            user.getImie(),
-                            user.getNazwisko(),
-                            user.getEmail(),
-                            user.getPlec(),
-                            user.getRole(),
-                            potwierdzenie.size(),
-                            user.isBlocked()
-                    ));
+                    if( !user.getRole().equals("ADMIN")) {
+                        List<ProduktyDoPotwierdzenia> potwierdzenie = produktService.getAllProductById(user.getId());
+                        us.add(new UserCard(
+                                user.getId(),
+                                user.getImie(),
+                                user.getNazwisko(),
+                                user.getEmail(),
+                                user.getPlec(),
+                                user.getRole(),
+                                potwierdzenie.size(),
+                                user.isBlocked()
+                        ));
+                    }
+
                 }
         );
 
