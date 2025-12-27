@@ -62,7 +62,8 @@ fun RadarChart(
     radius: Float = 350f,
     textSize: Float = 60f,
     countCircle: Int = 5,
-    legentText: List<String>? = listOf("Aktualne", "Poprzednie")
+    legentText: List<String>? = listOf("Aktualne", "Poprzednie"),
+    unit: String = "kg."
 ) {
 
     val sides = currentScope.size
@@ -76,7 +77,7 @@ fun RadarChart(
             val center = Offset(size.width / 2, size.height / 2)
 
             drawRadarGrid(center, radius, sides, countCircle)
-            drawRadarAxes(center, radius, sides, currentScope, textSize)
+            drawRadarAxes(center, radius, sides, currentScope, textSize, unit)
 
 
             if( previousScope != null ) {
@@ -143,7 +144,8 @@ private fun DrawScope.drawRadarAxes(
     radius: Float,
     sides: Int,
     currentScope: List<RadarChartElement>,
-    textSizeDefault: Float
+    textSizeDefault: Float,
+    unit: String
 ) {
     for (i in currentScope.indices) {
         val angle = 2f * PI.toFloat() * i / sides - PI.toFloat() / 2
@@ -165,7 +167,7 @@ private fun DrawScope.drawRadarAxes(
             )
 
             drawText(
-                "%.2f".format(currentScope[i].value),
+                "%.2f ${unit}".format(currentScope[i].value),
                 labelX,
                 labelY + textSizeDefault + 10f,
                 android.graphics.Paint().apply {
@@ -183,7 +185,7 @@ private fun DrawScope.drawRadarChart(
     center: Offset,
     radius: Float,
     currentScope: List<RadarChartElement>,
-    colorDraw: Color
+    colorDraw: Color,
 ) {
     val sides = currentScope.size
     val path = Path()
