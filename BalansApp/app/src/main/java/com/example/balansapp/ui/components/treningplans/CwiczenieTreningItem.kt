@@ -225,16 +225,18 @@ fun CwiczenieTreningItem(
                 Text("Dodaj serię")
             }
 
-            Spacer(modifier = Modifier.weight(1f)) // przesunięcie ikony w prawo
-
-            IconButton(
-                onClick = { onRemove(cwiczenie) },
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(
-                    imageVector = Delete,
-                    contentDescription = "Usuń ćwiczenie"
-                )
+            // przesunięcie ikony w prawo
+            if( elapsedMs == 0L) {
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(
+                    onClick = { onRemove(cwiczenie) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Delete,
+                        contentDescription = "Usuń ćwiczenie"
+                    )
+                }
             }
         }
     }
