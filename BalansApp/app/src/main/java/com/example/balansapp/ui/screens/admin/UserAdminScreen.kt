@@ -178,7 +178,6 @@ public fun getModiverCard(bool: Boolean ) : Modifier {
     }
 
     return Modifier
-        .fillMaxWidth()
         .padding(8.dp)
         .drawBehind {
             val shadowOffsetX = 8f
