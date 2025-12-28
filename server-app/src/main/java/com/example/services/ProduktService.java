@@ -288,5 +288,9 @@ public class ProduktService {
                 .toList();
     }
 
+    public void acceptProduct(int id) {
+        potwierdzProduktyRepository.deleteByIdProduct(id);
+    }
+
 
 }

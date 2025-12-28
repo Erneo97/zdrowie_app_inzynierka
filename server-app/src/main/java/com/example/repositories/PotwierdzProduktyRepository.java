@@ -10,5 +10,6 @@ import java.util.Optional;
 @RepositoryRestResource(collectionResourceRel = "potwierdzProdukty", path = "potwierdzProdukty")
 public interface PotwierdzProduktyRepository extends MongoRepository<ProduktyDoPotwierdzenia,String > {
     Optional<ProduktyDoPotwierdzenia> findByIdProduct(int idProduct);
+    void deleteByIdProduct(int idProduct);
     List<ProduktyDoPotwierdzenia> findAllByIdUzytkownika(int idUzytkownika);
 }

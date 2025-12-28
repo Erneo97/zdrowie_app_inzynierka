@@ -194,5 +194,20 @@ public class ProduktController {
         return ResponseEntity.ok(produktService.getProductList());
     }
 
+    @PostMapping("/check/accept")
+    public ResponseEntity<?> acceptProduct(@RequestBody int id, Authentication authentication) {
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        produktService.acceptProduct(id);
+
+        return ResponseEntity.ok("Produkt potwierdzony");
+    }
+
 
 }
