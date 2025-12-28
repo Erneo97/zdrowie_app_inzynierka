@@ -291,11 +291,17 @@ public class ProduktService {
     }
 
     public void acceptProduct(int id) {
+        Optional<ProduktyDoPotwierdzenia> optPDP = potwierdzProduktyRepository.findByIdProduct(id);
+        if( optPDP.isEmpty() )
+            return;
         potwierdzProduktyRepository.deleteByIdProduct(id);
     }
 
     public void rejectProduct(int id) {
-        ProduktyDoPotwierdzenia pdp = potwierdzProduktyRepository.findByIdProduct(id).get();
+        Optional<ProduktyDoPotwierdzenia> optPDP = potwierdzProduktyRepository.findByIdProduct(id);
+        if( optPDP.isEmpty() )
+            return;
+        ProduktyDoPotwierdzenia pdp = optPDP.get();
 
         Optional<UserStats> optUS = userStatsRepository.findById(pdp.getIdUzytkownika());
         if( optUS.isEmpty() ) {
