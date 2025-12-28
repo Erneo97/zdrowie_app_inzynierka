@@ -160,7 +160,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.ProfileAdmin.route) { ProfileAdminScreen(navController =  navController, loginViewModel =  loginViewModel)}
                     composable(Screen.UsersAdmin.route) { UserAdminScreen(navController = navController, adminVievModel =  adminVievModel) }
                     composable(Screen.ExerciseAdmin.route) { ExerciseAdminScreen(navController = navController) }
-                    composable(Screen.ProductAdmin.route) { ProductAdminScreen(navController = navController, adminVievModel = adminVievModel) }
+                    composable(Screen.ProductAdmin.route) { ProductAdminScreen(navController = navController, adminVievModel = adminVievModel ) }
                 }
             }
         }
