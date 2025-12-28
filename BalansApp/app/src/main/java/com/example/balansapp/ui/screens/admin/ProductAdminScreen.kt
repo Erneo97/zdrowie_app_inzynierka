@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FloatingActionButton
@@ -46,7 +48,8 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.products)) }
 
-    LaunchedEffect(Unit) {
+
+    LaunchedEffect(Unit, adminVievModel.loadingData) {
         adminVievModel.downloadProducToConfirmeList()
     }
 
@@ -93,23 +96,25 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
 
                 when (selectedTabIndex) {
                     0 -> {
-                        Column (Modifier.verticalScroll(rememberScrollState())){
-                            adminVievModel.productssList.forEach {
-                                    produkt -> produktToConfirm(
-                                produkt = produkt,
-                                onRemove = {
-
-                                    adminVievModel.rejectProduct(produkt.id.toInt())
-                                },
-                                onAccept = {
-                                    adminVievModel.confirmProduct(produkt.id.toInt())
-                                }
-                            )
+                        LazyColumn {
+                            items(adminVievModel.productssList) {
+                                produkt ->
+                                produktToConfirm(
+                                    produkt = produkt,
+                                    onRemove = {
+                                        adminVievModel.rejectProduct(produkt.id.toInt())
+                                    },
+                                    onAccept = {
+                                        adminVievModel.confirmProduct(produkt.id.toInt())
+                                    }
+                                )
                             }
                         }
 
                     }
-                    1 -> {}
+                    1 -> {
+
+                    }
                 }
             }
         }

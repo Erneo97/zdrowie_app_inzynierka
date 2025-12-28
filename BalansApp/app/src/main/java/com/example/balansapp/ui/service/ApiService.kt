@@ -63,10 +63,10 @@ interface ApiService {
     suspend fun getProductListToCheck(): Response<List<Produkt>>
 
     @POST("produkty/check/accept")
-    suspend fun acceptProduct(@Body id: Int): Response<String>
+    suspend fun acceptProduct(@Body id: Int): Response<SimpleMessage>
 
     @POST("produkty/check/reject")
-    suspend fun rejectProduct(@Body id: Int): Response<String>
+    suspend fun rejectProduct(@Body id: Int): Response<SimpleMessage>
 
     @POST("uzytkownicy/waga")
     suspend fun addUserWeigt(@Body body: PommiarWagii, @Header("Authorization") authorization: String)

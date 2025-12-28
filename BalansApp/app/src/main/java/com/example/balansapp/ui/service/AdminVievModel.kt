@@ -1,8 +1,11 @@
 package com.example.balansapp.ui.service
 
+import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.data.UserCard
@@ -18,40 +21,35 @@ class AdminVievModel : ViewModel() {
 
 
 
-    var productssList = mutableListOf<Produkt>()
-
+    var productssList = mutableStateListOf<Produkt>()
     fun confirmProduct(id :Int ) {
-        loadingData = true
         viewModelScope.launch {
             try {
-
                 val response = ApiClient.getApi(token ?: "").acceptProduct(id)
                 if (response.isSuccessful) {
-                    downloadProducToConfirmeList()
+                    productssList.removeIf { it.id == id.toLong() }
                 } else {
                     errorMessage = "Błąd zaakceptowania produktu: ${response.code()}"
                 }
             } catch (e: Exception) {
                 errorMessage = e.localizedMessage
             }
-            finally {
-                loadingData = false
-            }
         }
     }
 
     fun rejectProduct(id :Int ) {
-        loadingData = true
         viewModelScope.launch {
             try {
-
                 val response = ApiClient.getApi(token ?: "").rejectProduct(id)
                 if (response.isSuccessful) {
-                    downloadProducToConfirmeList()
+                    Log.e("rejectProduct", "isSuccessful")
+                    productssList.removeIf { it.id == id.toLong() }
                 } else {
-                    errorMessage = "Błąd odrzucenia produktu: ${response.code()}"
+                    Log.e("rejectProduct", "error ${response.errorBody()}")
+                    errorMessage = "Błąd odrzucenia produktu: ${response.errorBody()}"
                 }
             } catch (e: Exception) {
+                Log.e("rejectProduct", "catch ${e.localizedMessage}")
                 errorMessage = e.localizedMessage
             }
             finally {
