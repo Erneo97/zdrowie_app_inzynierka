@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.data.UserCard
+import com.example.firstcomposeap.ui.service.data.Produkt
 import kotlinx.coroutines.launch
 
 class AdminVievModel : ViewModel() {
@@ -15,6 +16,29 @@ class AdminVievModel : ViewModel() {
 
     var usersList = mutableListOf<UserCard>()
 
+    var productssList = mutableListOf<Produkt>()
+    fun downloadProducToConfirmeList( ) {
+        loadingData = true
+        viewModelScope.launch {
+            try {
+
+                val response = ApiClient.getApi(token ?: "").getProductListToCheck()
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        productssList.clear()
+                        productssList.addAll(it)
+                    }
+                } else {
+                    errorMessage = "Błąd pobierania listy produktów: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+            finally {
+                loadingData = false
+            }
+        }
+    }
 
     var loadingData by mutableStateOf(false)
 

@@ -180,5 +180,19 @@ public class ProduktController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
+    @GetMapping("/check/produkt")
+    public ResponseEntity<?> getProductsCheck(Authentication authentication) {
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        return ResponseEntity.ok(produktService.getProductList());
+    }
+
 
 }

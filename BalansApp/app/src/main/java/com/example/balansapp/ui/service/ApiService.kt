@@ -59,6 +59,8 @@ interface ApiService {
     ): Response<SimpleMessage>
 
 
+    @GET("produkty/check/produkt")
+    suspend fun getProductListToCheck(): Response<List<Produkt>>
 
     @POST("uzytkownicy/waga")
     suspend fun addUserWeigt(@Body body: PommiarWagii, @Header("Authorization") authorization: String)

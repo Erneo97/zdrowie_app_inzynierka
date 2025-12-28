@@ -260,7 +260,7 @@ public class ProduktService {
     private List<MealInfo> mapSpozyteProduktyToMealInfoList(List<SpozyteProdukty> produkty) {
         return produkty.stream()
                 .map(p -> {
-                    Produkt produkt = produktyRepository.findById((int)p.getId())
+                    Produkt produkt = produktyRepository.findById(p.getId())
                             .orElseThrow(() -> new RuntimeException(
                                     "Produkt o id=" + p.getId() + " nie istnieje"));
 
@@ -273,6 +273,18 @@ public class ProduktService {
 
                     return item;
                 })
+                .toList();
+    }
+
+
+    public List<Produkt> getProductList() {
+        return potwierdzProduktyRepository.findAll()
+                .stream()
+                .filter(it -> it.getIdProduct() > -1)
+                .map(it -> {
+                            return produktyRepository.findById(it.getIdProduct()).get();
+                        }
+                )
                 .toList();
     }
 
