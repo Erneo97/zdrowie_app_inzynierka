@@ -97,8 +97,13 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
                             adminVievModel.productssList.forEach {
                                     produkt -> produktToConfirm(
                                 produkt = produkt,
-                                onRemove = { },
-                                onAccept = { }
+                                onRemove = {
+
+                                    adminVievModel.rejectProduct(produkt.id.toInt())
+                                },
+                                onAccept = {
+                                    adminVievModel.confirmProduct(produkt.id.toInt())
+                                }
                             )
                             }
                         }
@@ -118,7 +123,7 @@ fun produktToConfirm(produkt: Produkt,
     Column(modifier = getModiverCard(true)) {
         Row {
             Column (Modifier.weight(0.8f))  {
-                Text("${produkt.producent} - ${produkt.nazwa}", fontWeight = FontWeight.Bold)
+                Text("${produkt.id} ${produkt.producent} - ${produkt.nazwa}", fontWeight = FontWeight.Bold)
                 HorizontalDivider()
                 Text("Dostępne jednostki:")
                 produkt.objetosc.forEach {

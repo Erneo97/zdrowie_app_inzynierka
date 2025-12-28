@@ -196,6 +196,7 @@ public class ProduktController {
 
     @PostMapping("/check/accept")
     public ResponseEntity<?> acceptProduct(@RequestBody int id, Authentication authentication) {
+        log.info("acceptProduct " + id);
         if( authentication == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
@@ -211,6 +212,7 @@ public class ProduktController {
 
     @PostMapping("/check/reject")
     public ResponseEntity<?> rejectProduct(@RequestBody int id, Authentication authentication) {
+        log.info("rejectProduct " + id);
         if( authentication == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
@@ -221,7 +223,7 @@ public class ProduktController {
         }
         produktService.rejectProduct(id);
 
-        return ResponseEntity.ok("Produkt potwierdzony");
+        return ResponseEntity.ok("Produkt odrzucony pomyślnie");
     }
 
 

@@ -318,6 +318,8 @@ public class ProduktService {
                     )
         );
 
+        mealRepository.saveAll(userPosilki);
+
         produktyRepository.deleteById(pdp.getIdProduct());
         potwierdzProduktyRepository.deleteByIdProduct(id);
     }

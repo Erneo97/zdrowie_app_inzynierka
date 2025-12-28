@@ -16,7 +16,49 @@ class AdminVievModel : ViewModel() {
 
     var usersList = mutableListOf<UserCard>()
 
+
+
     var productssList = mutableListOf<Produkt>()
+
+    fun confirmProduct(id :Int ) {
+        loadingData = true
+        viewModelScope.launch {
+            try {
+
+                val response = ApiClient.getApi(token ?: "").acceptProduct(id)
+                if (response.isSuccessful) {
+                    downloadProducToConfirmeList()
+                } else {
+                    errorMessage = "Błąd zaakceptowania produktu: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+            finally {
+                loadingData = false
+            }
+        }
+    }
+
+    fun rejectProduct(id :Int ) {
+        loadingData = true
+        viewModelScope.launch {
+            try {
+
+                val response = ApiClient.getApi(token ?: "").rejectProduct(id)
+                if (response.isSuccessful) {
+                    downloadProducToConfirmeList()
+                } else {
+                    errorMessage = "Błąd odrzucenia produktu: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+            finally {
+                loadingData = false
+            }
+        }
+    }
     fun downloadProducToConfirmeList( ) {
         loadingData = true
         viewModelScope.launch {
