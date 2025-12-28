@@ -96,10 +96,13 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
             }
 
             Column {
-                FullSizeButton(
-                    text = "Dodaj produkt",
-                    onClick = { navController.navigate(Screen.NewProduct.route)},
-                )
+                if( selectedTabIndex == 0) {
+                    FullSizeButton(
+                        text = "Dodaj produkt",
+                        onClick = { navController.navigate(Screen.NewProduct.route)},
+                    )
+                }
+
 
                 TabRow(selectedTabIndex = selectedTabIndex) {
                     tabs.forEachIndexed { index, title ->
@@ -218,7 +221,6 @@ fun editProductTab(adminVievModel: AdminVievModel, searchViewModel: SearchViewMo
         }
 
 
-
         if(!isFocused) {
             // lista produktów wyszukanych, możliwych do dodania
             LazyColumn(
@@ -226,29 +228,24 @@ fun editProductTab(adminVievModel: AdminVievModel, searchViewModel: SearchViewMo
                     .weight(9f)
                     .fillMaxWidth()
                     .heightIn(max = 650.dp)
-                    .background(Color.White)
             ) {
                 items(productsList, key = { it.id }) { item ->
 
                     SearchedItem(
                         product = item,
                         isChecked = false,
-                        onCheckedChange = { prod, checked ->    // wybralismy select box dodając / odejmując produkt z naszel listy spożytych produktóww
-
-                        },
-                        onClick = { // komponent naciśnięty czyli wyświetlamy szczegłuy produktu z makro
-
-                        }
+                        onCheckedChange = { prod, checked ->   }, // Pozostaje puste, bo nie dodajemy tego produkktu do posilku
+                        onClick = { }, // TODO: dopisać wchodzenie w okno edycji produktu.
+                        visibilityChech = false
                     )
                     HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                 }
 
             }
         }
-        else
+        else {
             Text("Brak pasujących wyników wyszukiwania")
-
-
+        }
 
     }
 
@@ -277,7 +274,9 @@ fun ProduktToConfirm(produkt: Produkt,
 
             }
 
-            Column (Modifier.weight(0.2f).padding(6.dp) ) {
+            Column (Modifier
+                .weight(0.2f)
+                .padding(6.dp) ) {
                 FloatingActionButton(
                     onClick = onRemove,
                     containerColor = MaterialTheme.colorScheme.primary,

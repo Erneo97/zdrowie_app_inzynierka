@@ -413,7 +413,8 @@ fun NavigationButtonsRetAdd(
 fun SearchedItem(product: Produkt,
                  isChecked: Boolean,
                  onCheckedChange: (Produkt, Boolean) -> Unit,
-                 onClick: ()  -> Unit
+                 onClick: ()  -> Unit,
+                 visibilityChech : Boolean = true
 ) {
     val shadowColor = MaterialTheme.colorScheme.primary
     var innerisChecked by remember {   mutableStateOf(isChecked) }
@@ -474,21 +475,22 @@ fun SearchedItem(product: Produkt,
 
                 Spacer(modifier = Modifier.height(4.dp))
             }
+            if( visibilityChech ) {
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
 
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Checkbox(
+                        checked = innerisChecked,
+                        onCheckedChange = { checked ->
+                            innerisChecked = !innerisChecked
+                            onCheckedChange(product, innerisChecked)
 
-                Checkbox(
-                    checked = innerisChecked,
-                    onCheckedChange = { checked ->
-                        innerisChecked = !innerisChecked
-                        onCheckedChange(product, innerisChecked)
-
-                    }
-                )
+                        }
+                    )
+                }
             }
         }
     }
