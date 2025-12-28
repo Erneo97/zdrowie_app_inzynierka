@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -13,4 +14,5 @@ import java.util.Optional;
 public interface MealRepository extends MongoRepository<Posilki, String> {
     Optional <Posilki> findById( int id);
     Optional<Posilki> findByIdUzytkownikaAndDataAndPoradnia( int id, Date data, PoraDnia poradnia);
+    List<Posilki> findAllByIdUzytkownika(Integer id);
 }

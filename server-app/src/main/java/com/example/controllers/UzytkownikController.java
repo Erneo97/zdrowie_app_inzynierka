@@ -483,4 +483,6 @@ public class UzytkownikController {
         return ResponseEntity.ok("Zmieniono status użytkownika");
     }
 
+
+
 }

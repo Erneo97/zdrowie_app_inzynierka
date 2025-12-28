@@ -8,7 +8,8 @@ public enum LicznikiDB {
     TRENINGI("trenings"),
     CWICZENIA("cwiczenia"),
     TOKENS("tokens"),
-    ZAPROSZENIA("zaproszenia");
+    ZAPROSZENIA("zaproszenia"),
+    USER_STATS("user stats");
 
     private String nazwa;
     private LicznikiDB(String nazwa) {

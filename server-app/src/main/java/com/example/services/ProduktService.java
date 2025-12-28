@@ -4,12 +4,12 @@ import com.example.kolekcje.enumy.Jednostki;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.enumy.PoraDnia;
 import com.example.kolekcje.posilki.*;
-import com.example.kolekcje.statistic.ChartPoint;
+import com.example.kolekcje.uzytkownik.UserStats;
 import com.example.repositories.MealRepository;
 import com.example.repositories.PotwierdzProduktyRepository;
 import com.example.repositories.ProduktRepository;
+import com.example.repositories.UserStatsRepository;
 import com.example.requests.MealUpdate;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -23,15 +23,17 @@ public class ProduktService {
     private final SequenceGeneratorService sequenceGenerator;
     private final MealRepository mealRepository;
     private final PotwierdzProduktyRepository potwierdzProduktyRepository;
+    private final UserStatsRepository userStatsRepository;
 
     public ProduktService(ProduktRepository produktyRepository,
                           SequenceGeneratorService sequenceGenerator,
                           MealRepository mealRepository,
-                          PotwierdzProduktyRepository potwierdzProduktyRepository) {
+                          PotwierdzProduktyRepository potwierdzProduktyRepository, UserStatsRepository userStatsRepository) {
         this.produktyRepository = produktyRepository;
         this.sequenceGenerator = sequenceGenerator;
         this.mealRepository = mealRepository;
         this.potwierdzProduktyRepository = potwierdzProduktyRepository;
+        this.userStatsRepository = userStatsRepository;
     }
 
     
@@ -289,6 +291,34 @@ public class ProduktService {
     }
 
     public void acceptProduct(int id) {
+        potwierdzProduktyRepository.deleteByIdProduct(id);
+    }
+
+    public void rejectProduct(int id) {
+        ProduktyDoPotwierdzenia pdp = potwierdzProduktyRepository.findByIdProduct(id).get();
+
+        Optional<UserStats> optUS = userStatsRepository.findById(pdp.getIdUzytkownika());
+        if( optUS.isEmpty() ) {
+            UserStats userStats = new UserStats();
+            userStats.setId(pdp.getIdUzytkownika());
+            userStats.setProductReject(1);
+        }
+        else {
+            UserStats userStats = optUS.get();
+            userStats.incrementProductReject();
+            userStatsRepository.save(userStats);
+        }
+
+        // Usuwanie produktu przeznaczonego do usuniecia
+        List<Posilki> userPosilki = mealRepository.findAllByIdUzytkownika(pdp.getIdUzytkownika());
+        userPosilki.forEach(
+                posilek ->
+                    posilek.getProdukty().removeIf(
+                            p -> p.getId() == pdp.getIdProduct()
+                    )
+        );
+
+        produktyRepository.deleteById(pdp.getIdProduct());
         potwierdzProduktyRepository.deleteByIdProduct(id);
     }
 

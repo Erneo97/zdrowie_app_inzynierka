@@ -23,5 +23,7 @@ public interface ProduktRepository extends MongoRepository<Produkt, String> {
 
     List<Produkt> findByProducent(String producent);
 
+    void deleteById(Long id);
+
 
 }
