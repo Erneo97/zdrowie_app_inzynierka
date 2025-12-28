@@ -302,6 +302,7 @@ public class ProduktService {
             UserStats userStats = new UserStats();
             userStats.setId(pdp.getIdUzytkownika());
             userStats.setProductReject(1);
+            userStatsRepository.save(userStats);
         }
         else {
             UserStats userStats = optUS.get();

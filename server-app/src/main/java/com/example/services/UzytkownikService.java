@@ -2,15 +2,12 @@ package com.example.services;
 
 import com.example.kolekcje.Zaproszenie;
 import com.example.kolekcje.ZaproszenieInfo;
-import com.example.kolekcje.enumy.GOAL;
 import com.example.kolekcje.enumy.LicznikiDB;
-import com.example.kolekcje.enumy.Makro;
 import com.example.kolekcje.enumy.Plec;
-import com.example.kolekcje.plan_treningowy.PlanTreningowy;
 import com.example.kolekcje.posilki.*;
-import com.example.kolekcje.statistic.StatisticParameters;
 import com.example.kolekcje.uzytkownik.*;
 import com.example.repositories.TreningPlanRepository;
+import com.example.repositories.UserStatsRepository;
 import com.example.repositories.UzytkownikRepository;
 import com.example.repositories.ZaproszeniaRepository;
 import org.slf4j.Logger;
@@ -34,18 +31,20 @@ public class UzytkownikService {
     private final ProduktService produktService;
     private static final Logger log = LoggerFactory.getLogger(UzytkownikService.class);
     private final TreningPlanRepository treningPlanRepository;
+    private final UserStatsRepository userStatsRepository;
 
     public UzytkownikService(UzytkownikRepository repository, SequenceGeneratorService sequenceGenerator
             , ZaproszeniaRepository zaproszeniaRepository
             , UzytkownikRepository uzytkownikRepository
     , ProduktService produktService,
-                             TreningPlanRepository treningPlanRepository) {
+                             TreningPlanRepository treningPlanRepository, UserStatsRepository userStatsRepository) {
         this.repository = repository;
         this.sequenceGenerator = sequenceGenerator;
         this.zaproszeniaRepository = zaproszeniaRepository;
         this.uzytkownikRepository = uzytkownikRepository;
         this.produktService = produktService;
         this.treningPlanRepository = treningPlanRepository;
+        this.userStatsRepository = userStatsRepository;
     }
 
     /**
@@ -440,7 +439,12 @@ public class UzytkownikService {
         uzytkownikRepository.findAll().forEach(
                 user -> {
                     if( !user.getRole().equals("ADMIN")) {
-                        List<ProduktyDoPotwierdzenia> potwierdzenie = produktService.getAllProductById(user.getId());
+                        Optional<UserStats> potwierdzenie = userStatsRepository.findById(user.getId());
+                        int count = 0;
+                        if( potwierdzenie.isPresent() ) {
+                            UserStats stats = potwierdzenie.get();
+                            count = stats.getProductReject();
+                        }
                         us.add(new UserCard(
                                 user.getId(),
                                 user.getImie(),
@@ -448,7 +452,7 @@ public class UzytkownikService {
                                 user.getEmail(),
                                 user.getPlec(),
                                 user.getRole(),
-                                potwierdzenie.size(),
+                                count,
                                 user.isBlocked()
                         ));
                     }
