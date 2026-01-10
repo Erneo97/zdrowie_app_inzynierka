@@ -101,13 +101,15 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
                         onClick = { navController.navigate(Screen.NewProduct.route)},
                     )
                 }
-
                 var searchProduct by remember { mutableStateOf("") }
-                InputField(
-                    value = searchProduct,
-                    onValueChange = {searchProduct = it},
-                    label = "Szukany produkt",
-                )
+                if( selectedTabIndex == 0) {
+                    InputField(
+                        value = searchProduct,
+                        onValueChange = {searchProduct = it},
+                        label = "Szukany produkt",
+                    )
+                }
+
 
                 TabRow(selectedTabIndex = selectedTabIndex) {
                     tabs.forEachIndexed { index, title ->
