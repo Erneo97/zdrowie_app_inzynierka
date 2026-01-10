@@ -52,11 +52,6 @@ fun UniversalMealTab(loginViewModel: LoginViewModel,
 
     val mealsMap = productViewModel.mealsMap
 
-    LaunchedEffect(productViewModel.isSelectedRecipesReadyToSend) { // wysyłanie na serwer nowego przepisu
-
-    }
-//    Log.e("UniversalMealTab", "${productViewModel.mealsMap[PoraDnia.SNIADANIE]!!.produkty.size} - ${productViewModel.mealsMap[PoraDnia.LUNCH]!!.produkty.size} - ${productViewModel.mealsMap[PoraDnia.OBIAD]!!.produkty.size} - ${productViewModel.mealsMap[PoraDnia.KOLACJA]!!.produkty.size}")
-
     LaunchedEffect(productViewModel.isSelectedProductsReadyToSend) { // wysyłanie do bazy danych użytkownika posiłku
         if( productViewModel.selectedDayTime.value != PoraDnia.CLEAR) {
             productViewModel.selecteProductsFromRecipe.forEach { it ->  productViewModel.selectedProducts.addAll( it.listaProdukty )}
@@ -71,6 +66,8 @@ fun UniversalMealTab(loginViewModel: LoginViewModel,
             productViewModel.selectedDayTime.value = PoraDnia.CLEAR
             productViewModel.isSelectedProductsReadyToSend.value = false
             productViewModel.calculateAllStatistic()
+
+            productViewModel.downloadRWS()
         }
     }
 
@@ -78,6 +75,7 @@ fun UniversalMealTab(loginViewModel: LoginViewModel,
     LaunchedEffect(date, productViewModel.token) {  // pobieranie danych na serwer przy zmianie daty
         if (!productViewModel.token.isNullOrBlank()) {
             downloadMealUserDay()
+            productViewModel.downloadRWS()
         }
     }
 
@@ -131,7 +129,6 @@ fun UniversalMealTab(loginViewModel: LoginViewModel,
                 },
                 onRemoveClick = {meal ->
                     productViewModel.mealsMap[PoraDnia.fromDisplayName(timeOfDays)]!!.produkty.remove(meal)
-//                    TODO: Zmiana wartosci na serwerze po  aktualizacja
                     productViewModel.selectedDayTime.value = PoraDnia.fromDisplayName(timeOfDays)
                     updataMealUser()
                     productViewModel.selectedDayTime.value = PoraDnia.CLEAR
@@ -141,19 +138,25 @@ fun UniversalMealTab(loginViewModel: LoginViewModel,
 
         }
 
-        val labels = listOf("Białko", "Węglowodany", "Tłuszcze", "Błonnik")
-        val values = listOf(productViewModel.makroMeal.value.bialko,
-            productViewModel.makroMeal.value.weglowodany,
-            productViewModel.makroMeal.value.tluszcze,
-            productViewModel.makroMeal.value.blonnik)
+
 
         Text("Makro spożyte: ", fontWeight = FontWeight.SemiBold)
-        MacroNutrientsDisplay(
-            labels = labels,
-            values = values,
-            unit = "g",
-            modifier = Modifier.fillMaxWidth()
-        )
+        if( !productViewModel.chengeMakro) {
+            var values = listOf(productViewModel.makroMeal.value.bialko,
+                productViewModel.makroMeal.value.weglowodany,
+                productViewModel.makroMeal.value.tluszcze,
+                productViewModel.makroMeal.value.blonnik)
+            MacroNutrientsDisplay(
+                labels = productViewModel.labels,
+                values = values,
+                valuesRWS = productViewModel.valuesRWS,
+                unit = "g",
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        else {
+            CircularProgressIndicator()
+        }
 
         Spacer(Modifier.height(15.dp))
     }

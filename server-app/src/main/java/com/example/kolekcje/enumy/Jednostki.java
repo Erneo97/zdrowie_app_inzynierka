@@ -1,7 +1,6 @@
 package com.example.kolekcje.enumy;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Jednostki {
     LITR("l."),

@@ -231,7 +231,12 @@ interface ApiService {
     ) : Response<TreningStatisticUiState>
 
 
+
 //    STATYSTYKI
+
+
+    @GET("statistic/rws")
+    suspend fun getUserRws( ) : Response<List<StatisticParameters>>
 
     @POST("statistic/weight")
     suspend fun getStatisticUserWeight( @Body interval: StatisticInterval )

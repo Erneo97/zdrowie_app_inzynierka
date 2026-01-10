@@ -1,5 +1,6 @@
 package com.example.firstcomposeap.ui.service
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -20,6 +21,7 @@ import com.example.firstcomposeap.ui.service.data.MealGroup
 import com.example.firstcomposeap.ui.service.data.MealUpdate
 import com.example.firstcomposeap.ui.service.data.PoraDnia
 import com.example.firstcomposeap.ui.service.data.Produkt
+import com.example.firstcomposeap.ui.service.data.StatisticParameters
 import com.example.firstcomposeap.ui.service.data.calculateCaloriesInMeal
 import kotlinx.coroutines.launch
 
@@ -309,7 +311,62 @@ class ProductViewModel : ViewModel() {
 
 
 
+    var makroRWS: List<StatisticParameters>? = mutableStateListOf()
+
+    var chengeMakro = false
+    fun downloadRWS( ) {
+        chengeMakro = true
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").getUserRws()
+
+                if (response.isSuccessful) {
+                    response.body().let { it: List<StatisticParameters>? ->
+                        makroRWS = it
+                        valuesRWS =
+                                listOf(
+                                    makroRWS!!.get(0).max.toFloat(),
+                                    makroRWS!!.get(1).max.toFloat(),
+                                    makroRWS!!.get(2).max.toFloat(),
+                                    makroRWS!!.get(3).max.toFloat(),
+                                )
+
+                    }
+                    Log.e("downloadRWS", "${valuesRWS.get(0)} - ${valuesRWS.get(1)} - ${valuesRWS.get(2)} - ${valuesRWS.get(3)}")
+                    errorMessage = null
+                } else {
+                    errorMessage = "Błąd pobierania produktu: ${response.code()}"
+
+                }
+
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+                Log.e("downloadRWS chat", "${errorMessage}")
+            }
+            finally {
+                chengeMakro = false
+            }
+        }
+
+    }
 
 
+    val labels = listOf("Białko", "Węglowodany", "Tłuszcze", "Błonnik")
+    var values = listOf(makroMeal.value.bialko,
+        makroMeal.value.weglowodany,
+        makroMeal.value.tluszcze,
+        makroMeal.value.blonnik)
+
+
+    var valuesRWS =
+        if( makroRWS!=null && makroRWS!!.isNotEmpty())
+            listOf(
+                makroRWS!!.get(0).max.toFloat(),
+                makroRWS!!.get(1).max.toFloat(),
+                makroRWS!!.get(2).max.toFloat(),
+                makroRWS!!.get(3).max.toFloat(),
+            )
+        else
+            values
 
 }

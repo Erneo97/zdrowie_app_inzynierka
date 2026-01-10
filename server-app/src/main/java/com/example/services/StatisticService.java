@@ -259,13 +259,14 @@ public class StatisticService {
      *  min - minimalna wartosć do spożycia danego dnia
      *  max - maxymalna wartość do spożycia danego dnia
      *
-     *  Kolejność listy białko, węglowodany, tłuszcze
+     *  Kolejność listy białko, węglowodany, tłuszcze, błonnik
      *  
      * @param user
      * @return
      */
     public List<StatisticParameters> getMakroStats(Uzytkownik user) {
         List<StatisticParameters> stats = new ArrayList<>();
+        log.info("getMakroStats ");
 
         Optional<PlanTreningowy> optPT = treningService.getById(user.getAktualnyPlan());
         GOAL cel;
@@ -287,6 +288,9 @@ public class StatisticService {
 
             stats.add(stat);
         }
+        log.info("getMakroStats {}", stats.size());
+
+        stats.forEach( it -> log.info(it.getMin() + " " + it.getMax()));
 
         return stats;
     }
@@ -294,24 +298,28 @@ public class StatisticService {
     private static final Map<Makro, Integer> KCAL_NA_GRAM = Map.of(
             Makro.BIALKO, 4,
             Makro.WEGLOWODANY, 4,
-            Makro.TLUSZCZ, 9
+            Makro.TLUSZCZ, 9,
+            Makro.BLONNIK, 1
     );
 
     private static final Map<GOAL, Map<Makro, double[]>> MAKRO_PROCENTY = Map.of(
             GOAL.CONST, Map.of(
                     Makro.BIALKO, new double[]{25, 30},
                     Makro.WEGLOWODANY, new double[]{40, 50},
-                    Makro.TLUSZCZ, new double[]{25, 30}
+                    Makro.TLUSZCZ, new double[]{25, 30},
+                    Makro.BLONNIK, new double[]{0.5, 1}
             ),
             GOAL.MUSCLE, Map.of(
                     Makro.BIALKO, new double[]{25, 30},
                     Makro.WEGLOWODANY, new double[]{40, 50},
-                    Makro.TLUSZCZ, new double[]{25, 30}
+                    Makro.TLUSZCZ, new double[]{25, 30},
+                    Makro.BLONNIK, new double[]{0.5, 1}
             ),
             GOAL.REDUCE, Map.of(
                     Makro.BIALKO, new double[]{30, 40},
                     Makro.WEGLOWODANY, new double[]{30, 40},
-                    Makro.TLUSZCZ, new double[]{20, 30}
+                    Makro.TLUSZCZ, new double[]{20, 30},
+                    Makro.BLONNIK, new double[]{0.5, 1}
             )
     );
 
