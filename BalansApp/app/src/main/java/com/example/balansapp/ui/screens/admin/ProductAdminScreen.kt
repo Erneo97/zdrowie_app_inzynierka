@@ -49,6 +49,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
 import com.example.balansapp.ui.components.FullSizeButton
+import com.example.balansapp.ui.components.input.InputField
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayoutAdmin
 import com.example.balansapp.ui.navigation.main.Screen
@@ -96,11 +97,17 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
             Column {
                 if( selectedTabIndex == 0) {
                     FullSizeButton(
-                        text = "Dodaj produkt",
+                        text = "Dodaj produkt / producent",
                         onClick = { navController.navigate(Screen.NewProduct.route)},
                     )
                 }
 
+                var searchProduct by remember { mutableStateOf("") }
+                InputField(
+                    value = searchProduct,
+                    onValueChange = {searchProduct = it},
+                    label = "Szukany produkt",
+                )
 
                 TabRow(selectedTabIndex = selectedTabIndex) {
                     tabs.forEachIndexed { index, title ->
@@ -115,8 +122,12 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
 
                 when (selectedTabIndex) {
                     0 -> {
+                        val filtratedProduct = adminVievModel.productssList
+                            .filter { it.nazwa.contains(searchProduct, ignoreCase = true)
+                                || it.producent.contains(searchProduct, ignoreCase = true)}
+
                         LazyColumn {
-                            items(adminVievModel.productssList) {
+                            items(filtratedProduct) {
                                 produkt ->
                                 ProduktToConfirm(
                                     produkt = produkt,
