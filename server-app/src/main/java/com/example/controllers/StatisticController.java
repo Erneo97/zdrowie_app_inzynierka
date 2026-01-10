@@ -90,4 +90,23 @@ public class StatisticController {
 
         return ResponseEntity.ok(ret);
     }
+
+
+    @GetMapping("/rws")
+    public ResponseEntity<?> getUserRws(Authentication authentication) {
+        log.info("getUserRws");
+        if( authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        log.info("getUserRws");
+        String userEmail = authentication.getName();
+        log.info("getUserRws");
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if(optUsr.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        log.info("getUserRws");
+        return ResponseEntity.ok(statisticService.getMakroStats(optUsr.get()));
+    }
+
 }

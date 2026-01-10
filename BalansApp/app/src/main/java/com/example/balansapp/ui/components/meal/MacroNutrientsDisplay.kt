@@ -59,7 +59,7 @@ fun MacroNutrientsDisplay(
 
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "/ ${valuesRWS[index].format(1)} (${value * 100/valuesRWS[index]}%)",
+                        text = "/ ${valuesRWS[index].format(1)} (${(value * 100/valuesRWS[index]).format(2)}%)",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
