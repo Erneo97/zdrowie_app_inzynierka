@@ -42,7 +42,6 @@ import com.example.balansapp.ui.screens.admin.ProductAdminScreen
 import com.example.balansapp.ui.screens.admin.ProfileAdminScreen
 import com.example.balansapp.ui.screens.admin.UserAdminScreen
 import com.example.balansapp.ui.service.AdminVievModel
-import kotlin.math.log
 
 
 class MainActivity : ComponentActivity() {
