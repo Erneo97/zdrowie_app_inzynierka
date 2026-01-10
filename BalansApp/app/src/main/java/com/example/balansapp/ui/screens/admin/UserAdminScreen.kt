@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.balansapp.R
+import com.example.balansapp.ui.components.input.InputField
 import com.example.balansapp.ui.components.input.LogoBackGround
 import com.example.balansapp.ui.navigation.main.MainLayoutAdmin
 import com.example.balansapp.ui.service.AdminVievModel
@@ -105,17 +106,35 @@ fun UsersTab(itemVisibilityCodition: Boolean, adminVievModel: AdminVievModel ) {
         CircularProgressIndicator()
     }
     else {
-        var value by remember { mutableStateOf(1f) }
+        var sliderValue by remember { mutableStateOf(0f) }
 
-        Text("Dopuszczalna granica błędu : ${value.toInt()}", fontSize = 25.sp)
+        Text("Dopuszczalna granica błędu : ${sliderValue.toInt()}", fontSize = 25.sp)
         Slider(
-            value = value,
-            onValueChange = { value = it },
+            value = sliderValue,
+            onValueChange = { sliderValue = it },
             valueRange = 0f..25f
+        )
+
+        var searchEmail by remember { mutableStateOf("") }
+        InputField(
+            value = searchEmail,
+            onValueChange = {searchEmail = it},
+            label = "Szukany email",
+        )
+        var searchPerson by remember { mutableStateOf("") }
+        InputField(
+            value = searchPerson,
+            onValueChange = {searchPerson = it},
+            label = "Szukana osoba",
         )
 
         val filteredUsers = adminVievModel.usersList
             .filter { it.blocked == itemVisibilityCodition }
+            .filter { it.failureCount >= sliderValue.toInt() }
+            .filter {  it.email.contains(searchEmail, ignoreCase = true) }
+            .filter {  it.imie.contains(searchPerson, ignoreCase = true)
+                    ||  it.nazwisko.contains(searchPerson, ignoreCase = true) }
+
 
         LazyColumn {
             items(filteredUsers) { userItem ->
@@ -126,7 +145,6 @@ fun UsersTab(itemVisibilityCodition: Boolean, adminVievModel: AdminVievModel ) {
                         adminVievModel.changeStatsUser(userItem.id, it)
                         adminVievModel.downloadUserList()
                     },
-                    failureMaxCount = value.toInt()
                 )
             }
         }

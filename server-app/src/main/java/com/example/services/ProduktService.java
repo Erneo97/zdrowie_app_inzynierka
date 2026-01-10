@@ -316,7 +316,7 @@ public class ProduktService {
             userStatsRepository.save(userStats);
         }
 
-        // Usuwanie produktu przeznaczonego do usuniecia
+        // Usuwanie produktu przeznaczonego do usuniecia - nie usuwa wszystkich nieprawidłowych rejestrów w posiłkach użytkownika
         List<Posilki> userPosilki = mealRepository.findAllByIdUzytkownika(pdp.getIdUzytkownika());
         userPosilki.forEach(
                 posilek ->
