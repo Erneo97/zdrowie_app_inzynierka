@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 fun MacroNutrientsDisplay(
     labels: List<String>,
     values: List<Float>,
+    valuesRWS: List<Float>? = null,
     unit: String = "g",
     modifier: Modifier = Modifier
 ) {
@@ -49,7 +50,22 @@ fun MacroNutrientsDisplay(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "${value.format(1)} $unit",
+                    text = "${value.format(1)} ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                if( valuesRWS != null && valuesRWS.size > index ) {
+
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "/ ${valuesRWS[index].format(1)} (${value * 100/valuesRWS[index]}%)",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Text(
+                    text = unit,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -64,9 +80,11 @@ fun MacroNutrientsDisplay(
                         shape = RoundedCornerShape(3.dp)
                     )
             ) {
+                val maxVal = if( valuesRWS!= null && valuesRWS.size > index) valuesRWS[index] else value
+
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth((value / (values.maxOrNull() ?: 1f)).coerceIn(0f, 1f))
+                        .fillMaxWidth((value / maxVal).coerceIn(0f, 1f))
                         .fillMaxHeight()
                         .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(3.dp))
                 )
