@@ -369,4 +369,45 @@ class ProductViewModel : ViewModel() {
         else
             values
 
+
+    var editedProduct by mutableStateOf<Produkt?>(null)
+
+    fun downloadProductToEdit(id: Int) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.findProductById(id)
+
+                if (response.isSuccessful) {
+                    editedProduct = response.body()
+                } else {
+                    errorMessage = "Błąd pobierania produktu: ${response.code()}"
+                }
+
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+                editedProduct = null
+            }
+        }
+    }
+
+    fun updateProdukt(update: Produkt) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").updateProduct(update)
+
+                if (response.isSuccessful) {
+                     response.body().let { message = it!!.message}
+                } else {
+                    errorMessage = "Błąd pobierania produktu: ${response.code()}"
+                }
+
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+                editedProduct = null
+            }
+        }
+    }
+
+
+
 }

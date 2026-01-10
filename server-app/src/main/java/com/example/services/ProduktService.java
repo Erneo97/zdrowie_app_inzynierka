@@ -331,5 +331,8 @@ public class ProduktService {
         potwierdzProduktyRepository.deleteByIdProduct(id);
     }
 
+    public void updateProduct(Produkt produkt) {
+        produktyRepository.save(produkt);
+    }
 
 }

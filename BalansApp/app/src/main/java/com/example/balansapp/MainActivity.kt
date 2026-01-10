@@ -42,6 +42,7 @@ import com.example.balansapp.ui.screens.admin.ProductAdminScreen
 import com.example.balansapp.ui.screens.admin.ProfileAdminScreen
 import com.example.balansapp.ui.screens.admin.UserAdminScreen
 import com.example.balansapp.ui.service.AdminVievModel
+import com.example.firstcomposeap.ui.screens.EditProductScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -121,6 +122,8 @@ class MainActivity : ComponentActivity() {
                     ) }
 
                     composable(Screen.NewProduct.route) { NewProductScreen(productViewModel, onClose = {navController.popBackStack()}) }
+                    composable(Screen.EditProduct.route) { EditProductScreen(productViewModel, onClose = {navController.popBackStack()}) }
+
                     composable(Screen.ProductConsumedDetails.route) { ProductConsumedDetails(
                         productViewModel = productViewModel, onClose = {navController.popBackStack()}) }
 
@@ -159,7 +162,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.ProfileAdmin.route) { ProfileAdminScreen(navController =  navController, loginViewModel =  loginViewModel)}
                     composable(Screen.UsersAdmin.route) { UserAdminScreen(navController = navController, adminVievModel =  adminVievModel) }
                     composable(Screen.ExerciseAdmin.route) { ExerciseAdminScreen(navController = navController) }
-                    composable(Screen.ProductAdmin.route) { ProductAdminScreen(navController = navController, adminVievModel = adminVievModel ) }
+                    composable(Screen.ProductAdmin.route) { ProductAdminScreen(navController = navController, adminVievModel = adminVievModel, productViewModel = productViewModel ) }
                 }
             }
         }

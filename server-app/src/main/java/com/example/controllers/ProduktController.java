@@ -231,4 +231,23 @@ public class ProduktController {
     }
 
 
+    @PostMapping("/update")
+    public ResponseEntity<?> updateProduct(@RequestBody Produkt update, Authentication authentication) {
+        log.info("updateProduct " + update.getId());
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        produktService.updateProduct(update);
+
+        return ResponseEntity.ok(
+                Map.of("message", "Produkt zaktualizowany pomyślnie")
+        );
+    }
+
+
 }

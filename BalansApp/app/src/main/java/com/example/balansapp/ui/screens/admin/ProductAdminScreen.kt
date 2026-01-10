@@ -57,11 +57,12 @@ import com.example.balansapp.ui.service.AdminVievModel
 import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.components.icon.Done
 import com.example.firstcomposeap.ui.screens.SearchedItem
+import com.example.firstcomposeap.ui.service.ProductViewModel
 import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.data.Produkt
 
 @Composable
-fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVievModel) {
+fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVievModel, productViewModel: ProductViewModel) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.products)) }
     val searchViewModel: SearchViewModel = viewModel ()
@@ -74,7 +75,7 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
         "Prośby o zaakceptowanie produktu",
         "Zarządzaj produktami"
     )
-    var selectedTabIndex by remember { mutableStateOf(0) }
+
 
     MainLayoutAdmin (
         navController = navController,
@@ -95,14 +96,14 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
             }
 
             Column {
-                if( selectedTabIndex == 0) {
+                if( productViewModel.selectedTabIndex == 0) {
                     FullSizeButton(
                         text = "Dodaj produkt / producent",
                         onClick = { navController.navigate(Screen.NewProduct.route)},
                     )
                 }
                 var searchProduct by remember { mutableStateOf("") }
-                if( selectedTabIndex == 0) {
+                if( productViewModel.selectedTabIndex == 0) {
                     InputField(
                         value = searchProduct,
                         onValueChange = {searchProduct = it},
@@ -111,18 +112,18 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
                 }
 
 
-                TabRow(selectedTabIndex = selectedTabIndex) {
+                TabRow(selectedTabIndex = productViewModel.selectedTabIndex) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
-                            selected = selectedTabIndex == index,
-                            onClick = { selectedTabIndex = index },
+                            selected = productViewModel.selectedTabIndex == index,
+                            onClick = { productViewModel.selectedTabIndex = index },
                             text = { Text(title, fontSize = 22.sp) }
                         )
                     }
                 }
 
 
-                when (selectedTabIndex) {
+                when (productViewModel.selectedTabIndex) {
                     0 -> {
                         val filtratedProduct = adminVievModel.productssList
                             .filter { it.nazwa.contains(searchProduct, ignoreCase = true)
@@ -145,7 +146,11 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
 
                     }
                     1 -> {
-                        editProductTab(adminVievModel = adminVievModel, searchViewModel = searchViewModel)
+                        editProductTab(
+                            searchViewModel = searchViewModel,
+                            onSelect = {
+                                productViewModel.downloadProductToEdit(it)
+                                navController.navigate(Screen.EditProduct.route) })
                     }
                 }
             }
@@ -154,7 +159,7 @@ fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVi
 }
 
 @Composable
-fun editProductTab(adminVievModel: AdminVievModel, searchViewModel: SearchViewModel) {
+fun editProductTab(searchViewModel: SearchViewModel, onSelect : (Int) -> Unit ) {
     val query = searchViewModel.searchQuery
     var isFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -241,12 +246,11 @@ fun editProductTab(adminVievModel: AdminVievModel, searchViewModel: SearchViewMo
                     .heightIn(max = 650.dp)
             ) {
                 items(productsList, key = { it.id }) { item ->
-
                     SearchedItem(
                         product = item,
                         isChecked = false,
                         onCheckedChange = { prod, checked ->   }, // Pozostaje puste, bo nie dodajemy tego produkktu do posilku
-                        onClick = { }, // TODO: dopisać wchodzenie w okno edycji produktu.
+                        onClick = { onSelect(item.id.toInt() ) },
                         visibilityChech = false
                     )
                     HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)

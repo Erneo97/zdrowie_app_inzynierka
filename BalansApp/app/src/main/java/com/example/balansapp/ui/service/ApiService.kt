@@ -68,6 +68,9 @@ interface ApiService {
     @POST("produkty/check/reject")
     suspend fun rejectProduct(@Body id: Int): Response<SimpleMessage>
 
+    @POST("produkty/update")
+    suspend fun updateProduct(@Body id: Produkt): Response<SimpleMessage>
+
     @POST("uzytkownicy/waga")
     suspend fun addUserWeigt(@Body body: PommiarWagii, @Header("Authorization") authorization: String)
     : Response<SimpleMessage>
