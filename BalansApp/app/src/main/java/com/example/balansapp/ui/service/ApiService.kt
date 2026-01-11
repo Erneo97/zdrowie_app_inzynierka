@@ -233,7 +233,15 @@ interface ApiService {
         @Query("id") id: Int
     ) : Response<TreningStatisticUiState>
 
+    @GET("trening/check/exercise")
+    suspend fun getExercisesToCheck(): Response<List<Cwiczenie>>
 
+
+    @POST("trening/check/accept")
+    suspend fun acceptExercise(@Body id: Int): Response<SimpleMessage>
+
+    @POST("trening/check/reject")
+    suspend fun rejectExercise(@Body id: Int): Response<SimpleMessage>
 
 //    STATYSTYKI
 
