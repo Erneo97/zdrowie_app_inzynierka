@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(
                     navController = navController,
 
-                    startDestination = if ( (loginViewModel.user?.role ?: "USER") == "ADMIN" ) Screen.ProductAdmin.route  else Screen.Home.route
+                    startDestination = if ( (loginViewModel.user?.role ?: "USER") == "ADMIN" ) Screen.ExerciseAdmin.route  else Screen.Home.route
                 ) {
                     composable(Screen.Register.route) { RegisterScreen(navController, registerViewModel) }
                     composable(Screen.Login.route) { LoginScreen(navController, loginViewModel) }
@@ -161,7 +161,11 @@ class MainActivity : ComponentActivity() {
 //****************************      WIDOKI ADMINA *************************************************
                     composable(Screen.ProfileAdmin.route) { ProfileAdminScreen(navController =  navController, loginViewModel =  loginViewModel)}
                     composable(Screen.UsersAdmin.route) { UserAdminScreen(navController = navController, adminVievModel =  adminVievModel) }
-                    composable(Screen.ExerciseAdmin.route) { ExerciseAdminScreen(navController = navController) }
+                    composable(Screen.ExerciseAdmin.route) { ExerciseAdminScreen(
+                        navController = navController,
+                        treningViewModel =treningViewModel,
+                        adminVievModel = adminVievModel
+                    ) }
                     composable(Screen.ProductAdmin.route) { ProductAdminScreen(navController = navController, adminVievModel = adminVievModel, productViewModel = productViewModel ) }
                 }
             }
