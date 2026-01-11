@@ -29,10 +29,6 @@ public class Trening {
         return idTrening;
     }
 
-    public void setIdTrening(Integer idTrening) {
-        this.idTrening = idTrening;
-    }
-
     public int getIdUser() {return idUser;}
     public int getIdPlanu() {return idPlanu;}
     public Date getData() {return data;}
