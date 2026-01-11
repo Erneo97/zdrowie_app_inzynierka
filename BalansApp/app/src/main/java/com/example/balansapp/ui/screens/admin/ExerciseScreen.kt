@@ -3,6 +3,8 @@ package com.example.balansapp.ui.screens.admin
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
@@ -53,6 +57,7 @@ import com.example.balansapp.ui.service.AdminVievModel
 import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.components.icon.Done
 import com.example.firstcomposeap.ui.components.treningplans.MuscleGroupFilter
+import com.example.firstcomposeap.ui.components.treningplans.TrainingSeasonCard
 import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.Cwiczenie
@@ -64,16 +69,6 @@ fun ExerciseAdminScreen(navController: NavHostController,
                         adminVievModel: AdminVievModel ) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.exercises)) }
-    val searchViewModel: SearchViewModel = viewModel()
-
-    var selectedGroups by remember { mutableStateOf(listOf<GrupaMiesniowa>()) }
-    var accurately by remember { mutableStateOf(false) } // czy dokładne odwzorowanie tagów czy tylko te zawierające
-
-    val suggestions = searchViewModel.suggestionsList
-
-    var isFocused by remember { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
-    val query = searchViewModel.searchQuery
 
 
     LaunchedEffect(Unit, adminVievModel.loadingData) {
@@ -149,72 +144,7 @@ fun ExerciseAdminScreen(navController: NavHostController,
                         }
 
                     }
-                    1 -> {
-                        TextField(
-                            value = query,
-                            onValueChange = { searchViewModel.onSearchQueryChange(it, false, selectedGroups, accurately) },
-                            placeholder = { Text("Nazwa ćwiczenia...") },
-                            singleLine = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .onFocusChanged { focusState ->
-                                    isFocused = focusState.isFocused
-                                }
-                        )
-                        AnimatedVisibility(visible = suggestions.isNotEmpty() && isFocused) {
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 4.dp),
-                                shape = RoundedCornerShape(8.dp),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                            ) {
-
-                                LazyColumn(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(Color.White)
-                                ) {
-                                    items(suggestions) { item ->
-                                        Text(
-                                            text = item,
-                                            modifier = Modifier
-                                                .clickable {
-                                                    searchViewModel.selectSuggestion(item)
-                                                    // pobranie cwiczen
-                                                    focusManager.clearFocus()
-                                                    isFocused = false
-                                                }
-                                                .padding(12.dp)
-                                        )
-                                        HorizontalDivider(
-                                            Modifier,
-                                            DividerDefaults.Thickness,
-                                            DividerDefaults.color
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                        MuscleGroupFilter(
-                            selected = selectedGroups,
-                            onSelectedChange = { groups ->
-                                selectedGroups = groups
-                                searchViewModel.onSearchQueryChange(isProduct =  false, groupMuscle = selectedGroups, precision =  accurately)
-                                isFocused = true
-                            },
-                            onChangePrecision = {
-                                accurately = it
-                                searchViewModel.onSearchQueryChange(isProduct =  false, groupMuscle = selectedGroups, precision =  accurately)
-                                isFocused = true
-                            }
-                        )
-
-
-
-                        ExerciseAdminTab(  )
-
-                    }
+                    1 -> { ExerciseAdminTab( ) }
                 }
             }
         }
@@ -223,7 +153,100 @@ fun ExerciseAdminScreen(navController: NavHostController,
 
 @Composable
 fun ExerciseAdminTab(  ) {
+    val searchViewModel: SearchViewModel = viewModel()
 
+    var selectedGroups by remember { mutableStateOf(listOf<GrupaMiesniowa>()) }
+    var accurately by remember { mutableStateOf(false) } // czy dokładne odwzorowanie tagów czy tylko te zawierające
+
+    val suggestions = searchViewModel.suggestionsList
+
+    var isFocused by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+    val query = searchViewModel.searchQuery
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                focusManager.clearFocus()
+                isFocused = false
+                searchViewModel.downloadSearcheExercised()
+            },
+        verticalArrangement = Arrangement.Top
+    ) {
+        TextField(
+            value = query,
+            onValueChange = { searchViewModel.onSearchQueryChange(it, false, selectedGroups, accurately) },
+            placeholder = { Text("Nazwa ćwiczenia...") },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { focusState ->
+                    isFocused = focusState.isFocused
+                }
+        )
+        AnimatedVisibility(visible = suggestions.isNotEmpty() && isFocused) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                shape = RoundedCornerShape(8.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                ) {
+                    items(suggestions) { item ->
+                        Text(
+                            text = item,
+                            modifier = Modifier
+                                .clickable {
+                                    searchViewModel.selectSuggestion(item)
+                                    // pobranie cwiczen
+                                    focusManager.clearFocus()
+                                    isFocused = false
+                                }
+                                .padding(12.dp)
+                        )
+                        HorizontalDivider(
+                            Modifier,
+                            DividerDefaults.Thickness,
+                            DividerDefaults.color
+                        )
+                    }
+                }
+            }
+        }
+        MuscleGroupFilter(
+            selected = selectedGroups,
+            onSelectedChange = { groups ->
+                selectedGroups = groups
+                searchViewModel.onSearchQueryChange(isProduct =  false, groupMuscle = selectedGroups, precision =  accurately)
+                isFocused = true
+            },
+            onChangePrecision = {
+                accurately = it
+                searchViewModel.onSearchQueryChange(isProduct =  false, groupMuscle = selectedGroups, precision =  accurately)
+                isFocused = true
+            }
+        )
+
+        Column (modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()))
+        {
+            searchViewModel.searchedExercies.forEach{
+                Text("${it.id}: ${it.nazwa}")
+            }
+
+        }
+    }
 }
 
 
