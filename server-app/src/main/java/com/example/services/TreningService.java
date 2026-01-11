@@ -420,4 +420,8 @@ public class TreningService {
         cwiczeniaRepository.deleteCwiczenieById(id);
     }
 
+    public void updateExercise(Cwiczenie cwiczenie) {
+        cwiczeniaRepository.save(cwiczenie);
+    }
+
 }

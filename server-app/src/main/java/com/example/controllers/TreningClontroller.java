@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.kolekcje.plan_treningowy.Cwiczenie;
 import com.example.kolekcje.plan_treningowy.PlanTreningowy;
+import com.example.kolekcje.posilki.Produkt;
 import com.example.kolekcje.trening.Trening;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
 import com.example.requests.CwiczeniaPlanuTreningowegoResponse;
@@ -259,6 +260,27 @@ public class TreningClontroller {
                 Map.of("message", "Produkt odrzucony pomyślnie")
         );
     }
+
+
+
+    @PostMapping("/exercise/update")
+    public ResponseEntity<?> updateExercise(@RequestBody Cwiczenie update, Authentication authentication) {
+        log.info("updateExercise " + update.getId());
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        treningService.updateExercise(update);
+
+        return ResponseEntity.ok(
+                Map.of("message", "Produkt zaktualizowany pomyślnie")
+        );
+    }
+
 
 
 }
