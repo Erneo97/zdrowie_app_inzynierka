@@ -385,7 +385,7 @@ public class TreningService {
         Optional<ProduktyDoPotwierdzenia> optPDP = potwierdzProduktyRepository.findByIdExercise(id);
         if( optPDP.isEmpty() )
             return;
-        potwierdzProduktyRepository.findByIdExercise(id);
+        potwierdzProduktyRepository.deleteByIdExercise(id);
     }
 
     public void rejectExercise(int id) {
@@ -409,15 +409,15 @@ public class TreningService {
 
         List<PlanTreningowy> treningPlans = treningPlanRepository.findAll();
         treningPlans. forEach(
-                plan -> {plan.getCwiczeniaPlanuTreningowe().removeIf(
+                plan -> {
+                    plan.getCwiczeniaPlanuTreningowe().removeIf(
                         p -> p.getId() == pdp.getIdExercise() );
-                    treningPlanRepository.save(plan);
                 }
-
         );
+        treningPlanRepository.saveAll(treningPlans);
 
         potwierdzProduktyRepository.deleteByIdExercise(pdp.getIdExercise());
-        potwierdzProduktyRepository.deleteByIdProduct(id);
+        cwiczeniaRepository.deleteCwiczenieById(id);
     }
 
 }

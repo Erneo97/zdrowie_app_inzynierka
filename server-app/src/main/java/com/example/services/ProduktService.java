@@ -59,10 +59,10 @@ public class ProduktService {
             Optional<Produkt> OptProdukt = produktyRepository.findByNazwaAndProducent(nazwa, producent);
             if (OptProdukt.isPresent()) {
                 Produkt fp = OptProdukt.get();
+
                 ProduktyDoPotwierdzenia pdp = new ProduktyDoPotwierdzenia(fp.getId());
                 pdp.setIdUzytkownika(usrInd);
                 potwierdzProduktyRepository.save(pdp);
-
 
             }
             return product;

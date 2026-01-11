@@ -227,8 +227,7 @@ public class TreningClontroller {
 
 
     @PostMapping("/check/accept")
-    public ResponseEntity<?> acceptProduct(@RequestBody int id, Authentication authentication) {
-        log.info("acceptProduct " + id);
+    public ResponseEntity<?> acceptExercise(@RequestBody int id, Authentication authentication) {
         if( authentication == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
@@ -237,7 +236,7 @@ public class TreningClontroller {
         if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
-        treningService.acceptExercise(optUsr.get().getId());
+        treningService.acceptExercise(id);
 
         return ResponseEntity.ok(
                 Map.of("message", "Produkt potwierdzony")
@@ -245,8 +244,7 @@ public class TreningClontroller {
     }
 
     @PostMapping("/check/reject")
-    public ResponseEntity<?> rejectProduct(@RequestBody int id, Authentication authentication) {
-        log.info("rejectProduct " + id);
+    public ResponseEntity<?> rejectExercise(@RequestBody int id, Authentication authentication) {
         if( authentication == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
@@ -255,7 +253,7 @@ public class TreningClontroller {
         if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
-        treningService.rejectExercise(optUsr.get().getId());
+        treningService.rejectExercise(id);
 
         return ResponseEntity.ok(
                 Map.of("message", "Produkt odrzucony pomyślnie")
