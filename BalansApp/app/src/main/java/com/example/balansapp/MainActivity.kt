@@ -42,6 +42,7 @@ import com.example.balansapp.ui.screens.admin.ProductAdminScreen
 import com.example.balansapp.ui.screens.admin.ProfileAdminScreen
 import com.example.balansapp.ui.screens.admin.UserAdminScreen
 import com.example.balansapp.ui.service.AdminVievModel
+import com.example.firstcomposeap.ui.screens.EditExerciseScreen
 import com.example.firstcomposeap.ui.screens.EditProductScreen
 
 
@@ -104,6 +105,13 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screen.NewExercise.route) {
                         NewExerciseScreen(treningViewModel,
+                            onCLose = { navController.popBackStack() }
+                        )
+                    }
+
+
+                    composable(Screen.EditExercise.route) {
+                        EditExerciseScreen (treningViewModel,
                             onCLose = { navController.popBackStack() }
                         )
                     }
