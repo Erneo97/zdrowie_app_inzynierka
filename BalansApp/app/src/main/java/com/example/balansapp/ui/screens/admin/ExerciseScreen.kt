@@ -143,7 +143,9 @@ fun ExerciseAdminScreen(navController: NavHostController,
                         }
 
                     }
-                    1 -> { ExerciseAdminTab( onClick = {navController.navigate(Screen.NewExercise.route)} ) }
+                    1 -> { ExerciseAdminTab( onClick = {
+                        treningViewModel.downloadProductToEdit(it)
+                        navController.navigate(Screen.EditExercise.route)} ) }
                 }
             }
         }
@@ -151,7 +153,7 @@ fun ExerciseAdminScreen(navController: NavHostController,
 }
 
 @Composable
-fun ExerciseAdminTab( onClick: () -> Unit ) {
+fun ExerciseAdminTab( onClick: (Int) -> Unit ) {
     val searchViewModel: SearchViewModel = viewModel()
 
     var selectedGroups by remember { mutableStateOf(listOf<GrupaMiesniowa>()) }
@@ -243,7 +245,7 @@ fun ExerciseAdminTab( onClick: () -> Unit ) {
             searchViewModel.searchedExercies.forEach{
                 ExerciseInformation(
                     cwiczenie = it,
-                    onClick = { onClick() }
+                    onClick = { onClick(it.id) }
                     )
             }
 

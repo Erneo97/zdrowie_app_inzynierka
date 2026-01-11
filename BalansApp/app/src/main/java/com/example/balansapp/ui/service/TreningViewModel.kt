@@ -13,6 +13,7 @@ import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.GOAL
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import com.example.firstcomposeap.ui.service.data.PlanTreningowy
+import com.example.firstcomposeap.ui.service.data.Produkt
 import com.example.firstcomposeap.ui.service.data.StatisticPeriod
 import com.example.firstcomposeap.ui.service.data.Trening
 import com.example.firstcomposeap.ui.service.data.TreningCardInformation
@@ -342,6 +343,22 @@ class TreningViewModel : ViewModel() {
         }
     }
 
+    fun updateExercise(update: Cwiczenie) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").updateExercise(update)
 
+                if (response.isSuccessful) {
+                    response.body().let { message = it!!.message}
+                } else {
+                    errorMessage = "Błąd pobierania produktu: ${response.code()}"
+                }
+
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+                editedExercise = null
+            }
+        }
+    }
 
 }

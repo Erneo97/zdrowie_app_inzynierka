@@ -62,7 +62,9 @@ import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.data.Produkt
 
 @Composable
-fun ProductAdminScreen(navController: NavHostController, adminVievModel: AdminVievModel, productViewModel: ProductViewModel) {
+fun ProductAdminScreen(navController: NavHostController,
+                       adminVievModel: AdminVievModel,
+                       productViewModel: ProductViewModel) {
     val context = LocalContext.current
     var selectedItem by remember { mutableStateOf(context.getString(R.string.products)) }
     val searchViewModel: SearchViewModel = viewModel ()

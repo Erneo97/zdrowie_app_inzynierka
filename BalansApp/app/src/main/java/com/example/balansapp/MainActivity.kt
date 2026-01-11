@@ -112,7 +112,9 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screen.EditExercise.route) {
                         EditExerciseScreen (treningViewModel,
-                            onCLose = { navController.popBackStack() }
+                            onCLose = {
+                                treningViewModel.editedExercise = null
+                                navController.popBackStack() }
                         )
                     }
 
