@@ -243,6 +243,10 @@ interface ApiService {
     @POST("trening/check/reject")
     suspend fun rejectExercise(@Body id: Int): Response<SimpleMessage>
 
+    @POST("trening/exercise/update")
+    suspend fun updateExercise(@Body id: Cwiczenie): Response<SimpleMessage>
+
+
 //    STATYSTYKI
 
 

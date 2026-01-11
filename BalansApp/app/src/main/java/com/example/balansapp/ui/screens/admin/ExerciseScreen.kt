@@ -57,7 +57,6 @@ import com.example.balansapp.ui.service.AdminVievModel
 import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.components.icon.Done
 import com.example.firstcomposeap.ui.components.treningplans.MuscleGroupFilter
-import com.example.firstcomposeap.ui.components.treningplans.TrainingSeasonCard
 import com.example.firstcomposeap.ui.service.SearchViewModel
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.Cwiczenie
@@ -144,7 +143,7 @@ fun ExerciseAdminScreen(navController: NavHostController,
                         }
 
                     }
-                    1 -> { ExerciseAdminTab( ) }
+                    1 -> { ExerciseAdminTab( onClick = {navController.navigate(Screen.NewExercise.route)} ) }
                 }
             }
         }
@@ -152,7 +151,7 @@ fun ExerciseAdminScreen(navController: NavHostController,
 }
 
 @Composable
-fun ExerciseAdminTab(  ) {
+fun ExerciseAdminTab( onClick: () -> Unit ) {
     val searchViewModel: SearchViewModel = viewModel()
 
     var selectedGroups by remember { mutableStateOf(listOf<GrupaMiesniowa>()) }
@@ -242,7 +241,10 @@ fun ExerciseAdminTab(  ) {
             .verticalScroll(rememberScrollState()))
         {
             searchViewModel.searchedExercies.forEach{
-                Text("${it.id}: ${it.nazwa}")
+                ExerciseInformation(
+                    cwiczenie = it,
+                    onClick = { onClick() }
+                    )
             }
 
         }
@@ -250,6 +252,26 @@ fun ExerciseAdminTab(  ) {
 }
 
 
+@Composable
+fun ExerciseInformation(cwiczenie: Cwiczenie, onClick : () -> Unit) {
+    Column(modifier = getModiverCard(true).clickable() { onClick() }) {
+        Row {
+            Column (Modifier.weight(0.8f))  {
+                Text("${cwiczenie.id}: ${cwiczenie.nazwa}", fontWeight = FontWeight.Bold)
+                HorizontalDivider()
+                Text("MET: ${cwiczenie.met}")
+                Text("Opis: ${cwiczenie.opis}")
+                Spacer(Modifier.height(2.dp))
+                HorizontalDivider()
+                Text("Dostępne grupy mięśniowe:")
+                cwiczenie.grupaMiesniowas.forEach {
+                    Text("\t${it.grupaNazwa}, ")
+
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun ExerciseToConfirm(cwiczenie: Cwiczenie,
