@@ -322,7 +322,25 @@ class TreningViewModel : ViewModel() {
     }
 
 
+    var editedExercise by mutableStateOf<Cwiczenie?>(null)
 
+    fun downloadProductToEdit(id: Int) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.api.findExerciseById(id)
+
+                if (response.isSuccessful) {
+                   response.body().let {   editedExercise = it }
+                } else {
+                    errorMessage = "Błąd pobierania produktu: ${response.code()}"
+                }
+
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+                editedExercise = null
+            }
+        }
+    }
 
 
 
