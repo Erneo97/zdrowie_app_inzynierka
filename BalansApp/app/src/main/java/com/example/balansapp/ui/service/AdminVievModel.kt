@@ -5,10 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.balansapp.ui.service.data.UserCard
+import com.example.firstcomposeap.ui.service.data.Cwiczenie
 import com.example.firstcomposeap.ui.service.data.Produkt
 import kotlinx.coroutines.launch
 
@@ -123,5 +123,32 @@ class AdminVievModel : ViewModel() {
             }
         }
     }
+
+
+    var exercisesssList = mutableStateListOf<Cwiczenie>()
+
+    fun downloadExercisesToConfirmeList( ) {
+        loadingData = true
+        viewModelScope.launch {
+            try {
+
+                val response = ApiClient.getApi(token ?: "").getExercisesToCheck()
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        exercisesssList.clear()
+                        exercisesssList.addAll(it)
+                    }
+                } else {
+                    errorMessage = "Błąd pobierania listy produktów: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+            finally {
+                loadingData = false
+            }
+        }
+    }
+
 
 }
