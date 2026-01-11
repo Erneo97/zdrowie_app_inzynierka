@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -209,6 +210,57 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningService.getTreningStats(optUsr.get().getId(), id));
     }
 
+    @GetMapping("/check/exercise")
+    public ResponseEntity<?> getExercisesToCheck(Authentication authentication) {
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+
+        return ResponseEntity.ok(treningService.getExercisesList());
+    }
+
+
+
+    @PostMapping("/check/accept")
+    public ResponseEntity<?> acceptProduct(@RequestBody int id, Authentication authentication) {
+        log.info("acceptProduct " + id);
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        treningService.acceptExercise(optUsr.get().getId());
+
+        return ResponseEntity.ok(
+                Map.of("message", "Produkt potwierdzony")
+        );
+    }
+
+    @PostMapping("/check/reject")
+    public ResponseEntity<?> rejectProduct(@RequestBody int id, Authentication authentication) {
+        log.info("rejectProduct " + id);
+        if( authentication == null ) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        String userEmail = authentication.getName();
+        Optional<Uzytkownik> optUsr = uzytkownikService.getUserByEmail(userEmail);
+        if( optUsr.isEmpty() || !optUsr.get().getRole().equals("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
+        }
+        treningService.rejectExercise(optUsr.get().getId());
+
+        return ResponseEntity.ok(
+                Map.of("message", "Produkt odrzucony pomyślnie")
+        );
+    }
 
 
 }

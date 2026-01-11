@@ -4,16 +4,16 @@ package com.example.services;
 import com.example.kolekcje.enumy.GrupaMiesniowa;
 import com.example.kolekcje.enumy.LicznikiDB;
 import com.example.kolekcje.plan_treningowy.*;
+import com.example.kolekcje.posilki.Posilki;
+import com.example.kolekcje.posilki.Produkt;
 import com.example.kolekcje.posilki.ProduktyDoPotwierdzenia;
 import com.example.kolekcje.statistic.TreningStatistic;
 import com.example.kolekcje.trening.CwiczenieWTreningu;
 import com.example.kolekcje.trening.Trening;
 import com.example.kolekcje.trening.TreningCard;
+import com.example.kolekcje.uzytkownik.UserStats;
 import com.example.kolekcje.uzytkownik.Uzytkownik;
-import com.example.repositories.CwiczeniaRepository;
-import com.example.repositories.PotwierdzProduktyRepository;
-import com.example.repositories.TreningPlanRepository;
-import com.example.repositories.TreningRepository;
+import com.example.repositories.*;
 import com.example.requests.CwiczeniaPlanuTreningowegoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +39,15 @@ public class TreningService {
     private final UzytkownikService uzytkownikService;
     private final TreningRepository treningRepository;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final UserStatsRepository userStatsRepository;
 
     public TreningService(CwiczeniaRepository cwiczeniaRepository,
                           TreningPlanRepository treningPlanRepository,
                           PotwierdzProduktyRepository potwierdzProduktyRepository,
                           TreningRepository treningRepository,
-                          SequenceGeneratorService sequenceGenerator, UzytkownikService uzytkownikService) {
+                          SequenceGeneratorService sequenceGenerator, UzytkownikService uzytkownikService,
+                          UserStatsRepository userStatsRepository
+    ) {
 
         this.cwiczeniaRepository = cwiczeniaRepository;
         this.treningPlanRepository = treningPlanRepository;
@@ -52,6 +55,7 @@ public class TreningService {
         this.sequenceGenerator = sequenceGenerator;
         this.uzytkownikService = uzytkownikService;
         this.treningRepository = treningRepository;
+        this.userStatsRepository = userStatsRepository;
     }
 
     public Optional<PlanTreningowy> getById(int id) {
@@ -365,5 +369,55 @@ public class TreningService {
         return (float) series.stream().mapToDouble(seria -> seria.getObciazenie() * seria.getLiczbaPowtorzen()).sum();
     }
 
+    public List<Cwiczenie> getExercisesList() {
+        return potwierdzProduktyRepository.findAll()
+                .stream()
+                .filter(it -> it.getIdExercise() > -1)
+                .map(it -> {
+                            log.info("id = {}", it.getIdExercise());
+                         return   cwiczeniaRepository.findCwiczenieById(it.getIdExercise()).get();
+                        }
+                )
+                .toList();
+    }
+
+    public void acceptExercise(int id) {
+        Optional<ProduktyDoPotwierdzenia> optPDP = potwierdzProduktyRepository.findByIdExercise(id);
+        if( optPDP.isEmpty() )
+            return;
+        potwierdzProduktyRepository.findByIdExercise(id);
+    }
+
+    public void rejectExercise(int id) {
+        Optional<ProduktyDoPotwierdzenia> optPDP = potwierdzProduktyRepository.findByIdExercise(id);
+        if( optPDP.isEmpty() )
+            return;
+        ProduktyDoPotwierdzenia pdp = optPDP.get();
+
+        Optional<UserStats> optUS = userStatsRepository.findById(pdp.getIdUzytkownika());
+        if( optUS.isEmpty() ) {
+            UserStats userStats = new UserStats();
+            userStats.setId(pdp.getIdUzytkownika());
+            userStats.setExerciesReject(1);
+            userStatsRepository.save(userStats);
+        }
+        else {
+            UserStats userStats = optUS.get();
+            userStats.incrementExerciesReject();
+            userStatsRepository.save(userStats);
+        }
+
+        List<PlanTreningowy> treningPlans = treningPlanRepository.findAll();
+        treningPlans. forEach(
+                plan -> {plan.getCwiczeniaPlanuTreningowe().removeIf(
+                        p -> p.getId() == pdp.getIdExercise() );
+                    treningPlanRepository.save(plan);
+                }
+
+        );
+
+        potwierdzProduktyRepository.deleteByIdExercise(pdp.getIdExercise());
+        potwierdzProduktyRepository.deleteByIdProduct(id);
+    }
 
 }
