@@ -282,5 +282,10 @@ public class TreningClontroller {
     }
 
 
+    @GetMapping("/cwiczenie/{id}")
+    public ResponseEntity<Cwiczenie> findExerciseById(@PathVariable int id) {
+        return ResponseEntity.ok(treningService.findExerciseById(id));
+    }
+
 
 }

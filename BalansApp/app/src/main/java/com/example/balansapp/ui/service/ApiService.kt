@@ -247,6 +247,11 @@ interface ApiService {
     suspend fun updateExercise(@Body id: Cwiczenie): Response<SimpleMessage>
 
 
+    @GET("trening/cwiczenie/{id}")
+    suspend fun findExerciseById(
+        @Path("id") id: Int
+    ): Response<Cwiczenie>
+
 //    STATYSTYKI
 
 

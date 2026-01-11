@@ -424,4 +424,9 @@ public class TreningService {
         cwiczeniaRepository.save(cwiczenie);
     }
 
+    public Cwiczenie findExerciseById(int id) {
+        return cwiczeniaRepository.findCwiczenieById(id).get();
+    }
+
+
 }
