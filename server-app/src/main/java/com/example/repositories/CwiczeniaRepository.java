@@ -10,4 +10,5 @@ public interface CwiczeniaRepository  extends MongoRepository<Cwiczenie, String>
     Optional<Cwiczenie> findCwiczenieById(int id);
 
     List<Cwiczenie> getById(int id);
+    void deleteCwiczenieById(int id);
 }
