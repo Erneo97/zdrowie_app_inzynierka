@@ -151,4 +151,39 @@ class AdminVievModel : ViewModel() {
     }
 
 
+    fun confirmExercise(id :Int ) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").acceptExercise(id)
+                if (response.isSuccessful) {
+                    productssList.removeIf { it.id == id.toLong() }
+                } else {
+                    errorMessage = "Błąd zaakceptowania produktu: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage = e.localizedMessage
+            }
+        }
+    }
+
+    fun rejectExercise(id :Int ) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.getApi(token ?: "").rejectExercise(id)
+                if (response.isSuccessful) {
+                    productssList.removeIf { it.id == id.toLong() }
+                } else {
+                    errorMessage = "Błąd odrzucenia produktu: ${response.errorBody()}"
+                }
+            } catch (e: Exception) {
+                Log.e("rejectProduct", "catch ${e.localizedMessage}")
+                errorMessage = e.localizedMessage
+            }
+            finally {
+                loadingData = false
+            }
+        }
+    }
+
+
 }

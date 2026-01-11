@@ -42,7 +42,6 @@ import com.example.firstcomposeap.ui.components.icon.Delete
 import com.example.firstcomposeap.ui.components.icon.Done
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.Cwiczenie
-import com.example.firstcomposeap.ui.service.data.Produkt
 
 @Composable
 fun ExerciseAdminScreen(navController: NavHostController,
@@ -116,8 +115,8 @@ fun ExerciseAdminScreen(navController: NavHostController,
                             items(filtratedProduct) {
                                 ExerciseToConfirm(
                                     cwiczenie = it,
-                                    onRemove = { },
-                                    onAccept = {}
+                                    onRemove = { adminVievModel.rejectExercise(it.id) },
+                                    onAccept = { adminVievModel.confirmExercise( it.id) }
                                 )
 
                             }
@@ -170,7 +169,7 @@ fun ExerciseToConfirm(cwiczenie: Cwiczenie,
                     )
                 }
 
-                Spacer(Modifier.height(40.dp))
+                Spacer(Modifier.height(80.dp))
                 FloatingActionButton(
                     onClick = onAccept,
                     containerColor = MaterialTheme.colorScheme.primary,
