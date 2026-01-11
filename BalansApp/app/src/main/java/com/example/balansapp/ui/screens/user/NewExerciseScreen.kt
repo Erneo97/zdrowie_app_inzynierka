@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.balansapp.ui.components.input.InputField
 import com.example.firstcomposeap.ui.components.icon.Question_mark
+import com.example.firstcomposeap.ui.components.profile.StatystykiTab.ToolTipDialoge
 import com.example.firstcomposeap.ui.service.TreningViewModel
 import com.example.firstcomposeap.ui.service.data.GrupaMiesniowa
 import kotlinx.coroutines.launch
@@ -42,6 +43,8 @@ import kotlinx.coroutines.launch
 fun NewExerciseScreen(treningViewModel: TreningViewModel,
                       onCLose : () -> Unit )
 {
+    var showToolTip by remember { mutableStateOf(false)}
+
     var nazwa by remember { mutableStateOf("") }
     var opis by remember { mutableStateOf("") }
     var spalanie by remember { mutableStateOf(0.0f) }
@@ -111,7 +114,7 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel,
                     modifier = Modifier.weight(3f)
                 )
                 FloatingActionButton(
-                    onClick = { }, //TODO : pokazywanie tooltip
+                    onClick = { showToolTip = true}, //TODO : pokazywanie tooltip
                     containerColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(0.5f).padding(5.dp).size(42.dp)
                 ) {
@@ -150,7 +153,10 @@ fun NewExerciseScreen(treningViewModel: TreningViewModel,
                 }
             }
         }
-
+        if( showToolTip ) {
+            ToolTipDialoge (onConfirm = {showToolTip = false},
+                text = "MET (Metabolic Equivalent of Task) to współczynnik określający intensywność aktywności fizycznej, używany do szacowania wydatku energetycznego (spalonych kalorii) w porównaniu do spoczynku.")
+        }
 
         Spacer(Modifier.height(10.dp))
     }
