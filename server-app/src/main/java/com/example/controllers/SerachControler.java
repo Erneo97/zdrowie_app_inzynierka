@@ -115,6 +115,13 @@ public class SerachControler {
         return nazwy;
     }
 
+    /**
+     * Zwraca szukane ćwiczenia użytkownikowi.
+     * @param nazwa
+     * @param grupyMiesiniowe
+     * @param dokladnosc
+     * @return
+     */
     @GetMapping("/cwiczenia/all")
     public List<Cwiczenie> getAllExercises(@RequestParam  String nazwa,
                                         @RequestParam(required = false) List<String> grupyMiesiniowe,
@@ -163,7 +170,11 @@ public class SerachControler {
         return filtratedExercise;
     }
 
-
+    /**
+     * Zwraca listę wyszukanych ćwiczeń.
+     * @param nazwa
+     * @return
+     */
     @GetMapping("/produkts/{nazwa}")
     public List<Produkt> getAllProduct(@PathVariable String nazwa) {
         log.info("getAllProduct: {}", nazwa);

@@ -33,10 +33,14 @@ public class TreningClontroller {
         this.uzytkownikService = uzytkownikService;
     }
 
-
+    /**
+     * tWORZENIE NOWEGO ĆWICZENIA
+     * @param noweCwiczenie
+     * @param authentication
+     * @return
+     */
     @PostMapping("/exercise/new")
     public ResponseEntity<?> createExercise(@RequestBody Cwiczenie noweCwiczenie, Authentication authentication) {
-        log.info("createExercise " + noweCwiczenie.getNazwa());
         if( authentication == null ) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -54,6 +58,13 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(created);
     }
 
+    /**
+     * Tworzenie nowego planu treningowego
+     * @param nowyPlan
+     * @param aktualny
+     * @param authentication
+     * @return
+     */
     @PostMapping("/treningPlan")
     public ResponseEntity<?> createTreningPlan(@RequestBody PlanTreningowy nowyPlan, @RequestParam boolean aktualny,
                                                Authentication authentication) {
@@ -75,9 +86,14 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body("Utworzo nowy plan treningowy");
     }
 
+    /**
+     * Zwraca szczegółowe informacje danego planu treningowego.
+     * @param id
+     * @param authentication
+     * @return
+     */
     @GetMapping("/treningPlan/{id}")
     public ResponseEntity<?> getExerciseTreningPlan(@RequestParam int id,  Authentication authentication) {
-        log.info("getExerciseTreningPlan {}", id);
         if( authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
@@ -91,7 +107,6 @@ public class TreningClontroller {
         Uzytkownik usr = optUsr.get();
 
         List<CwiczeniaPlanuTreningowegoResponse> ret = treningService.getExerciseTreningPlan(usr, id);
-        log.info("getExerciseTreningPlan" + ret.toString());
         if( ret == null ) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Brak rzadanych danych");
         }
@@ -99,7 +114,13 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(ret);
     }
 
-
+    /**
+     * Aktualizowanie planu treningowego.
+     * @param nowyPlan
+     * @param aktualny
+     * @param authentication
+     * @return
+     */
     @PostMapping("/treningPlan/update")
     public ResponseEntity<?> updateTreningPlan(@RequestBody PlanTreningowy nowyPlan, @RequestParam boolean aktualny,
                                                Authentication authentication) {
@@ -120,6 +141,11 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body("Utworzo nowy plan treningowy");
     }
 
+    /**
+     *
+     * @param authentication
+     * @return
+     */
     @GetMapping("/treningPlan")
     public ResponseEntity<?> getAllTreningPlans( Authentication authentication) {
 
@@ -137,6 +163,11 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningService.getAllTreningPlans(usr));
     }
 
+    /**
+     * Tworzy nowy trening na podstawie aktualnego planu treningowego.
+     * @param authentication
+     * @return
+     */
     @GetMapping("/new")
     public ResponseEntity<?> getAcctualTrening( Authentication authentication) {
         if( authentication == null) {
@@ -157,6 +188,12 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningService.createTrenicBasedOnTreningPlan(optPT.get(), usr));
     }
 
+    /**
+     * Zapisuje odbyty trening do bazy danych.
+     * @param usrTrening
+     * @param authentication
+     * @return
+     */
     @PostMapping("/trening/update")
     public ResponseEntity<?> updateTrening(@RequestBody  Trening usrTrening,  Authentication authentication) {
         if( authentication == null) {
@@ -179,6 +216,11 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningId);
     }
 
+    /**
+     *
+     * @param authentication
+     * @return
+     */
     @PostMapping("/trening/card")
     public ResponseEntity<?> getUserTreningCard(Authentication authentication) {
         if( authentication == null) {
@@ -196,6 +238,12 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningService.getTreningCards(optUsr.get().getId()));
     }
 
+    /**
+     * Zwraca dane danego treningu użytkownikowi.
+     * @param id
+     * @param authentication
+     * @return
+     */
     @PostMapping("/trening/statistic/{id}")
     public ResponseEntity<?> getStatsTrening(@RequestParam int id,  Authentication authentication) {
         if( authentication == null) {
@@ -211,6 +259,11 @@ public class TreningClontroller {
         return ResponseEntity.status(201).body(treningService.getTreningStats(optUsr.get().getId(), id));
     }
 
+    /**
+     * Zwraca administratorowi listę nowododanych ćwiczeń.
+     * @param authentication
+     * @return
+     */
     @GetMapping("/check/exercise")
     public ResponseEntity<?> getExercisesToCheck(Authentication authentication) {
         if( authentication == null ) {
@@ -226,7 +279,12 @@ public class TreningClontroller {
     }
 
 
-
+    /**
+     * Potwierdzenie przez administratora danego ćwiczenia.
+     * @param id
+     * @param authentication
+     * @return
+     */
     @PostMapping("/check/accept")
     public ResponseEntity<?> acceptExercise(@RequestBody int id, Authentication authentication) {
         if( authentication == null ) {
@@ -244,6 +302,12 @@ public class TreningClontroller {
         );
     }
 
+    /**
+     * Odrzucenie przez administratora nowego ćwiczenia.
+     * @param id
+     * @param authentication
+     * @return
+     */
     @PostMapping("/check/reject")
     public ResponseEntity<?> rejectExercise(@RequestBody int id, Authentication authentication) {
         if( authentication == null ) {
@@ -262,7 +326,12 @@ public class TreningClontroller {
     }
 
 
-
+    /**
+     * Aktualizacja danego ćwiczenia przez administratora.
+     * @param update
+     * @param authentication
+     * @return
+     */
     @PostMapping("/exercise/update")
     public ResponseEntity<?> updateExercise(@RequestBody Cwiczenie update, Authentication authentication) {
         log.info("updateExercise " + update.getId());
@@ -281,7 +350,11 @@ public class TreningClontroller {
         );
     }
 
-
+    /**
+     * Zwraca szczegóły danego ćwiczenia.
+     * @param id
+     * @return
+     */
     @GetMapping("/cwiczenie/{id}")
     public ResponseEntity<Cwiczenie> findExerciseById(@PathVariable int id) {
         return ResponseEntity.ok(treningService.findExerciseById(id));

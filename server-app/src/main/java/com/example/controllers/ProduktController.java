@@ -35,6 +35,12 @@ public class ProduktController {
     private static final Logger log = LoggerFactory.getLogger(ProduktController.class);
 
 
+    /**
+     * Dodaje nowy produkt do bazy danych.
+     * @param nowyProdukt
+     * @param authentication
+     * @return
+     */
     @PostMapping("/produkt")
     public ResponseEntity<?> createProduct(@RequestBody Produkt nowyProdukt, Authentication authentication) {
         log.info("createProduct  " + nowyProdukt.getNazwa());
@@ -59,23 +65,44 @@ public class ProduktController {
         return ResponseEntity.status(201).body(created);
     }
 
+    /**
+     * Zwraca szczegóły danego produktu.
+     * @param id
+     * @return
+     */
     @GetMapping("/produkt/{id}")
     public Optional<Produkt> findById(@PathVariable int id) {
         return produktService.findById(id);
     }
 
+    /**
+     * Zwraca wszystkie produkty, które mają daną nazwę
+     * @param nazwa
+     * @return
+     */
     @GetMapping("/produkty/{nazwa}")
     public List<Produkt> findByNazwa(@PathVariable String nazwa) {
         return produktService.findByNazwa(nazwa);
     }
 
+    /**
+     * Zwraca produkt o danym kodzie kreskowym
+     * @param kodKreskowy
+     * @return
+     */
     @GetMapping("/produkt/kod/{kodKreskowy}")
     public Optional<Produkt> findByKodKreskowy(@PathVariable String kodKreskowy) {
         return produktService.findByKodKreskowy(kodKreskowy);
     }
 
 
-
+    /**
+     * Zweaca posiłek użytkownikowi innego użytkownika z danego dnia
+     * @param date
+     * @param userEmail
+     * @param authentication
+     * @return
+     */
     @GetMapping("/posilek/another/all")
     public ResponseEntity<?> getMealAnotherUser( @RequestParam String date, @RequestParam String userEmail, Authentication authentication ) {
         if( authentication == null ) {
@@ -108,6 +135,13 @@ public class ProduktController {
         return ResponseEntity.ok(userMealDay);
     }
 
+    /**
+     * Aktualizuje posiłek innego użytkownikowi z danego dnia
+     * @param update
+     * @param userEmail
+     * @param authentication
+     * @return
+     */
     @PostMapping("/another/posilek")
     public ResponseEntity<?> createOrUpdateAnotherUserMeal(@RequestBody MealUpdate update, @RequestParam String userEmail, Authentication authentication) {
         log.info("createOrUpdateAnotherUserMeal " + "");
@@ -138,6 +172,12 @@ public class ProduktController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
+    /**
+     * Zwraca użytkownikowi wszystkie spożyte produkty danego dnia.
+     * @param date
+     * @param authentication
+     * @return
+     */
     @GetMapping("/posilek/all")
     public ResponseEntity<?> getMealOnDay( @RequestParam String date, Authentication authentication ) {
         log.info("getMealOnDay " + date);
@@ -159,6 +199,12 @@ public class ProduktController {
     }
 
 
+    /**
+     * Aktualizuje posiłek użytkownika danego dnia.
+     * @param update
+     * @param authentication
+     * @return
+     */
     @PostMapping("/posilek")
     public ResponseEntity<?> updateMeal(@RequestBody MealUpdate update, Authentication authentication) {
         if( authentication == null ) {
@@ -180,6 +226,11 @@ public class ProduktController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
+    /**
+     * Zwraca listę nowo dodanych produktów do bazy danych przez użytkowników.
+     * @param authentication
+     * @return
+     */
     @GetMapping("/check/produkt")
     public ResponseEntity<?> getProductsCheck(Authentication authentication) {
         if( authentication == null ) {
@@ -194,6 +245,12 @@ public class ProduktController {
         return ResponseEntity.ok(produktService.getProductList());
     }
 
+    /**
+     * Akceptowanie nowego produktu przez administratora.
+     * @param id
+     * @param authentication
+     * @return
+     */
     @PostMapping("/check/accept")
     public ResponseEntity<?> acceptProduct(@RequestBody int id, Authentication authentication) {
         log.info("acceptProduct " + id);
@@ -212,6 +269,12 @@ public class ProduktController {
         );
     }
 
+    /**
+     * Odrzucenie nowego produktu przez administratora
+     * @param id
+     * @param authentication
+     * @return
+     */
     @PostMapping("/check/reject")
     public ResponseEntity<?> rejectProduct(@RequestBody int id, Authentication authentication) {
         log.info("rejectProduct " + id);
@@ -230,7 +293,12 @@ public class ProduktController {
         );
     }
 
-
+    /**
+     * Aktualizacja produktu przez administratora
+     * @param update
+     * @param authentication
+     * @return
+     */
     @PostMapping("/update")
     public ResponseEntity<?> updateProduct(@RequestBody Produkt update, Authentication authentication) {
         log.info("updateProduct " + update.getId());

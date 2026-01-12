@@ -34,6 +34,12 @@ public class StatisticController {
         this.statisticService = statisticService;
     }
 
+    /**
+     * Zwraca listę wag użytkownika.
+     * @param interval
+     * @param authentication
+     * @return
+     */
     @PostMapping("/weight")
     public ResponseEntity<?> getUserWeight(@RequestBody StatisticInterval interval, Authentication authentication) {
 
@@ -52,6 +58,13 @@ public class StatisticController {
     }
 
 
+    /**
+     * Zwraca listę spożytych kalorii przez użytkownika.
+     * @param date
+     * @param countDays
+     * @param authentication
+     * @return
+     */
     @GetMapping("/kcal")
     public ResponseEntity<?> getUserCalories(
             @RequestParam
@@ -92,6 +105,11 @@ public class StatisticController {
     }
 
 
+    /**
+     * Zwraca
+     * @param authentication
+     * @return
+     */
     @GetMapping("/rws")
     public ResponseEntity<?> getUserRws(Authentication authentication) {
         log.info("getUserRws");

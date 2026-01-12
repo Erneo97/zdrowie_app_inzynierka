@@ -60,6 +60,11 @@ public class UzytkownikController {
         return "test";
     }
 
+    /**
+     * Tworzenie nowego użytkownika
+     * @param user
+     * @return
+     */
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody Uzytkownik user) {
         Optional<Uzytkownik> retUser = uzytkownikService.loginUser(user.getEmail());
@@ -81,6 +86,11 @@ public class UzytkownikController {
         return ResponseEntity.status(201).body(created);
     }
 
+    /**
+     *
+     * @param request
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest request) {
         Authentication authentication;
@@ -112,6 +122,11 @@ public class UzytkownikController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    /**
+     * Zwraca dane zalogowanego użytkownika
+     * @param authentication
+     * @return
+     */
     @GetMapping("/user")
     public ResponseEntity<?> getUser(Authentication authentication) {
         if (authentication == null) {
@@ -149,6 +164,13 @@ public class UzytkownikController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Użytkownik nie znaleziony");
     }
 
+    /**
+     * Dodanie nowego pomiaru wagi, nawodnienia, tk. Tłuszczowej, tk. Mięśniowej do danych użytkownika.Dodanie nowego pomiaru wagi, nawodnienia, tk. Tłuszczowej, tk. Mięśniowej do danych użytkownika.
+     * @param date
+     * @param countDays
+     * @param authentication
+     * @return
+     */
     @GetMapping("/waga")
     public ResponseEntity<?> getUserWeights(
             @RequestParam
@@ -226,6 +248,12 @@ public class UzytkownikController {
 
 ////    ----------------------  ZAPRASZANIE DO ZNAJOMYCH    ----------------------------------------------------
 
+    /**
+     * Wysyłąnie zaporoszenia do grona znajomych
+     * @param email
+     * @param authentication
+     * @return
+     */
     @PostMapping("/invitation/new")
     public ResponseEntity<?> sendInvitation(@RequestBody String email, Authentication authentication) {
         log.info("sendInvitation");
@@ -249,6 +277,11 @@ public class UzytkownikController {
                 : ResponseEntity.status(HttpStatus.CONFLICT).body("Nie można utworzyć takiego zaproszenia");
     }
 
+    /**
+     * Zwraca listę zaproszeń jakie użytkownik dostał
+     * @param authentication
+     * @return
+     */
     @GetMapping("/invitation/all")
     public ResponseEntity<?> getAllInvitationUser(Authentication authentication) {
         log.info("getAllInvitationUser");
@@ -262,8 +295,6 @@ public class UzytkownikController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
         }
 
-        // TODO: spr czy nie są znajomyni
-
         log.info("{}",userEmail);
         List<ZaproszenieInfo> ret = uzytkownikService.getAllZaproszenies(userEmail);
         log.info("spr: {}", ret);
@@ -272,6 +303,12 @@ public class UzytkownikController {
                 : ResponseEntity.status(HttpStatus.CONFLICT).body("Brak zaproszeń");
     }
 
+    /**
+     * Akceptacja konkretnego zaproszenia przez użytkownika.
+     * @param zaproszenie
+     * @param authentication
+     * @return
+     */
     @PutMapping("/invitation/accept")
     public ResponseEntity<?> akceptInvitation(@RequestBody ZaproszenieInfo zaproszenie, Authentication authentication) {
         log.info("akceptInvitation");
@@ -315,7 +352,11 @@ public class UzytkownikController {
 
 ////     -----------------------  PRZYJACIELE -------------------------------------------------
 
-
+    /**
+     * Zwraca listę przyjaciół użytkownika
+     * @param authentication
+     * @return
+     */
     @GetMapping("/friends")
     public ResponseEntity<?> getUserFrends(Authentication authentication) {
         log.info("cancelInvitation");
@@ -342,6 +383,12 @@ public class UzytkownikController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
+    /**
+     * Usuwanie przyjaciela z grona znajomych.
+     * @param przyjacielInfo
+     * @param authentication
+     * @return
+     */
     @DeleteMapping("/friends")
     public ResponseEntity<?> deleteUserFrend(@RequestBody PrzyjacieleInfo przyjacielInfo,Authentication authentication) {
         log.info("deleteUserFrend");
@@ -361,6 +408,11 @@ public class UzytkownikController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
+    /**
+     * Zwraca listę użytkowników którym możemy modyfikować posiłki.
+     * @param authentication
+     * @return
+     */
     @GetMapping("/friends/accesed")
     public ResponseEntity<?> getUserFrendsICanModife(Authentication authentication) {
         if( authentication == null ) {
@@ -395,6 +447,12 @@ public class UzytkownikController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
+    /**
+     * Zmiana uprawnień użytkownikowi do edycji naszych posiłków.
+     * @param przyjacielInfo
+     * @param authentication
+     * @return
+     */
     @PutMapping("/friends")
     public ResponseEntity<?> changeAccessUserFrend (@RequestBody PrzyjacieleInfo przyjacielInfo,Authentication authentication) {
         log.info("changeAccessUserFrend");
@@ -414,7 +472,12 @@ public class UzytkownikController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak autoryzacji");
     }
 
-
+    /**
+     * Aktualizuje dania użytkownika.
+     * @param recipes
+     * @param authentication
+     * @return
+     */
     @PostMapping("/recipe")
     public ResponseEntity<?> updateUserRecipe(@RequestBody List<DaniaDetail> recipes, Authentication authentication) {
         log.info("updateUserRecipe");
@@ -434,6 +497,11 @@ public class UzytkownikController {
         return ResponseEntity.ok("Zaktualizowano przepisy uzytkownika");
     }
 
+    /**
+     * Zwraca listę dań użytkownika.
+     * @param authentication
+     * @return
+     */
     @GetMapping("/recipe")
     public ResponseEntity<?> getAllUserRecipe(Authentication authentication) {
         log.info("updateUserRecipe");
@@ -453,6 +521,11 @@ public class UzytkownikController {
         return ResponseEntity.ok().body(uzytkownikService.getAllUserRecipes(uzytkownik));
     }
 
+    /**
+     * Zwraca listę użytkowników dla administratora.
+     * @param authentication
+     * @return
+     */
     @GetMapping("/admin/users")
     public ResponseEntity<?>  getAllUsers(Authentication authentication ) {
         if( authentication == null ) {
@@ -465,6 +538,14 @@ public class UzytkownikController {
         return ResponseEntity.ok(us);
     }
 
+
+    /**
+     * Blokowanie / odblokowywanie konta użytkownika przez administratora.
+     * @param id
+     * @param status
+     * @param authentication
+     * @return
+     */
     @PutMapping("/admin/user/status")
     public ResponseEntity<?>  upadateStatusUser(@RequestParam int id, @RequestParam boolean status,  Authentication authentication ) {
         log.info("upadateStatusUser");
